@@ -59,6 +59,7 @@ class Customer implements ResolverInterface
         return [
             'firstname' => $customer->getFirstname(),
             'lastname' => $customer->getLastname(),
+            'middlename'=> $customer->getMiddlename(),
             'created_at' => $customer->getCreatedAt(),
             'email' => $customer->getEmail(),
             'default_billing' => $customer->getDefaultBilling(),
