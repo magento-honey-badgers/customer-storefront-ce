@@ -34,7 +34,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get region
      *
-     * @return \Magento\Customer\Api\Data\RegionInterface|null
+     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface|null
      */
     public function getRegion()
     {
@@ -44,7 +44,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get region
      *
-     * @return \Magento\Customer\Api\Data\RegionInterface|null
+     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface|null
      */
     public function getRegionCode()
     {
@@ -55,7 +55,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get country code
      *
-     * @return \Magento\Customer\Api\Data\RegionInterface|null
+     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface|null
      */
     public function getCountryCode()
     {
@@ -187,7 +187,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Set region
      *
-     * @param \Magento\Customer\Api\Data\RegionInterface $region
+     * @param \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface $region
      * @return $this
      */
     public function setRegion(RegionInterface $region = null)

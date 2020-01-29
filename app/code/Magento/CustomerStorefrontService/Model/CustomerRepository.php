@@ -40,7 +40,7 @@ class CustomerRepository implements CustomerRepositoryInterface
      * Get customer by Customer ID.
      *
      * @param int $customerId
-     * @return \Magento\Customer\Api\Data\CustomerInterface
+     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException If customer with the specified ID does not exist.
      * @throws \Magento\Framework\Exception\LocalizedException
      */
