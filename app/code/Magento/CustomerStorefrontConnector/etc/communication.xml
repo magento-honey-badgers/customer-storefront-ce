@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+  * Copyright © Magento, Inc. All rights reserved.
+  * See COPYING.txt for license details.
+  */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <topic name="customer.monolith.connector.saveCustomer" request="string">
+        <handler name="monolith-to-consumer-customer-save"
+                 type="Magento\CustomerStorefrontConnector\Queue\Consumer\Customer"
+                 method="forwardCustomerChanges"/>
+    </topic>
+    <topic name="customer.monolith.connector.deleteCustomer" request="string">
+        <handler name="monolith-to-consumer-customer-delete"
+                 type="Magento\CustomerStorefrontConnector\Queue\Consumer\Customer"
+                 method="forwardCustomerDelete"/>
+    </topic>
+
+    <topic name="customer.monolith.connector.saveAddress" request="string">
+        <handler name="monolith-to-consumer-address-save"
+                 type="Magento\CustomerStorefrontConnector\Queue\Consumer\Address"
+                 method="forwardAddressChanges"/>
+    </topic>
+    <topic name="customer.monolith.connector.deleteAddress" request="string">
+        <handler name="monolith-to-consumer-address-delete"
+                 type="Magento\CustomerStorefrontConnector\Queue\Consumer\Address"
+                 method="forwardAddressDelete"/>
+    </topic>
+    <topic name="customer.connector.service.saveCustomer" request="string"/>
+    <topic name="customer.connector.service.deleteCustomer" request="string"/>
+    <topic name="customer.connector.service.saveAddress" request="string"/>
+    <topic name="customer.connector.service.deleteAddress" request="string"/>
+</config>
