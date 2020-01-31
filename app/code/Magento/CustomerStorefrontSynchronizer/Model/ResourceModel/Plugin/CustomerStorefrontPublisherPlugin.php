@@ -51,7 +51,7 @@ class CustomerStorefrontPublisherPlugin
     {
         $customerId = $customer->getId();
         $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, self::SAVE_EVENT, ['id'=> $customerId]);
-        $this->eventPublisher->publish('customer.monolith.connector.saveCustomer', $message);
+        $this->eventPublisher->publish('customer.monolith.connector.customer.save', $message);
         return $customer;
     }
 
@@ -71,7 +71,7 @@ class CustomerStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $customerId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.deleteCustomer', $message);
+        $this->eventPublisher->publish('customer.monolith.connector.customer.delete', $message);
         return $result;
     }
 
@@ -90,7 +90,7 @@ class CustomerStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $customerId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.deleteCustomer', $message);
+        $this->eventPublisher->publish('customer.monolith.connector.customer.delete', $message);
         return $result;
     }
 }

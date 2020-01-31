@@ -52,7 +52,7 @@ class CustomerAddressStorefrontPublisherPlugin
     {
         $addressId = $address->getId();
         $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, self::SAVE_EVENT, ['id' => $addressId]);
-        $this->eventPublisher->publish('customer.monolith.connector.saveAddress', $message);
+        $this->eventPublisher->publish('customer.monolith.connector.address.save', $message);
         return $address;
     }
 
@@ -72,7 +72,7 @@ class CustomerAddressStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $addressId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.deleteAddress', $message);
+        $this->eventPublisher->publish('customer.monolith.connector.address.delete', $message);
         return $result;
     }
 
@@ -91,7 +91,7 @@ class CustomerAddressStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $addressId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.deleteAddress', $message);
+        $this->eventPublisher->publish('customer.monolith.connector.address.delete', $message);
         return $result;
     }
 }
