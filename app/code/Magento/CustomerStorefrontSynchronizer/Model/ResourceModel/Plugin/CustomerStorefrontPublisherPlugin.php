@@ -85,7 +85,11 @@ class CustomerStorefrontPublisherPlugin
      */
     public function afterDeleteById(CustomerRepository $customerRepository, $result, $customerId)
     {
-        $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, self::DELETE_EVENT, $customerId);
+        $message = $this->messageFormatter->formatEventData(
+            self::ENTITY_TYPE,
+            self::DELETE_EVENT,
+            ['id'=> $customerId]
+        );
         $this->eventPublisher->publish('customer.monolith.connector.deleteCustomer', $message);
         return $result;
     }

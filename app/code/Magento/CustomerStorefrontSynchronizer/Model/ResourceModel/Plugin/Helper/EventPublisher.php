@@ -106,7 +106,7 @@ class EventPublisher
      */
     private function getEntityIdfromMessage($message)
     {
-        if (isset($message['data']) && $message['data']['id']) {
+        if (isset($message['data']) && isset($message['data']['id'])) {
             $entityId = $message['data']['id'];
             return $entityId;
         }
