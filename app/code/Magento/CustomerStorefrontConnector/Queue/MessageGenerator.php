@@ -14,6 +14,12 @@ use Magento\Framework\Serialize\SerializerInterface;
  */
 class MessageGenerator
 {
+    const ENTITY_TYPE_KEY = 'entity_type';
+
+    const EVENT_KEY = 'event';
+
+    const CORRELATION_ID_KEY = 'correlation_id';
+
     /**
      * @var SerializerInterface
      */

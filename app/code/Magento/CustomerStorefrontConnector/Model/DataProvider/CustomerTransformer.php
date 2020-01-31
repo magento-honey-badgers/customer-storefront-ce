@@ -26,6 +26,10 @@ class CustomerTransformer
      */
     private $extensionAttributesProcessor;
 
+    /**
+     * @param AddressTransformer $addressTransformer
+     * @param ExtensionAttributesProcessor $extensionAttributesProcessor
+     */
     public function __construct(
         AddressTransformer $addressTransformer,
         ExtensionAttributesProcessor $extensionAttributesProcessor

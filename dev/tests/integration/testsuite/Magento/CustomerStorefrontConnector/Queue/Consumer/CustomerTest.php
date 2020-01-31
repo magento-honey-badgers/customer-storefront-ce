@@ -69,8 +69,11 @@ class CustomerTest extends TestCase
             ->with(
                 Customer::SAVE_TOPIC,
                 $this->logicalAnd(
-                    $this->arrayHasKey('correlation_id'),
-                    $this->arrayHasKey('data')
+                    $this->stringContains('"correlation_id":"99","entity_type":"customer","event":"save"'),
+                    $this->stringContains(
+                        '"data":{"id":"' . $customer->getId() . '","dob":"1970-01-01","email":"customer@example.com"'
+                    ),
+                    $this->stringContains('"prefix":"Mr.","firstname":"John","lastname":"Smith"')
                 )
             );
 
@@ -94,8 +97,8 @@ class CustomerTest extends TestCase
             ->with(
                 Customer::DELETE_TOPIC,
                 $this->logicalAnd(
-                    $this->arrayHasKey('correlation_id'),
-                    $this->arrayHasKey('data')
+                    $this->stringContains('"correlation_id":"99","entity_type":"customer","event":"delete"'),
+                    $this->stringContains('"data":{"id":"' . $customer->getId() . '"}}')
                 )
             );
 

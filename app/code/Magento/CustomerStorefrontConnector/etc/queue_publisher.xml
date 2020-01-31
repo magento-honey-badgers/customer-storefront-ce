@@ -6,16 +6,16 @@
   */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/publisher.xsd">
-    <publisher topic="customer.connector.service.saveCustomer">
+    <publisher topic="customer.connector.service.customer.save">
         <connection name="amqp" exchange="magento" />
     </publisher>
-    <publisher topic="customer.connector.service.deleteCustomer">
+    <publisher topic="customer.connector.service.customer.delete">
         <connection name="amqp" exchange="magento" />
     </publisher>
-    <publisher topic="customer.connector.service.saveAddress">
+    <publisher topic="customer.connector.service.address.save">
         <connection name="amqp" exchange="magento" />
     </publisher>
-    <publisher topic="customer.connector.service.deleteAddress">
+    <publisher topic="customer.connector.service.address.delete">
         <connection name="amqp" exchange="magento" />
     </publisher>
 </config>

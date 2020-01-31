@@ -71,9 +71,11 @@ class AddressTest extends TestCase
             ->with(
                 Address::SAVE_TOPIC,
                 $this->logicalAnd(
-                    $this->arrayHasKey('data'),
-                    $this->arrayHasKey('entity_type'),
-                    $this->arrayHasKey('action')
+                    $this->stringContains('"correlation_id":"1000","entity_type":"address","event":"save"'),
+                    $this->stringContains(
+                        '"data":{"id":' . $address->getId() . ',"customer_id":' . $address->getCustomerId()
+                    ),
+                    $this->stringContains('"country_id":"US","street":["Green str, 67"]')
                 )
             );
 
@@ -97,9 +99,8 @@ class AddressTest extends TestCase
             ->with(
                 Address::DELETE_TOPIC,
                 $this->logicalAnd(
-                    $this->arrayHasKey('data'),
-                    $this->arrayHasKey('entity_type'),
-                    $this->arrayHasKey('action')
+                    $this->stringContains('"correlation_id":"1000","entity_type":"address","event":"delete"'),
+                    $this->stringContains('"data":{"id":' . $address->getId() . '}')
                 )
             );
 

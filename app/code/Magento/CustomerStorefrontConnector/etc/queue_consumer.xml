@@ -6,8 +6,8 @@
   */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
-    <consumer name="customer.monolith.connector.saveCustomer" queue="customerMonolithToConnector" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
-    <consumer name="customer.monolith.connector.deleteCustomer" queue="customerMonolithToConnector" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
-    <consumer name="customer.monolith.connector.saveAddress" queue="customerMonolithToConnector" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
-    <consumer name="customer.monolith.connector.deleteAddress" queue="customerMonolithToConnector" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.connector.customer.save" queue="customer.monolith.connector.customer.save" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.connector.customer.delete" queue="customer.monolith.connector.customer.delete" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.connector.address.save" queue="customer.monolith.connector.address.save" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.connector.address.delete" queue="customer.monolith.connector.address.delete" connection="amqp" maxMessages="5000" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
 </config>

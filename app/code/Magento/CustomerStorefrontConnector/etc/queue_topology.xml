@@ -5,11 +5,18 @@
   * See COPYING.txt for license details.
   */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue_topology.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
     <exchange name="magento" type="topic" connection="amqp">
-        <binding id="customerMonolithBinding" topic="customer.monolith.connector.*" destinationType="queue" destination="customerMonolithToConnector"/>
-    </exchange>
-    <exchange name="magento" type="topic" connection="amqp">
-        <binding id="customerServiceBinding" topic="customer.connector.service.*" destinationType="queue" destination="customerConnectorToService"/>
+        <!-- Bindings for messages originating from monolith -->
+        <binding id="customer.monolith.connector.customer.save" topic="customer.monolith.connector.customer.save" destinationType="queue" destination="customer.monolith.connector.customer.save"/>
+        <binding id="customer.monolith.connector.customer.delete" topic="customer.monolith.connector.customer.delete" destinationType="queue" destination="customer.monolith.connector.customer.delete"/>
+        <binding id="customer.monolith.connector.address.save" topic="customer.monolith.connector.address.save" destinationType="queue" destination="customer.monolith.connector.address.save"/>
+        <binding id="customer.monolith.connector.address.delete" topic="customer.monolith.connector.address.delete" destinationType="queue" destination="customer.monolith.connector.address.delete"/>
+
+        <!-- Bindings for messages published by connector, intended for storefront service -->
+        <binding id="customer.connector.service.customer.save" topic="customer.connector.service.customer.save" destinationType="queue" destination="customer.connector.service.customer.save"/>
+        <binding id="customer.connector.service.customer.delete" topic="customer.connector.service.customer.delete" destinationType="queue" destination="customer.connector.service.customer.delete"/>
+        <binding id="customer.connector.service.address.save" topic="customer.connector.service.address.save" destinationType="queue" destination="customer.connector.service.address.save"/>
+        <binding id="customer.connector.service.address.delete" topic="customer.connector.service.customer.delete" destinationType="queue" destination="customer.connector.service.customer.delete"/>
     </exchange>
 </config>

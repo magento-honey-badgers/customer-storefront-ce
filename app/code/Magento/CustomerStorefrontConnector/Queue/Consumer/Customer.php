@@ -20,9 +20,9 @@ class Customer
 {
     const ENTITY_TYPE = 'customer';
 
-    const SAVE_TOPIC = 'customer.connector.service.saveCustomer';
+    const SAVE_TOPIC = 'customer.connector.service.customer.save';
 
-    const DELETE_TOPIC = 'customer.connector.service.deleteCustomer';
+    const DELETE_TOPIC = 'customer.connector.service.customer.delete';
 
     const SAVE_ACTION = 'save';
 
@@ -86,14 +86,17 @@ class Customer
         try {
             $customerData = $this->customerDataProvider->getData($customerId);
             $metadata = [
-                'correlation_id' => $incomingMessageArray['correlation_id'],
-                'entity_type' => self::ENTITY_TYPE,
-                'action' => self::SAVE_ACTION
+                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray['correlation_id'],
+                MessageGenerator::ENTITY_TYPE_KEY => self::ENTITY_TYPE,
+                MessageGenerator::EVENT_KEY => self::SAVE_ACTION
             ];
-            $message = $this->messageGenerator->generate($customerData, $metadata);
+            $message = $this->messageGenerator->generateSerialized($customerData, $metadata);
         } catch (\Exception $e) {
-            //TODO how to handle exception??
+            $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
+            throw $e;
         }
+
+        $this->logger->info('Message processed', [$incomingMessage]);
 
         $this->publisher->publish(self::SAVE_TOPIC, $message);
     }
@@ -105,14 +108,20 @@ class Customer
      */
     public function forwardCustomerDelete(string $incomingMessage): void
     {
-        $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-        $metadata = [
-            'correlation_id' => $incomingMessageArray['correlation_id'],
-            'entity_type' => self::ENTITY_TYPE,
-            'action' => self::DELETE_ACTION
-        ];
+        try {
+            $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
+            $metadata = [
+                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray['correlation_id'],
+                MessageGenerator::ENTITY_TYPE_KEY => self::ENTITY_TYPE,
+                MessageGenerator::EVENT_KEY => self::DELETE_ACTION
+            ];
 
-        $message = $this->messageGenerator->generate($incomingMessageArray['data'], $metadata);
+            $message = $this->messageGenerator->generateSerialized($incomingMessageArray['data'], $metadata);
+        } catch (\InvalidArgumentException $e) {
+            $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
+            throw $e;
+        }
+
         $this->publisher->publish(self::DELETE_TOPIC, $message);
     }
 
