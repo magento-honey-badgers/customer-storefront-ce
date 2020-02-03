@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontConnector\Model\DataProvider;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -27,15 +28,23 @@ class Customer
     private $customerTransformer;
 
     /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
      * @param CustomerRepositoryInterface $customerRepository
      * @param CustomerTransformer $customerTransformer
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
         CustomerRepositoryInterface $customerRepository,
-        CustomerTransformer $customerTransformer
+        CustomerTransformer $customerTransformer,
+        SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->customerRepository = $customerRepository;
         $this->customerTransformer = $customerTransformer;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -48,7 +57,15 @@ class Customer
      */
     public function getData(int $id): array
     {
-        $customer = $this->customerRepository->getById($id);
+        // Avoid using getByID() to avoid stale data in CustomerRegistry
+        $searchCriteria = $this->searchCriteriaBuilder->addFilter('entity_id', $id)->create();
+        $customerResults = $this->customerRepository->getList($searchCriteria);
+        $customerResultItems = $customerResults->getItems();
+        if (empty($customerResultItems)) {
+            throw NoSuchEntityException::singleField('customerId', $id);
+        }
+
+        $customer = $customerResultItems[0];
 
         return $this->customerTransformer->toArray($customer);
     }
