@@ -6,12 +6,15 @@
 
 namespace Magento\CustomerStorefrontService\Model\Data;
 
+use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+
 /**
  * Class Customer
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
-    \Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface
+    CustomerInterface
 {
     /**
      * Initialize dependencies.
@@ -95,7 +98,7 @@ class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get addresses
      *
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface[]|null
+     * @return AddressInterface[]|null
      */
     public function getAddresses()
     {
@@ -339,7 +342,7 @@ class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Set customer addresses.
      *
-     * @param \Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface[] $addresses
+     * @param AddressInterface[] $addresses
      * @return $this
      */
     public function setAddresses(array $addresses = null)
@@ -351,7 +354,7 @@ class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
      * Set data of birth
      *
      * @param string $dateOfbirth
-     * @return Customer|\Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface
+     * @return Customer|CustomerInterface
      */
     public function setDateOfBirth(string $dateOfbirth)
     {

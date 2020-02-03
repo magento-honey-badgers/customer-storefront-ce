@@ -1,16 +1,15 @@
 <?php
 /**
- * Data Model implementing the Address interface
- *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CustomerStorefrontService\Model\Data;
 
+use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface;
 
 class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
-    \Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface
+    AddressInterface
 {
     /**
      * @param array $data
@@ -34,7 +33,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get region
      *
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface|null
+     * @return RegionInterface|null
      */
     public function getRegion()
     {
@@ -44,7 +43,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get region
      *
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface|null
+     * @return RegionInterface|null
      */
     public function getRegionCode()
     {
@@ -55,7 +54,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get country code
      *
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface|null
+     * @return RegionInterface|null
      */
     public function getCountryCode()
     {
@@ -187,7 +186,7 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Set region
      *
-     * @param \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface $region
+     * @param RegionInterface $region
      * @return $this
      */
     public function setRegion(RegionInterface $region = null)
