@@ -8,18 +8,18 @@ namespace Magento\CustomerStorefrontService\Model\ResourceModel;
 
 use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Model\Customer\NotificationStorage;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Magento\Framework\Validator\Exception as ValidatorException;
 
 /**
- * Customer entity resource model
+ * Storefront Customer entity resource model
  *
- * @api
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @since 100.0.2
  */
-class Customer extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
+class Customer extends AbstractDb
 {
     /**
      * @var \Magento\Framework\Validator\Factory
@@ -54,55 +54,91 @@ class Customer extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
     private $notificationStorage;
 
     /**
+     * Serializable field: additional_information
+     *
+     * @var array
+     */
+    protected $_serializableFields = ['customer_document' => [null, []]];
+
+    /**
+     * Main table name
+     *
+     * @var string
+     */
+    protected $_mainTable = 'storefront_customer';
+
+    /**
+     * @var string
+     */
+    protected $_idFieldName = 'storefront_customer_id';
+
+    /**
+     * @var string
+     */
+    protected $_tables = ['storefront_customer'];
+
+    /**
+     * @var array
+     */
+    protected $_connections = ['customer_read', 'customer_write'];
+
+    /**
+     * @var string
+     */
+    protected $connectionName = 'customer_read';
+
+    /**
      * Customer constructor.
      *
-     * @param \Magento\Eav\Model\Entity\Context $context
-     * @param \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot $entitySnapshot
-     * @param \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite $entityRelationComposite
+     * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Validator\Factory $validatorFactory
-     * @param \Magento\Framework\Stdlib\DateTime $dateTime
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param array $data
+     * @param \Magento\Framework\Stdlib\DateTime $dateTime,
      * @param AccountConfirmation $accountConfirmation
+     * @param array $data
      */
     public function __construct(
-        \Magento\Eav\Model\Entity\Context $context,
-        \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot $entitySnapshot,
-        \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite $entityRelationComposite,
+        \Magento\Framework\Model\ResourceModel\Db\Context $context,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Validator\Factory $validatorFactory,
         \Magento\Framework\Stdlib\DateTime $dateTime,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        $data = [],
-        AccountConfirmation $accountConfirmation = null
+        AccountConfirmation $accountConfirmation,
+        $data = []
     ) {
-        parent::__construct($context, $entitySnapshot, $entityRelationComposite, $data);
-
+        parent::__construct($context);
         $this->_scopeConfig = $scopeConfig;
         $this->_validatorFactory = $validatorFactory;
         $this->dateTime = $dateTime;
         $this->accountConfirmation = $accountConfirmation ?: ObjectManager::getInstance()
             ->get(AccountConfirmation::class);
-        $this->setType('customer');
-        $this->setConnection('customer_read', 'customer_write');
-        $this->storeManager = $storeManager;
+        //$this->setType('customer');
+        // Todo: See how can we add separate connections for storefront customer
+        //$this->setConnection('customer_read', 'customer_write');
     }
 
     /**
-     * Retrieve customer entity default attributes
+     * Resource initialization
      *
-     * @return string[]
+     * @return void
      */
-    protected function _getDefaultAttributes()
+    protected function _construct()
     {
-        return [
-            'created_at',
-            'updated_at',
-            'increment_id',
-            'store_id',
-            'website_id'
+        $this->_init('storefront_customer', 'storefront_customer_id');
+    }
+
+    /**
+     * Initialize unique fields
+     *
+     * @return $this
+     */
+    protected function _initUniqueFields()
+    {
+        //Todo: uniqueness depends on system settings
+        $this->_uniqueFields = [
+            ['field' => 'email', __('Email')],
+            ['field' => 'website_id', 'title' => __('Website')]
         ];
+        return $this;
     }
 
     /**
@@ -119,10 +155,11 @@ class Customer extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
      */
     protected function _beforeSave(\Magento\Framework\DataObject $customer)
     {
-        /** @var \Magento\Customer\Model\Customer $customer */
-        if ($customer->getStoreId() === null) {
-            $customer->setStoreId($this->storeManager->getStore()->getId());
-        }
+        /** @var CustomerInterface $customer */
+        // Todo: Validate store_id as input
+        //if ($customer->getStoreId() === null) {
+        //    $customer->setStoreId($this->storeManager->getStore()->getId());
+        //}
         $customer->getGroupId();
 
         parent::_beforeSave($customer);
@@ -253,11 +290,12 @@ class Customer extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
      */
     public function loadByEmail(\Magento\Customer\Model\Customer $customer, $email)
     {
+        //Todo: getEntityTable comes form EAV.
         $connection = $this->getConnection();
         $bind = ['customer_email' => $email];
         $select = $connection->select()->from(
-            $this->getEntityTable(),
-            [$this->getEntityIdField()]
+            $this->getTable($this->_mainTable),
+            [$this->_idFieldName]
         )->where(
             'email = :customer_email'
         );
