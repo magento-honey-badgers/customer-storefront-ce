@@ -261,14 +261,14 @@ interface CustomerInterface
     /**
      * Get customer addresses.
      *
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface[]|null
+     * @return AddressInterface[]|null
      */
     public function getAddresses();
 
     /**
      * Set customer addresses.
      *
-     * @param \Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface[] $addresses
+     * @param AddressInterface[] $addresses
      * @return $this
      */
     public function setAddresses(array $addresses = null);
