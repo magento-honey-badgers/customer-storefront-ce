@@ -5,7 +5,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\CustomerStorefrontService\Model\ResourceModel;
+namespace Magento\CustomerStorefrontService\Model;
 
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Model\Address as CustomerAddressModel;
