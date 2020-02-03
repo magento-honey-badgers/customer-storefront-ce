@@ -13,6 +13,10 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Validator\Exception as ValidatorException;
+use Magento\Framework\Model\ResourceModel\Db\Context as DbContext;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Validator\Factory as ValidatorFactory;
+use Magento\Framework\Stdlib\DateTime;
 
 /**
  * Storefront Customer entity resource model
@@ -88,20 +92,18 @@ class Customer extends AbstractDb
     protected $connectionName = 'customer_read';
 
     /**
-     * Customer constructor.
-     *
-     * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Framework\Validator\Factory $validatorFactory
-     * @param \Magento\Framework\Stdlib\DateTime $dateTime,
+     * @param DbContext $context
+     * @param ScopeConfigInterface $scopeConfig
+     * @param ValidatorFactory $validatorFactory
+     * @param DateTime $dateTime,
      * @param AccountConfirmation $accountConfirmation
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\Model\ResourceModel\Db\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Validator\Factory $validatorFactory,
-        \Magento\Framework\Stdlib\DateTime $dateTime,
+        DbContext $context,
+        ScopeConfigInterface $scopeConfig,
+        ValidatorFactory $validatorFactory,
+        DateTime $dateTime,
         AccountConfirmation $accountConfirmation,
         $data = []
     ) {
@@ -144,7 +146,7 @@ class Customer extends AbstractDb
     /**
      * Check customer scope, email and confirmation key before saving
      *
-     * @param \Magento\Framework\DataObject|\Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param \Magento\Framework\DataObject|CustomerInterface $customer
      *
      * @return $this
      * @throws AlreadyExistsException
@@ -160,7 +162,9 @@ class Customer extends AbstractDb
         //if ($customer->getStoreId() === null) {
         //    $customer->setStoreId($this->storeManager->getStore()->getId());
         //}
-        $customer->getGroupId();
+
+        //Todo: Deal with GroupID
+        //$customer->getGroupId();
 
         parent::_beforeSave($customer);
 
@@ -172,8 +176,8 @@ class Customer extends AbstractDb
         $bind = ['email' => $customer->getEmail()];
 
         $select = $connection->select()->from(
-            $this->getEntityTable(),
-            [$this->getEntityIdField()]
+            $this->getTable($this->_mainTable),
+            [$this->_idFieldName]
         )->where(
             'email = :email'
         );
@@ -218,11 +222,11 @@ class Customer extends AbstractDb
     /**
      * Validate customer entity
      *
-     * @param \Magento\Customer\Model\Customer $customer
+     * @param CustomerInterface $customer
      * @return void
      * @throws ValidatorException
      */
-    protected function _validate($customer)
+    protected function _validate(CustomerInterface $customer)
     {
         $validator = $this->_validatorFactory->createValidator('customer', 'save');
 
@@ -283,12 +287,12 @@ class Customer extends AbstractDb
     /**
      * Load customer by email
      *
-     * @param \Magento\Customer\Model\Customer $customer
+     * @param CustomerInterface $customer
      * @param string $email
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function loadByEmail(\Magento\Customer\Model\Customer $customer, $email)
+    public function loadByEmail(CustomerInterface $customer, $email)
     {
         //Todo: getEntityTable comes form EAV.
         $connection = $this->getConnection();
@@ -323,11 +327,11 @@ class Customer extends AbstractDb
     /**
      * Change customer password
      *
-     * @param \Magento\Customer\Model\Customer $customer
+     * @param CustomerInterface $customer
      * @param string $newPassword
      * @return $this
      */
-    public function changePassword(\Magento\Customer\Model\Customer $customer, $newPassword)
+    public function changePassword(CustomerInterface $customer, $newPassword)
     {
         $customer->setPassword($newPassword);
         return $this;
@@ -427,11 +431,11 @@ class Customer extends AbstractDb
      *
      * Stores new reset password link token and its creation time
      *
-     * @param \Magento\Customer\Model\Customer $customer
+     * @param CustomerInterface $customer
      * @param string $passwordLinkToken
      * @return $this
      */
-    public function changeResetPasswordLinkToken(\Magento\Customer\Model\Customer $customer, $passwordLinkToken)
+    public function changeResetPasswordLinkToken(CustomerInterface $customer, $passwordLinkToken)
     {
         if (is_string($passwordLinkToken) && !empty($passwordLinkToken)) {
             $customer->setRpToken($passwordLinkToken);
