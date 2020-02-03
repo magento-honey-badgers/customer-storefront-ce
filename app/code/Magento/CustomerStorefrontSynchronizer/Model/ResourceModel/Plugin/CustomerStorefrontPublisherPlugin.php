@@ -24,7 +24,9 @@ class CustomerStorefrontPublisherPlugin
 
     private const ENTITY_TYPE = 'customer';
 
-    private const SAVE_EVENT = 'save';
+    private const SAVE_EVENT = 'create';
+
+    private const UPDATE_EVENT = 'update';
 
     private const DELETE_EVENT = 'delete';
 
@@ -45,12 +47,17 @@ class CustomerStorefrontPublisherPlugin
      *
      * @param CustomerRepository $customerRepository
      * @param CustomerInterface $customer
-     * @return CustomerInterface|\Magento\Customer\Model\Customer
+     * @param CustomerInterface $customerInput
+     * @return CustomerInterface
      */
-    public function afterSave(CustomerRepository $customerRepository, CustomerInterface $customer)
-    {
+    public function afterSave(
+        CustomerRepository $customerRepository,
+        CustomerInterface $customer,
+        CustomerInterface $customerInput
+    ) {
         $customerId = $customer->getId();
-        $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, self::SAVE_EVENT, ['id'=> $customerId]);
+        $event = !$customerInput->getId() ? self::SAVE_EVENT : self::UPDATE_EVENT;
+        $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, $event, ['id'=> $customerId]);
         $this->eventPublisher->publish('customer.monolith.connector.customer.save', $message);
         return $customer;
     }
