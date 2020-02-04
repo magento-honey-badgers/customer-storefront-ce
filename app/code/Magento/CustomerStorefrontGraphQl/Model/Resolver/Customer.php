@@ -51,6 +51,7 @@ class Customer implements ResolverInterface
         try {
             $currentUserId = $context->getUserId();
             if ($currentUserId) {
+                /** @var \Magento\CustomerStorefrontService\Model\Data\Customer $customer */
                 $customer = $this->customerRepository->getById($currentUserId);
             } else {
                 // TODO: this resolved should not be reached, but it is for Customer ID = 0 with no token
@@ -60,17 +61,7 @@ class Customer implements ResolverInterface
             throw new GraphQlNoSuchEntityException(__($e->getMessage()));
         }
 
-        //TODO can we improve this so it doesn't have to be so explicit
-        return [
-            'firstname' => $customer->getFirstname(),
-            'lastname' => $customer->getLastname(),
-            'middlename'=> $customer->getMiddlename(),
-            'created_at' => $customer->getCreatedAt(),
-            'email' => $customer->getEmail(),
-            'default_billing' => $customer->getDefaultBilling(),
-            'default_shipping' => $customer->getDefaultShipping(),
-            'date_of_birth' => $customer->getDateOfBirth(),
-            'addresses' => $customer->getAddresses()
-        ];
+        //TODO: use Abstract model vs Explicit DTO
+        return array_replace($customer->getData(), $customer->getData('customer_document'));
     }
 }

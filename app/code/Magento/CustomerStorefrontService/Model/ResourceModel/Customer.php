@@ -62,7 +62,7 @@ class Customer extends AbstractDb
      *
      * @var array
      */
-    protected $_serializableFields = ['customer_document' => [null, []]];
+    protected $_serializableFields = ['customer_document' => [[], []]];
 
     /**
      * Main table name
