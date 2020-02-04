@@ -37,6 +37,8 @@ class Customer implements ResolverInterface
      * @param array|null $value
      * @param array|null $args
      * @return \Magento\Framework\GraphQl\Query\Resolver\Value|mixed
+     * @throws GraphQlNoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function resolve(
         Field $field,
