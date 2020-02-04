@@ -17,6 +17,6 @@
         <binding id="customer.connector.service.customer.save" topic="customer.connector.service.customer.save" destinationType="queue" destination="customer.connector.service.customer.save"/>
         <binding id="customer.connector.service.customer.delete" topic="customer.connector.service.customer.delete" destinationType="queue" destination="customer.connector.service.customer.delete"/>
         <binding id="customer.connector.service.address.save" topic="customer.connector.service.address.save" destinationType="queue" destination="customer.connector.service.address.save"/>
-        <binding id="customer.connector.service.address.delete" topic="customer.connector.service.customer.delete" destinationType="queue" destination="customer.connector.service.customer.delete"/>
+        <binding id="customer.connector.service.address.delete" topic="customer.connector.service.address.delete" destinationType="queue" destination="customer.connector.service.address.delete"/>
     </exchange>
 </config>
