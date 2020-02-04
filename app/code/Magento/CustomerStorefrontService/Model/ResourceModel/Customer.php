@@ -9,14 +9,14 @@ namespace Magento\CustomerStorefrontService\Model\ResourceModel;
 use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Model\Customer\NotificationStorage;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\Framework\Model\ResourceModel\Db\Context as DbContext;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Validator\Factory as ValidatorFactory;
 use Magento\Framework\Stdlib\DateTime;
+use Magento\Framework\Validator\Exception as ValidatorException;
+use Magento\Framework\Validator\Factory as ValidatorFactory;
 
 /**
  * Storefront Customer entity resource model
@@ -74,7 +74,7 @@ class Customer extends AbstractDb
     /**
      * @var string
      */
-    protected $_idFieldName = 'storefront_customer_id';
+    protected $_idFieldName = 'customer_id';
 
     /**
      * @var string
@@ -121,7 +121,7 @@ class Customer extends AbstractDb
      */
     protected function _construct()
     {
-        $this->_init('storefront_customer', 'storefront_customer_id');
+        $this->_init('storefront_customer', 'customer_id');
     }
 
     /**
@@ -133,8 +133,8 @@ class Customer extends AbstractDb
     {
         //Todo: uniqueness depends on system settings
         $this->_uniqueFields = [
-            ['field' => 'email', __('Email')],
-            ['field' => 'website_id', 'title' => __('Website')]
+            ['field' => 'customer_id', __('Customer ID')],
+            ['field' => 'storefront_customer_id', __('Storefront Customer ID')],
         ];
         return $this;
     }
@@ -180,8 +180,8 @@ class Customer extends AbstractDb
 
         //TODO: handle config
         //if ($customer->getSharingConfig()->isWebsiteScope()) {
-            $bind['website_id'] = (int)$customer->getWebsiteId();
-            $select->where('website_id = :website_id');
+        $bind['website_id'] = (int)$customer->getWebsiteId();
+        $select->where('website_id = :website_id');
         //}
         if ($customer->getId()) {
             $bind['entity_id'] = (int)$customer->getId();

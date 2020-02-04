@@ -9,6 +9,7 @@ namespace Magento\CustomerStorefrontService\Model;
 
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface as CustomerInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory as CustomerInterfaceFactory;
 use Magento\CustomerStorefrontService\Model\ResourceModel\Customer;
 
@@ -46,20 +47,15 @@ class CustomerRepository implements CustomerRepositoryInterface
     }
 
     /**
-     * Get customer by Customer ID.
-     *
-     * @param int $customerId
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface
-     * @throws \Magento\Framework\Exception\NoSuchEntityException If customer with the specified ID does not exist.
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @inheritDoc
      */
-    public function getById($customerId)
+    public function getById(int $customerId): CustomerInterface
     {
         //$customerModel = $this->customerRegistry->retrieve($customerId);
         //return $customerModel->getDataModel();
-        /** @var \Magento\CustomerStorefrontService\Model\Data\Customer $customer */
+        /** @var \Magento\CustomerStorefrontService\Model\Data\Customer|\Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface $customer */
         $customer = $this->customerFactory->create();
-        $this->customerResourceModel->load($customer, $customerId, 'storefront_customer_id');
+        $this->customerResourceModel->load($customer, $customerId);
         return $customer;
     }
 }

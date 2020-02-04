@@ -24,5 +24,5 @@ interface CustomerRepositoryInterface
      * @throws NoSuchEntityException If customer with the specified ID does not exist.
      * @throws LocalizedException
      */
-    public function getByID($customerId);
+    public function getById(int $customerId): CustomerInterface;
 }

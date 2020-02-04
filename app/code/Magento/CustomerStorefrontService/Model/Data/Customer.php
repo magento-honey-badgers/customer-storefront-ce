@@ -15,57 +15,14 @@ use Magento\Framework\Model\AbstractModel;
  * Class Customer
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class Customer extends \Magento\Framework\Model\AbstractModel implements CustomerInterface
+class Customer extends AbstractModel implements CustomerInterface
 {
-//    /**
-//     * Initialize dependencies.
-//     *
-//     * @param array $data
-//     */
-//    public function __construct(
-//        $data = []
-//    ) {
-//        parent::__construct($data);
-//    }
-    /**
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
-     * @param array $data
-     */
-    public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
-    ) {
-        $this->_registry = $registry;
-        $this->_appState = $context->getAppState();
-        $this->_eventManager = $context->getEventDispatcher();
-        $this->_cacheManager = $context->getCacheManager();
-        $this->_resource = $resource;
-        $this->_resourceCollection = $resourceCollection;
-        $this->_logger = $context->getLogger();
-        $this->_actionValidator = $context->getActionValidator();
-
-        if (method_exists($this->_resource, 'getIdFieldName')
-            || $this->_resource instanceof \Magento\Framework\DataObject
-        ) {
-            $this->_idFieldName = $this->_getResource()->getIdFieldName();
-        }
-
-        parent::__construct($data);
-        $this->_construct();
-    }
-
     /**
      * @return string|null
      */
     public function getDefaultBilling()
     {
-        return $this->_get(self::DEFAULT_BILLING);
+        return $this->getData(self::DEFAULT_BILLING);
     }
 
     /**
@@ -75,7 +32,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getDefaultShipping()
     {
-        return $this->_get(self::DEFAULT_SHIPPING);
+        return $this->getData(self::DEFAULT_SHIPPING);
     }
 
     /**
@@ -85,7 +42,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getCreatedAt()
     {
-        return $this->_get(self::CREATED_AT);
+        return $this->getData(self::CREATED_AT);
     }
 
     /**
@@ -95,7 +52,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getEmail()
     {
-        return $this->_get(self::EMAIL);
+        return $this->getData(self::EMAIL);
     }
 
     /**
@@ -105,7 +62,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getFirstname()
     {
-        return $this->_get(self::FIRSTNAME);
+        return $this->getData(self::FIRSTNAME);
     }
 
     /**
@@ -115,7 +72,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getId()
     {
-        return $this->_get(self::ID);
+        return $this->getData(self::ID);
     }
 
     /**
@@ -125,7 +82,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getLastname()
     {
-        return $this->_get(self::LASTNAME);
+        return $this->getData(self::LASTNAME);
     }
 
     /**
@@ -135,7 +92,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getAddresses()
     {
-        return $this->_get(self::KEY_ADDRESSES);
+        return $this->getData(self::KEY_ADDRESSES);
     }
 
     /**
@@ -145,7 +102,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getDateOfBirth()
     {
-        return $this->_get(self::DATE_OF_BIRTH);
+        return $this->getData(self::DATE_OF_BIRTH);
     }
 
     /**
@@ -232,7 +189,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getMiddlename()
     {
-        return $this->_get(self::MIDDLENAME);
+        return $this->getData(self::MIDDLENAME);
     }
 
     /**
@@ -253,7 +210,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getGender()
     {
-        return $this->_get(self::GENDER);
+        return $this->getData(self::GENDER);
     }
 
     /**
@@ -274,7 +231,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getPrefix()
     {
-        return $this->_get(self::PREFIX);
+        return $this->getData(self::PREFIX);
     }
 
     /**
@@ -295,7 +252,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getSuffix()
     {
-        return $this->_get(self::SUFFIX);
+        return $this->getData(self::SUFFIX);
     }
 
     /**
@@ -327,7 +284,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getStoreId()
     {
-        return $this->_get(self::STORE_ID);
+        return $this->getData(self::STORE_ID);
     }
 
     /**
@@ -348,7 +305,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getWebsiteId()
     {
-        return $this->_get(self::WEBSITE_ID);
+        return $this->getData(self::WEBSITE_ID);
     }
 
     /**
@@ -358,7 +315,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel implements Custome
      */
     public function getTaxvat()
     {
-        return $this->_get(self::TAXVAT);
+        return $this->getData(self::TAXVAT);
     }
 
     /**

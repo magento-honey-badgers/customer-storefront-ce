@@ -49,7 +49,13 @@ class Customer implements ResolverInterface
 
         // TODO: verify data structure here
         try {
-            $customer = $this->customerRepository->getById($args['id']);
+            $currentUserId = $context->getUserId();
+            if ($currentUserId) {
+                $customer = $this->customerRepository->getById($currentUserId);
+            } else {
+                // TODO: this resolved should not be reached, but it is for Customer ID = 0 with no token
+                throw new GraphQlNoSuchEntityException(__('Customer not authenticated'));
+            }
         } catch (NoSuchEntityException $e) {
             throw new GraphQlNoSuchEntityException(__($e->getMessage()));
         }
