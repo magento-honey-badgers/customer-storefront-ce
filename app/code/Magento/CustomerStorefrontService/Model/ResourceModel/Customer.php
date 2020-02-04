@@ -17,6 +17,7 @@ use Magento\Framework\Model\ResourceModel\Db\Context as DbContext;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\Framework\Validator\Factory as ValidatorFactory;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 
 /**
  * Storefront Customer entity resource model
@@ -25,6 +26,11 @@ use Magento\Framework\Validator\Factory as ValidatorFactory;
  */
 class Customer extends AbstractDb
 {
+    /**
+     * CustomerInterfaceFactory
+     */
+    protected $customerFactory;
+
     /**
      * @var \Magento\Framework\Validator\Factory
      */
@@ -92,6 +98,7 @@ class Customer extends AbstractDb
      * @param ValidatorFactory $validatorFactory
      * @param DateTime $dateTime,
      * @param AccountConfirmation $accountConfirmation
+     * @param CustomerInterfaceFactory $customerFactory
      * @param array $data
      */
     public function __construct(
@@ -100,6 +107,7 @@ class Customer extends AbstractDb
         ValidatorFactory $validatorFactory,
         DateTime $dateTime,
         AccountConfirmation $accountConfirmation,
+        CustomerInterfaceFactory $customerFactory,
         string $connectionName = null,
         array $data = []
     ) {
@@ -107,8 +115,8 @@ class Customer extends AbstractDb
         $this->_scopeConfig = $scopeConfig;
         $this->_validatorFactory = $validatorFactory;
         $this->dateTime = $dateTime;
-        $this->accountConfirmation = $accountConfirmation ?: ObjectManager::getInstance()
-            ->get(AccountConfirmation::class);
+        $this->accountConfirmation = $accountConfirmation;
+        $this->customerFactory = $customerFactory;
         //$this->setType('customer');
         // Todo: See how can we add separate connections for storefront customer
         //$this->setConnection('customer_read', 'customer_write');
@@ -313,6 +321,21 @@ class Customer extends AbstractDb
         //$object->setOrigData();
         //$object->setHasDataChanges(false);
 
+        return $this;
+    }
+
+    /**
+     * Perform actions after object load
+     *
+     * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\DataObject $object
+     * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object)
+    {
+        parent::_afterLoad($object);
+        $customer = $this->customerFactory->create(['data' => $object->getData('customer_document')]);
+        $object->setData('customer_document', $customer);
         return $this;
     }
 

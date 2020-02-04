@@ -9,20 +9,19 @@ namespace Magento\CustomerStorefrontService\Model\Data;
 use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\Api\AbstractSimpleObject;
-use Magento\Framework\Model\AbstractModel;
 
 /**
  * Class Customer
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class Customer extends AbstractModel implements CustomerInterface
+class Customer extends AbstractSimpleObject implements CustomerInterface
 {
     /**
      * @return string|null
      */
     public function getDefaultBilling()
     {
-        return $this->getData(self::DEFAULT_BILLING);
+        return $this->_get(self::DEFAULT_BILLING);
     }
 
     /**
@@ -32,7 +31,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getDefaultShipping()
     {
-        return $this->getData(self::DEFAULT_SHIPPING);
+        return $this->_get(self::DEFAULT_SHIPPING);
     }
 
     /**
@@ -42,7 +41,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getCreatedAt()
     {
-        return $this->getData(self::CREATED_AT);
+        return $this->_get(self::CREATED_AT);
     }
 
     /**
@@ -52,7 +51,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getEmail()
     {
-        return $this->getData(self::EMAIL);
+        return $this->_get(self::EMAIL);
     }
 
     /**
@@ -62,7 +61,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getFirstname()
     {
-        return $this->getData(self::FIRSTNAME);
+        return $this->_get(self::FIRSTNAME);
     }
 
     /**
@@ -72,7 +71,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getId()
     {
-        return $this->getData(self::ID);
+        return $this->_get(self::ID);
     }
 
     /**
@@ -82,7 +81,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getLastname()
     {
-        return $this->getData(self::LASTNAME);
+        return $this->_get(self::LASTNAME);
     }
 
     /**
@@ -92,7 +91,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getAddresses()
     {
-        return $this->getData(self::KEY_ADDRESSES);
+        return $this->_get(self::KEY_ADDRESSES);
     }
 
     /**
@@ -102,7 +101,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getDateOfBirth()
     {
-        return $this->getData(self::DATE_OF_BIRTH);
+        return $this->_get(self::DATE_OF_BIRTH);
     }
 
     /**
@@ -189,7 +188,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getMiddlename()
     {
-        return $this->getData(self::MIDDLENAME);
+        return $this->_get(self::MIDDLENAME);
     }
 
     /**
@@ -210,7 +209,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getGender()
     {
-        return $this->getData(self::GENDER);
+        return $this->_get(self::GENDER);
     }
 
     /**
@@ -231,7 +230,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getPrefix()
     {
-        return $this->getData(self::PREFIX);
+        return $this->_get(self::PREFIX);
     }
 
     /**
@@ -252,7 +251,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getSuffix()
     {
-        return $this->getData(self::SUFFIX);
+        return $this->_get(self::SUFFIX);
     }
 
     /**
@@ -284,7 +283,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getStoreId()
     {
-        return $this->getData(self::STORE_ID);
+        return $this->_get(self::STORE_ID);
     }
 
     /**
@@ -305,7 +304,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getWebsiteId()
     {
-        return $this->getData(self::WEBSITE_ID);
+        return $this->_get(self::WEBSITE_ID);
     }
 
     /**
@@ -315,7 +314,7 @@ class Customer extends AbstractModel implements CustomerInterface
      */
     public function getTaxvat()
     {
-        return $this->getData(self::TAXVAT);
+        return $this->_get(self::TAXVAT);
     }
 
     /**

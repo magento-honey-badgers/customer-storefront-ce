@@ -62,6 +62,6 @@ class Customer implements ResolverInterface
         }
 
         //TODO: use Abstract model vs Explicit DTO
-        return array_replace($customer->getData(), $customer->getData('customer_document'));
+        return $customer->__toArray();
     }
 }

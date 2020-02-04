@@ -7,43 +7,33 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Model;
 
-use Magento\Customer\Model\CustomerRegistry;
 use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface as CustomerInterface;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory as CustomerInterfaceFactory;
+use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
 use Magento\CustomerStorefrontService\Model\ResourceModel\Customer;
 
 class CustomerRepository implements CustomerRepositoryInterface
 {
-
     /**
      * @var Customer
      */
     private $customerResourceModel;
 
     /**
-     * @var CustomerInterfaceFactory
+     * @var CustomerDocumentFactory
      */
-    private $customerFactory;
-
-    /**
-     * @var CustomerRegistry
-     */
-    private $customerRegistry;
+    private $customerDocumentFactory;
 
     /**
      * @param Customer $customerResourceModel
-     * @param CustomerRegistry $customerRegistry
-     * @param CustomerInterfaceFactory $customerFactory
+     * @param CustomerDocumentFactory $customerDocumentFactory
      */
     public function __construct(
         Customer $customerResourceModel,
-        CustomerRegistry $customerRegistry,
-        CustomerInterfaceFactory $customerFactory
+        CustomerDocumentFactory $customerDocumentFactory
     ) {
         $this->customerResourceModel = $customerResourceModel;
-        $this->customerRegistry = $customerRegistry;
-        $this->customerFactory = $customerFactory;
+        $this->customerDocumentFactory = $customerDocumentFactory;
     }
 
     /**
@@ -51,11 +41,9 @@ class CustomerRepository implements CustomerRepositoryInterface
      */
     public function getById(int $customerId): CustomerInterface
     {
-        //$customerModel = $this->customerRegistry->retrieve($customerId);
-        //return $customerModel->getDataModel();
-        /** @var \Magento\CustomerStorefrontService\Model\Data\Customer|\Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface $customer */
-        $customer = $this->customerFactory->create();
-        $this->customerResourceModel->load($customer, $customerId);
-        return $customer;
+        /** @var \Magento\CustomerStorefrontService\Model\Data\CustomerDocument $customerDocument */
+        $customerDocument = $this->customerDocumentFactory->create();
+        $this->customerResourceModel->load($customerDocument, $customerId);
+        return $customerDocument->getCustomerDocument();
     }
 }
