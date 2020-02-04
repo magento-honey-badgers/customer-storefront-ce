@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Model\ResourceModel;
 
@@ -32,19 +33,19 @@ class Customer extends AbstractDb
     protected $customerFactory;
 
     /**
-     * @var \Magento\Framework\Validator\Factory
+     * @var ValidatorFactory
      */
     protected $_validatorFactory;
 
     /**
      * Core store config
      *
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     protected $_scopeConfig;
 
     /**
-     * @var \Magento\Framework\Stdlib\DateTime
+     * @var DateTime
      */
     protected $dateTime;
 
@@ -497,13 +498,14 @@ class Customer extends AbstractDb
      * @param CustomerInterface $customer
      * @param string $passwordLinkToken
      * @return $this
+     * @throws \Exception
      */
     public function changeResetPasswordLinkToken(CustomerInterface $customer, $passwordLinkToken)
     {
         if (is_string($passwordLinkToken) && !empty($passwordLinkToken)) {
             $customer->setRpToken($passwordLinkToken);
             $customer->setRpTokenCreatedAt(
-                (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT)
+                (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT)
             );
         }
         return $this;
