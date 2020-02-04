@@ -87,11 +87,6 @@ class Customer extends AbstractDb
     protected $_connections = ['customer_read', 'customer_write'];
 
     /**
-     * @var string
-     */
-    protected $connectionName = 'customer_read';
-
-    /**
      * @param DbContext $context
      * @param ScopeConfigInterface $scopeConfig
      * @param ValidatorFactory $validatorFactory
@@ -101,13 +96,14 @@ class Customer extends AbstractDb
      */
     public function __construct(
         DbContext $context,
+        string $connectionName,
         ScopeConfigInterface $scopeConfig,
         ValidatorFactory $validatorFactory,
         DateTime $dateTime,
         AccountConfirmation $accountConfirmation,
         $data = []
     ) {
-        parent::__construct($context);
+        parent::__construct($context, $connectionName);
         $this->_scopeConfig = $scopeConfig;
         $this->_validatorFactory = $validatorFactory;
         $this->dateTime = $dateTime;
@@ -285,6 +281,40 @@ class Customer extends AbstractDb
     }
 
     /**
+     * Load an object
+     *
+     * @param \Magento\Framework\Api\AbstractSimpleObject $object
+     * @param mixed $value
+     * @param string $field field to load by (defaults to model id)
+     * @return $this
+     */
+    public function loadByField(\Magento\Framework\Api\AbstractSimpleObject $object, $value, $field = null)
+    {
+        //$object->beforeLoad($value, $field);
+        if ($field === null) {
+            $field = $this->getIdFieldName();
+        }
+
+        $connection = $this->getConnection();
+        if ($connection && $value !== null) {
+            $select = $this->_getLoadSelect($field, $value, $object);
+            $data = $connection->fetchRow($select);
+
+            if ($data) {
+                $object->setData($key, $value);
+            }
+        }
+
+        $this->unserializeFields($object);
+        //$this->_afterLoad($object);
+        //$object->afterLoad();
+        //$object->setOrigData();
+        //$object->setHasDataChanges(false);
+
+        return $this;
+    }
+
+    /**
      * Load customer by email
      *
      * @param CustomerInterface $customer
@@ -304,15 +334,23 @@ class Customer extends AbstractDb
             'email = :customer_email'
         );
 
-        if ($customer->getSharingConfig()->isWebsiteScope()) {
-            if (!$customer->hasData('website_id')) {
-                throw new \Magento\Framework\Exception\LocalizedException(
-                    __("A customer website ID wasn't specified. The ID must be specified to use the website scope.")
-                );
-            }
-            $bind['website_id'] = (int)$customer->getWebsiteId();
-            $select->where('website_id = :website_id');
+        // Todo: figure out how to get Config
+//        if ($customer->getSharingConfig()->isWebsiteScope()) {
+//            if (!$customer->hasData('website_id')) {
+//                throw new \Magento\Framework\Exception\LocalizedException(
+//                    __("A customer website ID wasn't specified. The ID must be specified to use the website scope.")
+//                );
+//            }
+//            $bind['website_id'] = (int)$customer->getWebsiteId();
+//            $select->where('website_id = :website_id');
+//        }
+        if (!$customer->getWebsiteId()) {
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __("A customer website ID wasn't specified. The ID must be specified to use the website scope.")
+            );
         }
+        $bind['website_id'] = (int)$customer->getWebsiteId();
+        $select->where('website_id = :website_id');
 
         $customerId = $connection->fetchOne($select, $bind);
         if ($customerId) {

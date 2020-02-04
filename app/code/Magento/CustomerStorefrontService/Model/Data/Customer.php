@@ -8,23 +8,55 @@ namespace Magento\CustomerStorefrontService\Model\Data;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\Framework\Api\AbstractSimpleObject;
 
 /**
  * Class Customer
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
-    CustomerInterface
+class Customer extends \Magento\Framework\Model\AbstractModel implements CustomerInterface
 {
+//    /**
+//     * Initialize dependencies.
+//     *
+//     * @param array $data
+//     */
+//    public function __construct(
+//        $data = []
+//    ) {
+//        parent::__construct($data);
+//    }
     /**
-     * Initialize dependencies.
-     *
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
      */
     public function __construct(
-        $data = []
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
     ) {
+        $this->_registry = $registry;
+        $this->_appState = $context->getAppState();
+        $this->_eventManager = $context->getEventDispatcher();
+        $this->_cacheManager = $context->getCacheManager();
+        $this->_resource = $resource;
+        $this->_resourceCollection = $resourceCollection;
+        $this->_logger = $context->getLogger();
+        $this->_actionValidator = $context->getActionValidator();
+
+        if (method_exists($this->_resource, 'getIdFieldName')
+            || $this->_resource instanceof \Magento\Framework\DataObject
+        ) {
+            $this->_idFieldName = $this->_getResource()->getIdFieldName();
+        }
+
         parent::__construct($data);
+        $this->_construct();
     }
 
     /**
@@ -206,7 +238,7 @@ class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
      * Set middle name
      *
      * @param string $middlename
-     * @return \Magento\Customer\Model\Data\Customer
+     * @return CustomerInterface
      */
     public function setMiddlename($middlename)
     {
@@ -332,7 +364,7 @@ class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
      * Set tax Vat
      *
      * @param string $taxvat
-     * @return \Magento\Customer\Model\Data\Customer
+     * @return CustomerInterface
      */
     public function setTaxvat($taxvat)
     {
