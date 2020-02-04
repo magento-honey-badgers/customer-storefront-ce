@@ -57,8 +57,9 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
         //$customerModel = $this->customerRegistry->retrieve($customerId);
         //return $customerModel->getDataModel();
-        //$customer = $this->customerFactory->create();
-        //$this->customerResourceModel->load($customer, $customerId, 'storefront_customer_id');
-        //return $customer;
+        /** @var \Magento\CustomerStorefrontService\Model\Data\Customer $customer */
+        $customer = $this->customerFactory->create();
+        $this->customerResourceModel->load($customer, $customerId, 'storefront_customer_id');
+        return $customer;
     }
 }

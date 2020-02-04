@@ -9,6 +9,7 @@ namespace Magento\CustomerStorefrontService\Model\Data;
 use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\Api\AbstractSimpleObject;
+use Magento\Framework\Model\AbstractModel;
 
 /**
  * Class Customer

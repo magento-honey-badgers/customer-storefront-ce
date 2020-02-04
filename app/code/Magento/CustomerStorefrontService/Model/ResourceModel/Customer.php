@@ -96,12 +96,12 @@ class Customer extends AbstractDb
      */
     public function __construct(
         DbContext $context,
-        string $connectionName,
         ScopeConfigInterface $scopeConfig,
         ValidatorFactory $validatorFactory,
         DateTime $dateTime,
         AccountConfirmation $accountConfirmation,
-        $data = []
+        string $connectionName = null,
+        array $data = []
     ) {
         parent::__construct($context, $connectionName);
         $this->_scopeConfig = $scopeConfig;
@@ -151,7 +151,7 @@ class Customer extends AbstractDb
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    protected function _beforeSave(\Magento\Framework\DataObject $customer)
+    protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
         /** @var CustomerInterface $customer */
         // Todo: Validate store_id as input
@@ -162,7 +162,7 @@ class Customer extends AbstractDb
         //Todo: Deal with GroupID
         //$customer->getGroupId();
 
-        parent::_beforeSave($customer);
+        parent::_beforeSave($object);
 
         if (!$customer->getEmail()) {
             throw new ValidatorException(__('The customer email is missing. Enter and try again.'));
@@ -177,10 +177,12 @@ class Customer extends AbstractDb
         )->where(
             'email = :email'
         );
-        if ($customer->getSharingConfig()->isWebsiteScope()) {
+
+        //TODO: handle config
+        //if ($customer->getSharingConfig()->isWebsiteScope()) {
             $bind['website_id'] = (int)$customer->getWebsiteId();
             $select->where('website_id = :website_id');
-        }
+        //}
         if ($customer->getId()) {
             $bind['entity_id'] = (int)$customer->getId();
             $select->where('entity_id != :entity_id');
@@ -251,16 +253,16 @@ class Customer extends AbstractDb
     /**
      * Save customer addresses and set default addresses in attributes backend
      *
-     * @param \Magento\Framework\DataObject $customer
+     * @param \Magento\Framework\DataObject $object
      * @return $this
      */
-    protected function _afterSave(\Magento\Framework\DataObject $customer)
+    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
     {
         $this->getNotificationStorage()->add(
             NotificationStorage::UPDATE_CUSTOMER_SESSION,
-            $customer->getId()
+            $object->getId()
         );
-        return parent::_afterSave($customer);
+        return parent::_afterSave($object);
     }
 
     /**
@@ -301,7 +303,7 @@ class Customer extends AbstractDb
             $data = $connection->fetchRow($select);
 
             if ($data) {
-                $object->setData($key, $value);
+                //$object->setData($key, $value);
             }
         }
 
