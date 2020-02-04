@@ -12,13 +12,12 @@ namespace Magento\CustomerStorefrontServiceApi\Api\Data;
  */
 interface RegionInterface
 {
-    /**#@+
+    /**
      * Constants for keys of data array. Identical to the getters in snake case
      */
     const REGION_CODE = 'region_code';
     const REGION = 'region';
     const REGION_ID = 'region_id';
-    /**#@-*/
 
     /**
      * Get region code
@@ -33,7 +32,7 @@ interface RegionInterface
      * @param string $regionCode
      * @return $this
      */
-    public function setRegionCode($regionCode);
+    public function setRegionCode($regionCode): string;
 
     /**
      * Get region

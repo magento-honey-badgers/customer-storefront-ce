@@ -7,7 +7,7 @@
 
 namespace Magento\CustomerStorefrontServiceApi\Api;
 
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface as CustomerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
