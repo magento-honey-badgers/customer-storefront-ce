@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontConnector\Model\DataProvider;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -27,15 +28,23 @@ class Address
     private $addressTransformer;
 
     /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
      * @param AddressRepositoryInterface $addressRepository
      * @param AddressTransformer $addressTransformer
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
         AddressRepositoryInterface $addressRepository,
-        AddressTransformer $addressTransformer
+        AddressTransformer $addressTransformer,
+        SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->addressRepository = $addressRepository;
         $this->addressTransformer = $addressTransformer;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -48,8 +57,14 @@ class Address
      */
     public function getData(int $addressId): array
     {
-        $address = $this->addressRepository->getById($addressId);
+        // Avoid using getByID() to avoid stale data in AddressRegistry
+        $searchCriteria = $this->searchCriteriaBuilder->addFilter('entity_id', $addressId)->create();
+        $addressResults = $this->addressRepository->getList($searchCriteria);
+        $addressResultItems = $addressResults->getItems();
+        if (empty($addressResultItems)) {
+            throw NoSuchEntityException::singleField('addressId', $addressId);
+        }
 
-        return $this->addressTransformer->toArray($address);
+        return $this->addressTransformer->toArray($addressResultItems[0]);
     }
 }

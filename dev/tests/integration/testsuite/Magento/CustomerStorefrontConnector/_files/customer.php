@@ -6,6 +6,7 @@
 
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Model\CustomerRegistry;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
@@ -13,6 +14,7 @@ $objectManager = Bootstrap::getObjectManager();
 
 $customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
 $customerFactory = $objectManager->get(CustomerInterfaceFactory::class);
+$customerRegistry = $objectManager->get(CustomerRegistry::class);
 $encryptor = $objectManager->get(EncryptorInterface::class);
 
 $passwordHash = $encryptor->getHash('password', true);
@@ -36,4 +38,5 @@ $customer = $customerFactory->create([
     ]
 ]);
 
-$customerRepository->save($customer, $passwordHash);
+$savedCustomer = $customerRepository->save($customer, $passwordHash);
+$customerRegistry->remove($savedCustomer->getId());
