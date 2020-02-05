@@ -7,7 +7,7 @@
 
 namespace Magento\CustomerStorefrontServiceApi\Api;
 
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface as CustomerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -24,5 +24,5 @@ interface CustomerRepositoryInterface
      * @throws NoSuchEntityException If customer with the specified ID does not exist.
      * @throws LocalizedException
      */
-    public function getByID($customerId);
+    public function getById(int $customerId): CustomerInterface;
 }

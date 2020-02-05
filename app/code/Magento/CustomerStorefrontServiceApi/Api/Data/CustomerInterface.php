@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: avattam
- * Date: 12/10/19
- * Time: 1:06 PM
+ *
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
  */
 
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
@@ -13,7 +12,7 @@ namespace Magento\CustomerStorefrontServiceApi\Api\Data;
  */
 interface CustomerInterface
 {
-    /**#@+
+    /**
      * Constants defined for keys of the data array. Identical to the name of the getter in snake case
      */
     const ID = 'id';
@@ -32,7 +31,6 @@ interface CustomerInterface
     const DEFAULT_BILLING = 'default_billing';
     const DEFAULT_SHIPPING = 'default_shipping';
     const KEY_ADDRESSES = 'addresses';
-    /**#@-*/
 
     /**
      * Get customer id
@@ -88,7 +86,7 @@ interface CustomerInterface
     /**
      * Set last name
      *
-     * @param string $lastname
+     * @param string $middlename
      * @return $this
      */
     public function setMiddlename($middlename);
@@ -164,7 +162,7 @@ interface CustomerInterface
      * Set prefix
      *
      * @param string $prefix
-     * @return \Magento\Customer\Api\Data\CustomerInterface
+     * @return $this
      */
     public function setPrefix($prefix);
 

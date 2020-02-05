@@ -3,30 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Model\Data;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\Framework\Api\AbstractSimpleObject;
 
 /**
  * Class Customer
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
-    CustomerInterface
+class Customer extends AbstractSimpleObject implements CustomerInterface
 {
-    /**
-     * Initialize dependencies.
-     *
-     * @param array $data
-     */
-    public function __construct(
-        $data = []
-    ) {
-        parent::__construct($data);
-    }
-
     /**
      * @return string|null
      */
@@ -206,7 +196,7 @@ class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
      * Set middle name
      *
      * @param string $middlename
-     * @return \Magento\Customer\Model\Data\Customer
+     * @return CustomerInterface
      */
     public function setMiddlename($middlename)
     {
@@ -332,7 +322,7 @@ class Customer extends \Magento\Framework\Api\AbstractSimpleObject implements
      * Set tax Vat
      *
      * @param string $taxvat
-     * @return \Magento\Customer\Model\Data\Customer
+     * @return CustomerInterface
      */
     public function setTaxvat($taxvat)
     {

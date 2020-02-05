@@ -7,46 +7,43 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Model;
 
-use Magento\Customer\Model\CustomerRegistry;
 use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory as CustomerInterfaceFactory;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface as CustomerInterface;
+use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
+use Magento\CustomerStorefrontService\Model\ResourceModel\Customer;
 
 class CustomerRepository implements CustomerRepositoryInterface
 {
-
     /**
-     * @var CustomerInterfaceFactory
+     * @var Customer
      */
-    private $customerFactory;
+    private $customerResourceModel;
 
     /**
-     * @var CustomerRegistry
+     * @var CustomerDocumentFactory
      */
-    private $customerRegistry;
+    private $customerDocumentFactory;
 
     /**
-     * @param CustomerRegistry $customerRegistry
-     * @param CustomerInterfaceFactory $customerFactory
+     * @param Customer $customerResourceModel
+     * @param CustomerDocumentFactory $customerDocumentFactory
      */
     public function __construct(
-        CustomerRegistry $customerRegistry,
-        CustomerInterfaceFactory $customerFactory
+        Customer $customerResourceModel,
+        CustomerDocumentFactory $customerDocumentFactory
     ) {
-        $this->customerRegistry = $customerRegistry;
-        $this->customerFactory = $customerFactory;
+        $this->customerResourceModel = $customerResourceModel;
+        $this->customerDocumentFactory = $customerDocumentFactory;
     }
 
     /**
-     * Get customer by Customer ID.
-     *
-     * @param int $customerId
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface
-     * @throws \Magento\Framework\Exception\NoSuchEntityException If customer with the specified ID does not exist.
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @inheritDoc
      */
-    public function getById($customerId)
+    public function getById(int $customerId): CustomerInterface
     {
-        $customerModel = $this->customerRegistry->retrieve($customerId);
-        return $customerModel->getDataModel();
+        /** @var \Magento\CustomerStorefrontService\Model\Data\CustomerDocument $customerDocument */
+        $customerDocument = $this->customerDocumentFactory->create();
+        $this->customerResourceModel->load($customerDocument, $customerId);
+        return $customerDocument->getCustomerDocument();
     }
 }
