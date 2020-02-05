@@ -4,15 +4,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
+
+use Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface;
 
 /**
  * Customer interface.
  */
 interface AddressInterface
 {
-    /**#@+
+    /**
      * Constants for keys of data array. Identical to the name of the getter in snake case
      */
     const ID = 'id';
@@ -29,7 +30,6 @@ interface AddressInterface
     const CITY = 'city';
     const DEFAULT_BILLING = 'default_billing';
     const DEFAULT_SHIPPING = 'default_shipping';
-    /**#@-*/
 
     /**
      * Get ID
@@ -94,14 +94,14 @@ interface AddressInterface
     /**
      * Get region
      *
-     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface|null
+     * @return RegionInterface|null
      */
     public function getRegion();
 
     /**
      * Set region
      *
-     * @param \Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface $region
+     * @param RegionInterface $region
      * @return $this
      */
     public function setRegion(RegionInterface $region = null);

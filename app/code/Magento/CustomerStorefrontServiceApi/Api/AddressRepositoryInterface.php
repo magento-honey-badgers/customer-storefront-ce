@@ -6,6 +6,10 @@
  */
 namespace Magento\CustomerStorefrontApi\Api;
 
+use Magento\CustomerStorefrontApi\Api\Data\AddressInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+
 /**
  * Customer address CRUD interface.
  */
@@ -14,29 +18,29 @@ interface AddressRepositoryInterface
     /**
      * Save customer address.
      *
-     * @param \Magento\CustomerStorefrontApi\Api\Data\AddressInterface $address
-     * @return \Magento\CustomerStorefrontApi\Api\Data\AddressInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param AddressInterface $address
+     * @return AddressInterface
+     * @throws LocalizedException
      */
-    public function save(\Magento\CustomerStorefrontApi\Api\Data\AddressInterface $address);
+    public function save(AddressInterface $address): AddressInterface;
 
     /**
      * Retrieve customer address.
      *
      * @param int $addressId
-     * @return \Magento\CustomerStorefrontApi\Api\Data\AddressInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return AddressInterface
+     * @throws LocalizedException
      */
-    public function getById($addressId);
+    public function getById($addressId): AddressInterface;
 
     /**
      * Delete customer address by ID.
      *
      * @param int $addressId
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws NoSuchEntityException
+     * @throws LocalizedException
      */
-    public function deleteById($addressId);
+    public function deleteById($addressId): bool;
 }
 
