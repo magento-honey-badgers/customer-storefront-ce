@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontConnector\Queue\Consumer;
 
-use Magento\CustomerStorefrontConnector\Model\DataProvider\Customer as CustomerDataProvider;
+use Magento\CustomerStorefrontConnector\Model\CustomerRepositoryWrapper;
 use Magento\CustomerStorefrontConnector\Queue\MessageGenerator;
 use Magento\Framework\MessageQueue\PublisherInterface;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -18,20 +18,14 @@ use Psr\Log\LoggerInterface;
  */
 class Customer
 {
-    const ENTITY_TYPE = 'customer';
-
     const SAVE_TOPIC = 'customer.connector.service.customer.save';
 
     const DELETE_TOPIC = 'customer.connector.service.customer.delete';
 
-    const SAVE_ACTION = 'save';
-
-    const DELETE_ACTION = 'delete';
-
     /**
-     * @var CustomerDataProvider
+     * @var CustomerRepositoryWrapper
      */
-    private $customerDataProvider;
+    private $customerRepository;
 
     /**
      * @var LoggerInterface
@@ -54,20 +48,20 @@ class Customer
     private $serializer;
 
     /**
-     * @param CustomerDataProvider $customerDataProvider
+     * @param CustomerRepositoryWrapper $customerRepository
      * @param MessageGenerator $messageGenerator
      * @param SerializerInterface $serializer
      * @param PublisherInterface $publisher
      * @param LoggerInterface $logger
      */
     public function __construct(
-        CustomerDataProvider $customerDataProvider,
+        CustomerRepositoryWrapper $customerRepository,
         MessageGenerator $messageGenerator,
         SerializerInterface $serializer,
         PublisherInterface $publisher,
         LoggerInterface $logger
     ) {
-        $this->customerDataProvider = $customerDataProvider;
+        $this->customerRepository = $customerRepository;
         $this->messageGenerator = $messageGenerator;
         $this->serializer = $serializer;
         $this->publisher = $publisher;
@@ -81,16 +75,16 @@ class Customer
      */
     public function forwardCustomerChanges(string $incomingMessage): void
     {
-        $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-        $customerId = (int) $incomingMessageArray['data']['id'];
         try {
-            $customerData = $this->customerDataProvider->getData($customerId);
-            $metadata = [
-                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray['correlation_id'],
-                MessageGenerator::ENTITY_TYPE_KEY => self::ENTITY_TYPE,
-                MessageGenerator::EVENT_KEY => self::SAVE_ACTION
+            $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
+            $customerId = (int) $incomingMessageArray['data']['id'];
+            $customerData = $this->customerRepository->getById($customerId);
+            $metaData = [
+                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray[MessageGenerator::CORRELATION_ID_KEY],
+                MessageGenerator::ENTITY_TYPE_KEY => $incomingMessageArray[MessageGenerator::ENTITY_TYPE_KEY],
+                MessageGenerator::EVENT_KEY => $incomingMessageArray[MessageGenerator::EVENT_KEY]
             ];
-            $message = $this->messageGenerator->generateSerialized($customerData, $metadata);
+            $message = $this->messageGenerator->generateSerialized($customerData, $metaData);
         } catch (\Exception $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
@@ -110,13 +104,13 @@ class Customer
     {
         try {
             $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-            $metadata = [
-                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray['correlation_id'],
-                MessageGenerator::ENTITY_TYPE_KEY => self::ENTITY_TYPE,
-                MessageGenerator::EVENT_KEY => self::DELETE_ACTION
+            $metaData = [
+                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray[MessageGenerator::CORRELATION_ID_KEY],
+                MessageGenerator::ENTITY_TYPE_KEY => $incomingMessageArray[MessageGenerator::ENTITY_TYPE_KEY],
+                MessageGenerator::EVENT_KEY => $incomingMessageArray[MessageGenerator::EVENT_KEY]
             ];
 
-            $message = $this->messageGenerator->generateSerialized($incomingMessageArray['data'], $metadata);
+            $message = $this->messageGenerator->generateSerialized($incomingMessageArray['data'], $metaData);
         } catch (\InvalidArgumentException $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
