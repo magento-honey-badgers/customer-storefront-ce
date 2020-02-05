@@ -9,7 +9,9 @@ namespace Magento\CustomerStorefrontService\Model\ResourceModel;
 
 use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Model\Customer\NotificationStorage;
+use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DataObject;
@@ -19,7 +21,6 @@ use Magento\Framework\Model\ResourceModel\Db\Context as DbContext;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\Framework\Validator\Factory as ValidatorFactory;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 
 /**
  * Storefront Customer entity resource model
@@ -66,6 +67,11 @@ class Customer extends AbstractDb
     private $notificationStorage;
 
     /**
+     * @var CustomerDocumentFactory
+     */
+    private $customerDocumentFactory;
+
+    /**
      * Serializable field: additional_information
      *
      * @var array
@@ -101,6 +107,8 @@ class Customer extends AbstractDb
      * @param DateTime $dateTime,
      * @param AccountConfirmation $accountConfirmation
      * @param CustomerInterfaceFactory $customerFactory
+     * @param CustomerDocumentFactory $customerDocumentFactory
+     * @param string|null $connectionName
      * @param array $data
      */
     public function __construct(
@@ -110,6 +118,7 @@ class Customer extends AbstractDb
         DateTime $dateTime,
         AccountConfirmation $accountConfirmation,
         CustomerInterfaceFactory $customerFactory,
+        CustomerDocumentFactory $customerDocumentFactory,
         string $connectionName = null,
         array $data = []
     ) {
@@ -119,6 +128,7 @@ class Customer extends AbstractDb
         $this->dateTime = $dateTime;
         $this->accountConfirmation = $accountConfirmation;
         $this->customerFactory = $customerFactory;
+        $this->customerDocumentFactory = $customerDocumentFactory;
         //$this->setType('customer');
         // Todo: See how can we add separate connections for storefront customer
         //$this->setConnection('customer_read', 'customer_write');
@@ -360,15 +370,15 @@ class Customer extends AbstractDb
             'email = :customer_email'
         );
 
-        // Todo: figure out how to get Config
+        // Todo: figure out how to get Config scope per website or global
 //        if ($customer->getSharingConfig()->isWebsiteScope()) {
-//            if (!$customer->hasData('website_id')) {
-//                throw new \Magento\Framework\Exception\LocalizedException(
-//                    __("A customer website ID wasn't specified. The ID must be specified to use the website scope.")
-//                );
-//            }
-//            $bind['website_id'] = (int)$customer->getWebsiteId();
-//            $select->where('website_id = :website_id');
+        if ($customer->getWebsiteId() === null) {
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __("A customer website ID wasn't specified. The ID must be specified to use the website scope.")
+            );
+        }
+        $bind['website_id'] = (int)$customer->getWebsiteId();
+        $select->where('website_id = :website_id');
 //        }
         if (!$customer->getWebsiteId()) {
             throw new \Magento\Framework\Exception\LocalizedException(
@@ -380,7 +390,8 @@ class Customer extends AbstractDb
 
         $customerId = $connection->fetchOne($select, $bind);
         if ($customerId) {
-            $this->load($customer, $customerId);
+            $customerDocument = $this->customerDocumentFactory->create();
+            $this->load($customerDocument, $customerId);
         } else {
             $customer->setData([]);
         }
