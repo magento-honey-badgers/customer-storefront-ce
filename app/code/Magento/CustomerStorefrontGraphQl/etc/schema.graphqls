@@ -3,9 +3,6 @@
 
 type Query {
     customer: Customer @resolver(class: "Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\Customer") @doc(description: "The customer query returns information about a customer account") @cache(cacheable: false)
-    isEmailAvailable (
-        email: String! @doc(description: "The new customer email")
-    ): IsEmailAvailableOutput @resolver(class: "Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\IsEmailAvailable")
 }
 type CustomerOutput {
     customer: Customer!

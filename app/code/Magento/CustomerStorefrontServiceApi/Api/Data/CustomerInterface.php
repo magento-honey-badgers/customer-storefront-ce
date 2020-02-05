@@ -19,7 +19,6 @@ interface CustomerInterface
     const FIRSTNAME = 'firstname';
     const LASTNAME = 'lastname';
     const MIDDLENAME = 'middlename';
-    const CREATED_AT = 'created_at';
     const DATE_OF_BIRTH = 'date_of_birth';
     const EMAIL = 'email';
     const GENDER = 'gender';
@@ -90,21 +89,6 @@ interface CustomerInterface
      * @return $this
      */
     public function setMiddlename($middlename);
-
-    /**
-     * Get created at time
-     *
-     * @return string|null
-     */
-    public function getCreatedAt();
-
-    /**
-     * Set created at time
-     *
-     * @param string $createdAt
-     * @return $this
-     */
-    public function setCreatedAt(string $createdAt);
 
     /**
      * Get date of birth

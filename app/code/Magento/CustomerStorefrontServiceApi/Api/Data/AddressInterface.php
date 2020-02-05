@@ -17,6 +17,8 @@ interface AddressInterface
      */
     const ID = 'id';
     const CUSTOMER_ID = 'customer_id';
+    const FIRSTNAME = 'firstname';
+    const LASTNAME = 'lastname';
     const REGION = 'region';
     const REGION_CODE = 'region_code';
     const COUNTRY_CODE = 'country_code';
@@ -25,8 +27,6 @@ interface AddressInterface
     const FAX = 'fax';
     const POSTCODE = 'postcode';
     const CITY = 'city';
-    const FIRSTNAME = 'firstname';
-    const LASTNAME = 'lastname';
     const DEFAULT_BILLING = 'default_billing';
     const DEFAULT_SHIPPING = 'default_shipping';
     /**#@-*/
@@ -60,6 +60,36 @@ interface AddressInterface
      * @return $this
      */
     public function setCustomerId($customerId);
+
+    /**
+     * Get first name
+     *
+     * @return string|null
+     */
+    public function getFirstname();
+
+    /**
+     * Set first name
+     *
+     * @param string $firstName
+     * @return $this
+     */
+    public function setFirstname($firstName);
+
+    /**
+     * Get last name
+     *
+     * @return string|null
+     */
+    public function getLastname();
+
+    /**
+     * Set last name
+     *
+     * @param string $lastName
+     * @return $this
+     */
+    public function setLastname($lastName);
 
     /**
      * Get region
@@ -180,36 +210,6 @@ interface AddressInterface
      * @return $this
      */
     public function setCity($city);
-
-    /**
-     * Get first name
-     *
-     * @return string|null
-     */
-    public function getFirstname();
-
-    /**
-     * Set first name
-     *
-     * @param string $firstName
-     * @return $this
-     */
-    public function setFirstname($firstName);
-
-    /**
-     * Get last name
-     *
-     * @return string|null
-     */
-    public function getLastname();
-
-    /**
-     * Set last name
-     *
-     * @param string $lastName
-     * @return $this
-     */
-    public function setLastname($lastName);
 
     /**
      * Get if this address is default shipping address.

@@ -33,6 +33,36 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     }
 
     /**
+     * Get customer id
+     *
+     * @return string|null
+     */
+    public function getCustomerId()
+    {
+        return $this->_get(self::CUSTOMER_ID);
+    }
+
+    /**
+     * Get first name
+     *
+     * @return string|null
+     */
+    public function getFirstname()
+    {
+        return $this->_get(self::FIRSTNAME);
+    }
+
+    /**
+     * Get last name
+     *
+     * @return string|null
+     */
+    public function getLastname()
+    {
+        return $this->_get(self::LASTNAME);
+    }
+
+    /**
      * Get region
      *
      * @return RegionInterface|null
@@ -51,7 +81,6 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     {
         return $this->_get(self::REGION_CODE);
     }
-
 
     /**
      * Get country code
@@ -114,36 +143,6 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     }
 
     /**
-     * Get first name
-     *
-     * @return string|null
-     */
-    public function getFirstname()
-    {
-        return $this->_get(self::FIRSTNAME);
-    }
-
-    /**
-     * Get last name
-     *
-     * @return string|null
-     */
-    public function getLastname()
-    {
-        return $this->_get(self::LASTNAME);
-    }
-
-    /**
-     * Get customer id
-     *
-     * @return string|null
-     */
-    public function getCustomerId()
-    {
-        return $this->_get(self::CUSTOMER_ID);
-    }
-
-    /**
      * Get if this address is default shipping address.
      *
      * @return bool|null
@@ -186,6 +185,28 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     }
 
     /**
+     * Set first name
+     *
+     * @param string $firstName
+     * @return $this
+     */
+    public function setFirstname($firstName)
+    {
+        return $this->setData(self::FIRSTNAME, $firstName);
+    }
+
+    /**
+     * Set last name
+     *
+     * @param string $lastName
+     * @return $this
+     */
+    public function setLastname($lastName)
+    {
+        return $this->setData(self::LASTNAME, $lastName);
+    }
+
+    /**
      * Set region
      *
      * @param RegionInterface $region
@@ -217,7 +238,6 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     {
         return $this->setData(self::COUNTRY_CODE, $countryCode);
     }
-
 
     /**
      * Set street
@@ -272,28 +292,6 @@ class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
     public function setCity($city)
     {
         return $this->setData(self::CITY, $city);
-    }
-
-    /**
-     * Set first name
-     *
-     * @param string $firstName
-     * @return $this
-     */
-    public function setFirstname($firstName)
-    {
-        return $this->setData(self::FIRSTNAME, $firstName);
-    }
-
-    /**
-     * Set last name
-     *
-     * @param string $lastName
-     * @return $this
-     */
-    public function setLastname($lastName)
-    {
-        return $this->setData(self::LASTNAME, $lastName);
     }
 
     /**

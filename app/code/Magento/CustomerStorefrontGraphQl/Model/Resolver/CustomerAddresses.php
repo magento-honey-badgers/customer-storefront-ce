@@ -8,11 +8,11 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontGraphQl\Model\Resolver;
 
 use Magento\Customer\Model\Customer;
+use Magento\CustomerStorefrontService\Model\Customer\Address\ExtractCustomerAddressData;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
-use Magento\CustomerStorefrontService\Model\Customer\Address\ExtractCustomerAddressData;
+use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 
 /**
  * Customers addresses field resolver

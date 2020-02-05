@@ -47,22 +47,17 @@ class Customer implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        // TODO: take care of authorization and validation
-
-        // TODO: verify data structure here
         try {
             $currentUserId = $context->getUserId();
             if ($currentUserId) {
                 /** @var \Magento\CustomerStorefrontService\Model\Data\Customer $customer */
                 $customer = $this->customerRepository->getById($currentUserId);
             } else {
-                // TODO: this resolved should not be reached, but it is for Customer ID = 0 with no token
                 throw new GraphQlNoSuchEntityException(__('Customer not authenticated'));
             }
         } catch (NoSuchEntityException $e) {
             throw new GraphQlNoSuchEntityException(__($e->getMessage()));
         }
-
         //TODO: use Abstract model vs Explicit DTO
         return $customer->__toArray();
     }
