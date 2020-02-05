@@ -6,9 +6,7 @@
 
 namespace Magento\CustomerStorefrontService\Model\Data;
 
-use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
-use Magento\Framework\Api\AbstractSimpleObject;
 use Magento\Framework\Model\AbstractModel;
 
 /**
@@ -22,7 +20,7 @@ class CustomerDocument extends AbstractModel
      */
     public function getStorefrontCustomerId(): ?string
     {
-        return $this->getData('storefront_customer_id');
+        return $this->getData('customer_row_id');
     }
 
     /**
@@ -30,7 +28,7 @@ class CustomerDocument extends AbstractModel
      *
      * @return Customer|null
      */
-    public function getCustomerDocument(): ?Customer
+    public function getCustomerModel(): ?CustomerInterface
     {
         return $this->getData('customer_document');
     }

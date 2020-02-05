@@ -12,6 +12,7 @@ use Magento\Customer\Model\Customer\NotificationStorage;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\DataObject;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context as DbContext;
@@ -143,7 +144,7 @@ class Customer extends AbstractDb
         //Todo: uniqueness depends on system settings
         $this->_uniqueFields = [
             ['field' => 'customer_id', __('Customer ID')],
-            ['field' => 'storefront_customer_id', __('Storefront Customer ID')],
+            ['field' => 'customer_row_id', __('Storefront Customer ID')],
         ];
         return $this;
     }
@@ -326,20 +327,19 @@ class Customer extends AbstractDb
     }
 
     /**
-     * Perform actions after object load
+     * Replace 'customer_document' with DTO from Array
      *
-     * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\DataObject $object
-     * @return $this
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @param \Magento\Framework\Model\AbstractModel $object
+     * @param string $field
+     * @param mixed $defaultValue
+     * @return void
      */
-    protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object)
+    protected function _unserializeField(DataObject $object, $field, $defaultValue = null)
     {
-        parent::_afterLoad($object);
+        parent::_unserializeField($object, $field, $defaultValue);
         $customer = $this->customerFactory->create(['data' => $object->getData('customer_document')]);
         $object->setData('customer_document', $customer);
-        return $this;
     }
-
     /**
      * Load customer by email
      *

@@ -44,6 +44,6 @@ class CustomerRepository implements CustomerRepositoryInterface
         /** @var \Magento\CustomerStorefrontService\Model\Data\CustomerDocument $customerDocument */
         $customerDocument = $this->customerDocumentFactory->create();
         $this->customerResourceModel->load($customerDocument, $customerId);
-        return $customerDocument->getCustomerDocument();
+        return $customerDocument->getCustomerModel();
     }
 }
