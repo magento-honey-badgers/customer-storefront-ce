@@ -8,7 +8,8 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontService\Model;
 
 use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface as CustomerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
 use Magento\CustomerStorefrontService\Model\ResourceModel\Customer;
 

@@ -353,12 +353,12 @@ class Customer extends AbstractDb
     /**
      * Load customer by email
      *
-     * @param CustomerInterface $customer
+     * @param \Magento\Framework\Model\AbstractModel $customerDocument
      * @param string $email
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function loadByEmail(CustomerInterface $customer, $email)
+    public function loadByEmail(\Magento\Framework\Model\AbstractModel $customerDocument, $email, $websiteId = null)
     {
         //Todo: getEntityTable comes form EAV.
         $connection = $this->getConnection();
@@ -372,28 +372,20 @@ class Customer extends AbstractDb
 
         // Todo: figure out how to get Config scope per website or global
 //        if ($customer->getSharingConfig()->isWebsiteScope()) {
-        if ($customer->getWebsiteId() === null) {
+        if ($websiteId === null) {
             throw new \Magento\Framework\Exception\LocalizedException(
                 __("A customer website ID wasn't specified. The ID must be specified to use the website scope.")
             );
         }
-        $bind['website_id'] = (int)$customer->getWebsiteId();
+        $bind['website_id'] = (int)$websiteId;
         $select->where('website_id = :website_id');
 //        }
-        if (!$customer->getWebsiteId()) {
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __("A customer website ID wasn't specified. The ID must be specified to use the website scope.")
-            );
-        }
-        $bind['website_id'] = (int)$customer->getWebsiteId();
-        $select->where('website_id = :website_id');
 
         $customerId = $connection->fetchOne($select, $bind);
         if ($customerId) {
-            $customerDocument = $this->customerDocumentFactory->create();
             $this->load($customerDocument, $customerId);
         } else {
-            $customer->setData([]);
+            __("A customer with specified email was not found");
         }
 
         return $this;
