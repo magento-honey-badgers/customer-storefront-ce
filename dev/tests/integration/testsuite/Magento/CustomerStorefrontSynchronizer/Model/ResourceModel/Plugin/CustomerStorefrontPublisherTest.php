@@ -20,6 +20,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test publish customer save  and delete events to the first queue
+ *
+ * @magentoDbIsolation disabled
+ * @magentoAppIsolation enabled
  */
 class CustomerStorefrontPublisherTest extends TestCase
 {
@@ -45,6 +48,8 @@ class CustomerStorefrontPublisherTest extends TestCase
     /** @var EncryptorInterface */
     private $encryptor;
 
+    private $customerConnectorConsumer;
+
     protected function setup()
     {
         $objectManager = Bootstrap::getObjectManager();
@@ -53,6 +58,7 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->queueRepostiory = $objectManager->create(QueueRepository::class);
         $this->customerFactory = $objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $objectManager->get(EncryptorInterface::class);
+        $this->customer = $objectManager->get(CustomerInterface::class);
     }
 
     /**
@@ -76,7 +82,7 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->assertNotEmpty($parsedData);
         $this->assertArrayHasKey('correlation_id',$parsedData);
         $this->assertEquals('customer',$parsedData['entity_type']);
-        $this->assertEquals('save', $parsedData['event']);
+        $this->assertEquals('create', $parsedData['event']);
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
         $queue->acknowledge($message);
     }

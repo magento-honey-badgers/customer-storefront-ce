@@ -10,6 +10,7 @@ namespace Magento\GraphQl\Customer;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\CustomerAuthUpdate;
 use Magento\Customer\Model\CustomerRegistry;
+use Magento\Framework\MessageQueue\PublisherInterface;
 use Magento\Integration\Api\CustomerTokenServiceInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\MessageQueue\EnvironmentPreconditionException;
@@ -34,6 +35,9 @@ class GetCustomerTest extends GraphQlAbstract
      */
     private $consumers = [];
 
+    /** @var PublisherInterface */
+    private static $publisher;
+
     /**
      * @var CustomerAuthUpdate
      */
@@ -57,9 +61,9 @@ class GetCustomerTest extends GraphQlAbstract
                     [
                         'customer.monolith.connector.customer.save'
                 ],
-                'logfilePath' => '',
+                'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",
                 'maxMessages' => 500,
-                'appInitiParams' => \Magento\TestFramework\Helper\Bootstrap::getInstance()->getAppInitParams()
+                'appInitParams' => \Magento\TestFramework\Helper\Bootstrap::getInstance()->getAppInitParams()
             ]
         );
 
@@ -72,8 +76,8 @@ class GetCustomerTest extends GraphQlAbstract
         }
 
         $this->customerTokenService = Bootstrap::getObjectManager()->get(CustomerTokenServiceInterface::class);
-        $this->customerRegistry = Bootstrap::getObjectManager()->get(CustomerRegistry::class);
-        $this->customerAuthUpdate = Bootstrap::getObjectManager()->get(CustomerAuthUpdate::class);
+   //     $this->customerRegistry = Bootstrap::getObjectManager()->get(CustomerRegistry::class);
+  //      $this->customerAuthUpdate = Bootstrap::getObjectManager()->get(CustomerAuthUpdate::class);
         $this->customerRepository = Bootstrap::getObjectManager()->get(CustomerRepositoryInterface::class);
     }
 
