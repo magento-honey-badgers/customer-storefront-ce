@@ -17,11 +17,9 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\InputException;
 
 /**
- * Address repository.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Address Document repository.
  */
-class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterface
+class AddressDocumentRepository implements \Magento\Customer\Api\AddressRepositoryInterface
 {
     /**
      * Directory data

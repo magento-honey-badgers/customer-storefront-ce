@@ -20,6 +20,7 @@ use Magento\Framework\Model\ResourceModel\Db\Context as DbContext;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\Framework\Validator\Factory as ValidatorFactory;
+use Magento\Framework\App\ResourceConnection;
 
 /**
  * Storefront Customer entity resource model
@@ -85,6 +86,11 @@ class Customer extends AbstractDb
     protected $_tables = ['storefront_customer'];
 
     /**
+     * @var ResourceConnection
+     */
+    protected $_resource;
+
+    /**
      * @var array
      */
     protected $_connections = ['customer_read', 'customer_write'];
@@ -97,6 +103,7 @@ class Customer extends AbstractDb
      * @param AccountConfirmation $accountConfirmation
      * @param CustomerInterfaceFactory $customerFactory
      * @param CustomerDocumentFactory $customerDocumentFactory
+     * @param ResourceConnection $resource
      * @param string|null $connectionName
      * @param array $data
      */
@@ -108,6 +115,7 @@ class Customer extends AbstractDb
         AccountConfirmation $accountConfirmation,
         CustomerInterfaceFactory $customerFactory,
         CustomerDocumentFactory $customerDocumentFactory,
+        ResourceConnection $resource,
         string $connectionName = null,
         array $data = []
     ) {
@@ -118,6 +126,7 @@ class Customer extends AbstractDb
         $this->accountConfirmation = $accountConfirmation;
         $this->customerFactory = $customerFactory;
         $this->customerDocumentFactory = $customerDocumentFactory;
+        $this->_resource = $resource;
         //$this->setType('customer');
         // Todo: See how can we add separate connections for storefront customer
         //$this->setConnection('customer_read', 'customer_write');
@@ -149,9 +158,30 @@ class Customer extends AbstractDb
     }
 
     /**
+     * Serialize specified field in an object
+     *
+     * @param DataObject $object
+     * @param string $field
+     * @param mixed $defaultValue
+     * @param bool $unsetEmpty
+     * @return $this
+     */
+    protected function _serializeField(DataObject $object, $field, $defaultValue = null, $unsetEmpty = false)
+    {
+        $value = $object->getData($field);
+        if (empty($value) && $unsetEmpty) {
+            $object->unsetData($field);
+        } else {
+            $object->setData($field, $this->getSerializer()->serialize($value->__toArray() ?: $defaultValue));
+        }
+
+        return $this;
+    }
+
+    /**
      * Check customer scope, email and confirmation key before saving
      *
-     * @param \Magento\Framework\DataObject|CustomerInterface $customer
+     * @param DataObject|CustomerInterface $customer
      *
      * @return $this
      * @throws AlreadyExistsException
@@ -162,7 +192,7 @@ class Customer extends AbstractDb
      */
     protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
-        /** @var CustomerInterface $customer */
+        $customer = $object->getData('customer_model');
         // Todo: Validate store_id as input
         //if ($customer->getStoreId() === null) {
         //    $customer->setStoreId($this->storeManager->getStore()->getId());
@@ -204,26 +234,39 @@ class Customer extends AbstractDb
             );
         }
 
+        //TODO handle Account Confirmation
         // set confirmation key logic
-        if (!$customer->getId() &&
-            $this->accountConfirmation->isConfirmationRequired(
-                $customer->getWebsiteId(),
-                $customer->getId(),
-                $customer->getEmail()
-            )
-        ) {
-            $customer->setConfirmation($customer->getRandomConfirmationKey());
-        }
-        // remove customer confirmation key from database, if empty
-        if (!$customer->getConfirmation()) {
-            $customer->setConfirmation(null);
-        }
+//        if (!$customer->getId() &&
+//            $this->accountConfirmation->isConfirmationRequired(
+//                $customer->getWebsiteId(),
+//                $customer->getId(),
+//                $customer->getEmail()
+//            )
+//        ) {
+//            $customer->setConfirmation($customer->getRandomConfirmationKey());
+//        }
+//        // remove customer confirmation key from database, if empty
+//        if (!$customer->getConfirmation()) {
+//            $customer->setConfirmation(null);
+//        }
 
-        if (!$customer->getData('ignore_validation_flag')) {
-            $this->_validate($customer);
-        }
+//        if (!$customer->getData('ignore_validation_flag')) {
+//            $this->_validate($customer);
+//        }
 
         return $this;
+    }
+
+    /**
+     * Check if object is new
+     *
+     * @param \Magento\Framework\Model\AbstractModel $object
+     * @return bool
+     */
+    protected function isObjectNotNew(\Magento\Framework\Model\AbstractModel $object)
+    {
+        $customer = $object->getData('customer_model');
+        return $customer->getId() !== null && (!$this->_useIsObjectNew || !$customer->isObjectNew());
     }
 
     /**
@@ -249,7 +292,7 @@ class Customer extends AbstractDb
     /**
      * Save customer addresses and set default addresses in attributes backend
      *
-     * @param \Magento\Framework\DataObject $object
+     * @param DataObject $object
      * @return $this
      */
     protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
@@ -287,7 +330,8 @@ class Customer extends AbstractDb
             }
         }
 
-        $this->unserializeFields($object);
+        //TODO: handle unserialization better
+//        $this->unserializeFields($object);
         $this->_afterLoad($object);
         $object->afterLoad();
         $object->setOrigData();
