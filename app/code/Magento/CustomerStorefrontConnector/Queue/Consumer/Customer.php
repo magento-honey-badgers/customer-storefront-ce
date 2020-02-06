@@ -85,14 +85,14 @@ class Customer
                 MessageGenerator::EVENT_KEY => $incomingMessageArray[MessageGenerator::EVENT_KEY]
             ];
             $message = $this->messageGenerator->generateSerialized($customerData, $metaData);
+            $this->publisher->publish(self::SAVE_TOPIC, $message);
+            $this->logger->info('Message processed', [$incomingMessage]);
         } catch (\Exception $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
         }
 
-        $this->logger->info('Message processed', [$incomingMessage]);
 
-        $this->publisher->publish(self::SAVE_TOPIC, $message);
     }
 
     /**
@@ -111,12 +111,12 @@ class Customer
             ];
 
             $message = $this->messageGenerator->generateSerialized($incomingMessageArray['data'], $metaData);
+            $this->publisher->publish(self::DELETE_TOPIC, $message);
+            $this->logger->info('Message processed', [$incomingMessage]);
         } catch (\InvalidArgumentException $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
         }
-
-        $this->publisher->publish(self::DELETE_TOPIC, $message);
     }
 
 }
