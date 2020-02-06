@@ -9,19 +9,13 @@ namespace Magento\CustomerStorefrontService\Model\Data;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface;
+use Magento\Framework\Api\AbstractSimpleObject;
 
-class Address extends \Magento\Framework\Api\AbstractSimpleObject implements
-    AddressInterface
+/**
+ * Customer Address DTO class
+ */
+class Address extends AbstractSimpleObject implements AddressInterface
 {
-    /**
-     * @param array $data
-     */
-    public function __construct(
-        $data = []
-    ) {
-        parent::__construct($data);
-    }
-
     /**
      * Get id
      *

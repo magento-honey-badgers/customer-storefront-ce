@@ -9,48 +9,116 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Model\ResourceModel;
 
-use Magento\Customer\Controller\Adminhtml\Group\Delete;
+use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\ResourceModel\Address\DeleteRelation;
-use Magento\Framework\App\ObjectManager;
+use Magento\CustomerStorefrontService\Model\Data\AddressDocument;
+use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerAddressInterfaceFactory;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\DataObject;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Magento\Framework\Model\ResourceModel\Db\Context as DbContext;
+use Magento\Framework\Stdlib\DateTime;
+use Magento\Framework\Validator\Factory as ValidatorFactory;
 
 /**
  * Class Address
  *
  * @package Magento\Customer\Model\ResourceModel
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Address extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
+class Address extends AbstractDb
 {
     /**
      * @var \Magento\Framework\Validator\Factory
      */
-    protected $_validatorFactory;
+    private $_validatorFactory;
 
     /**
      * @var \Magento\Customer\Api\CustomerRepositoryInterface
      */
-    protected $customerRepository;
+    private $customerRepository;
 
     /**
-     * @param \Magento\Eav\Model\Entity\Context $context
-     * @param \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot $entitySnapshot
-     * @param \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite $entityRelationComposite
-     * @param \Magento\Framework\Validator\Factory $validatorFactory
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @var DeleteRelation
+     */
+    private $deleteRelation;
+
+    /**
+     * @var CustomerRegistry
+     */
+    private $customerRegistry;
+
+    /**
+     * CustomerAddressInterfaceFactory
+     */
+    private $customerAddressFactory;
+
+    /**
+     * Serializable fields
+     *
+     * @var array
+     */
+    protected $_serializableFields = ['customer_address_document' => [[], []]];
+
+    /**
+     * Main table name
+     *
+     * @var string
+     */
+    protected $_mainTable = 'storefront_customer_address';
+
+    /**
+     * @var string
+     */
+    protected $_idFieldName = 'customer_address_row_id';
+
+    /**
+     * @var string
+     */
+    protected $_tables = ['storefront_customer_address'];
+
+    /**
+     * @var array
+     */
+    protected $_connections = ['customer_read', 'customer_write'];
+
+    /**
+     * @param DbContext $context
+     * @param ScopeConfigInterface $scopeConfig
+     * @param ValidatorFactory $validatorFactory
+     * @param DateTime $dateTime,
+     * @param AccountConfirmation $accountConfirmation
+     * @param CustomerAddressInterfaceFactory $customerAddressFactory
+     * @param CustomerDocumentFactory $customerDocumentFactory
+     * @param DeleteRelation $deleteRelation
+     * @param CustomerRegistry $customerRegistry
+     * @param string|null $connectionName
      * @param array $data
      */
     public function __construct(
-        \Magento\Eav\Model\Entity\Context $context,
-        \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot $entitySnapshot,
-        \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite $entityRelationComposite,
-        \Magento\Framework\Validator\Factory $validatorFactory,
-        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
-        $data = []
+        DbContext $context,
+        ScopeConfigInterface $scopeConfig,
+        ValidatorFactory $validatorFactory,
+        DateTime $dateTime,
+        AccountConfirmation $accountConfirmation,
+        CustomerAddressInterfaceFactory $customerAddressFactory,
+        CustomerDocumentFactory $customerDocumentFactory,
+        DeleteRelation $deleteRelation,
+        CustomerRegistry $customerRegistry,
+        string $connectionName = null,
+        array $data = []
     ) {
-        $this->customerRepository = $customerRepository;
+        parent::__construct($context, $connectionName);
+        $this->_scopeConfig = $scopeConfig;
         $this->_validatorFactory = $validatorFactory;
-        parent::__construct($context, $entitySnapshot, $entityRelationComposite, $data);
+        $this->dateTime = $dateTime;
+        $this->accountConfirmation = $accountConfirmation;
+        $this->customerAddressFactory = $customerAddressFactory;
+        $this->customerDocumentFactory = $customerDocumentFactory;
+        $this->customerRegistry = $customerRegistry;
+        $this->deleteRelation = $deleteRelation;
     }
 
     /**
@@ -60,21 +128,8 @@ class Address extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
      */
     protected function _construct()
     {
+        $this->_init('storefront_customer_address', 'customer_address_row_id');
         $this->connectionName = 'customer';
-    }
-
-    /**
-     * Getter and lazy loader for _type
-     *
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @return \Magento\Eav\Model\Entity\Type
-     */
-    public function getEntityType()
-    {
-        if (empty($this->_type)) {
-            $this->setType('customer_address');
-        }
-        return parent::getEntityType();
     }
 
     /**
@@ -99,11 +154,11 @@ class Address extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
      * @return void
      * @throws \Magento\Framework\Validator\Exception When validation failed
      */
-    protected function _validate($address)
+    private function _validate($address)
     {
         if ($address->getDataByKey('should_ignore_validation')) {
             return;
-        };
+        }
         $validator = $this->_validatorFactory->createValidator('customer_address', 'save');
 
         if (!$validator->isValid($address)) {
@@ -126,38 +181,31 @@ class Address extends \Magento\Eav\Model\Entity\VersionControl\AbstractEntity
     }
 
     /**
-     * Get instance of DeleteRelation class
-     *
-     * @deprecated 100.2.0
-     * @return DeleteRelation
-     */
-    private function getDeleteRelation()
-    {
-        return ObjectManager::getInstance()->get(DeleteRelation::class);
-    }
-
-    /**
-     * Get instance of CustomerRegistry class
-     *
-     * @deprecated 100.2.0
-     * @return CustomerRegistry
-     */
-    private function getCustomerRegistry()
-    {
-        return ObjectManager::getInstance()->get(CustomerRegistry::class);
-    }
-
-    /**
      * After delete entity process
      *
-     * @param \Magento\Customer\Model\Address $address
+     * @param AddressDocument $address
      * @return $this
      */
-    protected function _afterDelete(\Magento\Framework\DataObject $address)
+    protected function _afterDelete(\Magento\Framework\Model\AbstractModel $address)
     {
-        $customer = $this->getCustomerRegistry()->retrieve($address->getCustomerId());
+        $customer = $this->customerRegistry->retrieve($address->getCustomerId());
 
-        $this->getDeleteRelation()->deleteRelation($address, $customer);
+        $this->deleteRelation->deleteRelation($address, $customer);
         return parent::_afterDelete($address);
+    }
+
+    /**
+     * Replace 'customer_document' with DTO from Array
+     *
+     * @param \Magento\Framework\Model\AbstractModel $object
+     * @param string $field
+     * @param mixed $defaultValue
+     * @return void
+     */
+    protected function _unserializeField(DataObject $object, $field, $defaultValue = null)
+    {
+        parent::_unserializeField($object, $field, $defaultValue);
+        $customer = $this->customerAddressFactory->create(['data' => $object->getData('customer_document')]);
+        $object->setData('customer_document', $customer);
     }
 }

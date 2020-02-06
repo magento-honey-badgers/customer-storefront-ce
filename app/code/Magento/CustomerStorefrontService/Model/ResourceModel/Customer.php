@@ -13,7 +13,6 @@ use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as Cust
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
@@ -32,29 +31,24 @@ class Customer extends AbstractDb
     /**
      * CustomerInterfaceFactory
      */
-    protected $customerFactory;
+    private $customerFactory;
 
     /**
      * @var ValidatorFactory
      */
-    protected $_validatorFactory;
+    private $_validatorFactory;
 
     /**
      * Core store config
      *
      * @var ScopeConfigInterface
      */
-    protected $_scopeConfig;
+    private $_scopeConfig;
 
     /**
      * @var DateTime
      */
-    protected $dateTime;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
+    private $dateTime;
 
     /**
      * @var AccountConfirmation
@@ -62,17 +56,12 @@ class Customer extends AbstractDb
     private $accountConfirmation;
 
     /**
-     * @var NotificationStorage
-     */
-    private $notificationStorage;
-
-    /**
      * @var CustomerDocumentFactory
      */
     private $customerDocumentFactory;
 
     /**
-     * Serializable field: additional_information
+     * Serializable fields
      *
      * @var array
      */
@@ -141,7 +130,7 @@ class Customer extends AbstractDb
      */
     protected function _construct()
     {
-        $this->_init('storefront_customer', 'customer_id');
+        $this->_init('storefront_customer', $this->getIdFieldName());
     }
 
     /**
@@ -153,7 +142,7 @@ class Customer extends AbstractDb
     {
         //Todo: uniqueness depends on system settings
         $this->_uniqueFields = [
-            ['field' => 'customer_id', __('Customer ID')],
+            ['field' => $this->getIdFieldName(), __('Customer ID')],
             ['field' => 'customer_row_id', __('Storefront Customer ID')],
         ];
         return $this;
@@ -193,7 +182,7 @@ class Customer extends AbstractDb
 
         $select = $connection->select()->from(
             $this->getTable($this->_mainTable),
-            [$this->_idFieldName]
+            [$this->getIdFieldName()]
         )->where(
             'email = :email'
         );
@@ -204,8 +193,8 @@ class Customer extends AbstractDb
         $select->where('website_id = :website_id');
         //}
         if ($customer->getId()) {
-            $bind['entity_id'] = (int)$customer->getId();
-            $select->where('entity_id != :entity_id');
+            $bind[$this->getIdFieldName()] = (int)$customer->getId();
+            $select->where("{$this->getIdFieldName()} != :{$this->getIdFieldName()}");
         }
 
         $result = $connection->fetchOne($select, $bind);
@@ -244,7 +233,7 @@ class Customer extends AbstractDb
      * @return void
      * @throws ValidatorException
      */
-    protected function _validate(CustomerInterface $customer)
+    private function _validate(CustomerInterface $customer)
     {
         $validator = $this->_validatorFactory->createValidator('customer', 'save');
 
@@ -258,19 +247,6 @@ class Customer extends AbstractDb
     }
 
     /**
-     * Retrieve notification storage
-     *
-     * @return NotificationStorage
-     */
-    private function getNotificationStorage()
-    {
-        if ($this->notificationStorage === null) {
-            $this->notificationStorage = ObjectManager::getInstance()->get(NotificationStorage::class);
-        }
-        return $this->notificationStorage;
-    }
-
-    /**
      * Save customer addresses and set default addresses in attributes backend
      *
      * @param \Magento\Framework\DataObject $object
@@ -278,41 +254,25 @@ class Customer extends AbstractDb
      */
     protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
     {
-        $this->getNotificationStorage()->add(
-            NotificationStorage::UPDATE_CUSTOMER_SESSION,
-            $object->getId()
-        );
+        // TODO: handle logic about session
+//        ObjectManager::getInstance()->get(NotificationStorage::class)->add(
+//            NotificationStorage::UPDATE_CUSTOMER_SESSION,
+//            $object->getId()
+//        );
         return parent::_afterSave($object);
-    }
-
-    /**
-     * Retrieve select object for loading base entity row
-     *
-     * @param \Magento\Framework\DataObject $object
-     * @param string|int $rowId
-     * @return \Magento\Framework\DB\Select
-     */
-    protected function _getLoadRowSelect($object, $rowId)
-    {
-        $select = parent::_getLoadRowSelect($object, $rowId);
-        if ($object->getWebsiteId() && $object->getSharingConfig()->isWebsiteScope()) {
-            $select->where('website_id =?', (int)$object->getWebsiteId());
-        }
-
-        return $select;
     }
 
     /**
      * Load an object
      *
-     * @param \Magento\Framework\Api\AbstractSimpleObject $object
+     * @param \Magento\Framework\Model\AbstractModel $object
      * @param mixed $value
      * @param string $field field to load by (defaults to model id)
      * @return $this
      */
-    public function loadByField(\Magento\Framework\Api\AbstractSimpleObject $object, $value, $field = null)
+    public function loadByField(\Magento\Framework\Model\AbstractModel $object, $value, $field = null)
     {
-        //$object->beforeLoad($value, $field);
+        $object->beforeLoad($value, $field);
         if ($field === null) {
             $field = $this->getIdFieldName();
         }
@@ -328,10 +288,10 @@ class Customer extends AbstractDb
         }
 
         $this->unserializeFields($object);
-        //$this->_afterLoad($object);
-        //$object->afterLoad();
-        //$object->setOrigData();
-        //$object->setHasDataChanges(false);
+        $this->_afterLoad($object);
+        $object->afterLoad();
+        $object->setOrigData();
+        $object->setHasDataChanges(false);
 
         return $this;
     }
@@ -350,6 +310,7 @@ class Customer extends AbstractDb
         $customer = $this->customerFactory->create(['data' => $object->getData('customer_document')]);
         $object->setData('customer_document', $customer);
     }
+
     /**
      * Load customer by email
      *
@@ -365,7 +326,7 @@ class Customer extends AbstractDb
         $bind = ['customer_email' => $email];
         $select = $connection->select()->from(
             $this->getTable($this->_mainTable),
-            [$this->_idFieldName]
+            [$this->getIdFieldName()]
         )->where(
             'email = :customer_email'
         );
@@ -392,19 +353,6 @@ class Customer extends AbstractDb
     }
 
     /**
-     * Change customer password
-     *
-     * @param CustomerInterface $customer
-     * @param string $newPassword
-     * @return $this
-     */
-    public function changePassword(CustomerInterface $customer, $newPassword)
-    {
-        $customer->setPassword($newPassword);
-        return $this;
-    }
-
-    /**
      * Check whether there are email duplicates of customers in global scope
      *
      * @return bool
@@ -413,7 +361,7 @@ class Customer extends AbstractDb
     {
         $connection = $this->getConnection();
         $select = $connection->select()->from(
-            $this->getTable('customer_entity'),
+            $this->getTable($this->_mainTable),
             ['email', 'cnt' => 'COUNT(*)']
         )->group(
             'email'
@@ -438,12 +386,12 @@ class Customer extends AbstractDb
     public function checkCustomerId($customerId)
     {
         $connection = $this->getConnection();
-        $bind = ['entity_id' => (int)$customerId];
+        $bind = [$this->getIdFieldName() => (int)$customerId];
         $select = $connection->select()->from(
-            $this->getTable('customer_entity'),
-            'entity_id'
+            $this->getTable($this->_mainTable),
+            [$this->getIdFieldName()]
         )->where(
-            'entity_id = :entity_id'
+            "{$this->getIdFieldName()} = :{$this->getIdFieldName()}"
         )->limit(
             1
         );
@@ -464,12 +412,12 @@ class Customer extends AbstractDb
     public function getWebsiteId($customerId)
     {
         $connection = $this->getConnection();
-        $bind = ['entity_id' => (int)$customerId];
+        $bind = [$this->getIdFieldName() => (int)$customerId];
         $select = $connection->select()->from(
-            $this->getTable('customer_entity'),
+            $this->getTable($this->_mainTable),
             'website_id'
         )->where(
-            'entity_id = :entity_id'
+            "{$this->getIdFieldName()} = :{$this->getIdFieldName()}"
         );
 
         return $connection->fetchOne($select, $bind);
@@ -489,27 +437,6 @@ class Customer extends AbstractDb
         )
         ) {
             parent::setNewIncrementId($object);
-        }
-        return $this;
-    }
-
-    /**
-     * Change reset password link token
-     *
-     * Stores new reset password link token and its creation time
-     *
-     * @param CustomerInterface $customer
-     * @param string $passwordLinkToken
-     * @return $this
-     * @throws \Exception
-     */
-    public function changeResetPasswordLinkToken(CustomerInterface $customer, $passwordLinkToken)
-    {
-        if (is_string($passwordLinkToken) && !empty($passwordLinkToken)) {
-            $customer->setRpToken($passwordLinkToken);
-            $customer->setRpTokenCreatedAt(
-                (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT)
-            );
         }
         return $this;
     }

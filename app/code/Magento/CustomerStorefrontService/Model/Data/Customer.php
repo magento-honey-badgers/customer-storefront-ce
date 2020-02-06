@@ -12,8 +12,7 @@ use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\Api\AbstractSimpleObject;
 
 /**
- * Class Customer
- * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * Customer DTO class
  */
 class Customer extends AbstractSimpleObject implements CustomerInterface
 {

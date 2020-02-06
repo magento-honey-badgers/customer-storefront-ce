@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Model\Data;
 
@@ -10,23 +11,22 @@ use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\Model\AbstractModel;
 
 /**
- * Class Customer
- * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * CustomerDocument DTO class
  */
 class CustomerDocument extends AbstractModel
 {
     /**
      * @return string|null
      */
-    public function getStorefrontCustomerId(): ?string
+    public function getCustomerRowId(): ?string
     {
         return $this->getData('customer_row_id');
     }
 
     /**
-     * Get default shipping address id
+     * Get Customer model
      *
-     * @return Customer|null
+     * @return CustomerInterface|null
      */
     public function getCustomerModel(): ?CustomerInterface
     {
