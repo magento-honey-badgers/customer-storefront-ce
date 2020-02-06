@@ -22,4 +22,12 @@
                 type="Magento\CustomerStorefrontService\Model\Data\Address" />
     <preference for="Magento\CustomerStorefrontConnectorApi\Api\Data\RegionInterface"
                 type="Magento\CustomerStorefrontService\Model\Data\Region" />
+
+    <type name="Magento\CustomerStorefrontService\Model\Storage\CustomerValidator">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="emailValidator" xsi:type="object">Magento\CustomerStorefrontService\Model\Storage\Validator\EmailValidator</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
