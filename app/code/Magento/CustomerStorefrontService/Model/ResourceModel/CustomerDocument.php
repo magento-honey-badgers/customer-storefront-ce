@@ -180,7 +180,7 @@ class CustomerDocument extends AbstractDb
     /**
      * Check customer scope, email and confirmation key before saving
      *
-     * @param DataObject|CustomerInterface $customer
+     * @param \Magento\CustomerStorefrontService\Model\Data\CustomerDocument $customer
      *
      * @return $this
      * @throws AlreadyExistsException
@@ -191,7 +191,6 @@ class CustomerDocument extends AbstractDb
      */
     protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
-        $customer = $object->getData('customer_model');
         // Todo: Validate store_id as input
         //if ($customer->getStoreId() === null) {
         //    $customer->setStoreId($this->storeManager->getStore()->getId());
@@ -199,39 +198,6 @@ class CustomerDocument extends AbstractDb
 
         //Todo: Deal with GroupID
         //$customer->getGroupId();
-
-        parent::_beforeSave($object);
-
-        if (!$customer->getEmail()) {
-            throw new ValidatorException(__('The customer email is missing. Enter and try again.'));
-        }
-
-        $connection = $this->getConnection();
-        $bind = ['email' => $customer->getEmail()];
-
-        $select = $connection->select()->from(
-            $this->getTable($this->_mainTable),
-            [$this->getIdFieldName()]
-        )->where(
-            'email = :email'
-        );
-
-        //TODO: handle config
-        //if ($customer->getSharingConfig()->isWebsiteScope()) {
-        $bind['website_id'] = (int)$customer->getWebsiteId();
-        $select->where('website_id = :website_id');
-        //}
-        if ($customer->getId()) {
-            $bind[$this->getIdFieldName()] = (int)$customer->getId();
-            $select->where("{$this->getIdFieldName()} != :{$this->getIdFieldName()}");
-        }
-
-        $result = $connection->fetchOne($select, $bind);
-        if ($result) {
-            throw new AlreadyExistsException(
-                __('A customer with the same email address already exists in an associated website.')
-            );
-        }
 
         //TODO handle Account Confirmation
         // set confirmation key logic
@@ -257,6 +223,48 @@ class CustomerDocument extends AbstractDb
     }
 
     /**
+     * Check for unique values existence
+     *
+     * @param \Magento\Framework\Model\AbstractModel $object
+     * @return $this
+     * @throws AlreadyExistsException
+     */
+    protected function _checkUnique(\Magento\Framework\Model\AbstractModel $object)
+    {
+        parent::_checkUnique($object);
+        // At this point the data is serialized
+        $this->unserializeFields($object);
+        $connection = $this->getConnection();
+        $bind = ['email' => $object->getCustomerModel()->getEmail()];
+
+        $select = $connection->select()->from(
+            $this->getTable($this->getMainTable()),
+            [$this->getIdFieldName()]
+        )->where(
+            'email = :email'
+        );
+
+        //TODO: handle config
+        //if ($customer->getSharingConfig()->isWebsiteScope()) {
+        $bind['website_id'] = (int)$object->getCustomerModel()->getWebsiteId();
+        $select->where('website_id = :website_id');
+        //}
+        if ($object->getCustomerModel()->getId()) {
+            $bind[$this->getIdFieldName()] = (int)$object->getCustomerModel()->getId();
+            $select->where("{$this->getIdFieldName()} != :{$this->getIdFieldName()}");
+        }
+
+        $result = $connection->fetchOne($select, $bind);
+        if ($result) {
+            throw new AlreadyExistsException(
+                __('A customer with the same email address already exists in an associated website.')
+            );
+        }
+        $this->_serializeFields($object);
+        return $this;
+    }
+
+    /**
      * Check if object is new
      *
      * @param \Magento\Framework\Model\AbstractModel $object
@@ -264,8 +272,8 @@ class CustomerDocument extends AbstractDb
      */
     protected function isObjectNotNew(\Magento\Framework\Model\AbstractModel $object)
     {
-        $customer = $object->getData('customer_model');
-        return $customer->getId() !== null && (!$this->_useIsObjectNew || !$customer->isObjectNew());
+        return $object->getData('customer_row_id') !== null
+            && (!$this->_useIsObjectNew || !$object->isObjectNew());
     }
 
     /**
@@ -277,6 +285,7 @@ class CustomerDocument extends AbstractDb
      */
     private function _validate(CustomerInterface $customer)
     {
+        //TODO: see where this validator is used.
         $validator = $this->_validatorFactory->createValidator('customer', 'save');
 
         if (!$validator->isValid($customer)) {
