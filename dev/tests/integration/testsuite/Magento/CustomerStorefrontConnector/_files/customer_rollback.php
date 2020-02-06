@@ -17,9 +17,17 @@ $registry->register('isSecureArea', true);
 /** @var CustomerRepositoryInterface $customerRepository */
 $customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
 
-$customer = $customerRepository->get('customer@example.com', 1);
+/** @var \Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface $customerStorefrontRepository */
+$customerStorefrontRepository = $objectManager->get(\Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface::class);
 
+/** @var \Magento\Customer\Api\Data\CustomerInterface $customer */
+$customer = $customerRepository->get('customer@example.com', 1);
+$customerId = $customer->getId();
 $customerRepository->delete($customer);
+
+/** @var \Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface $storefrontCustomer */
+$storefrontCustomer = $customerStorefrontRepository->getById($customerId);
+$customerStorefrontRepository->delete($storefrontCustomer);
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

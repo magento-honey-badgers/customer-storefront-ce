@@ -34,7 +34,6 @@ $customerAddress = $addressFactory->create([
         'street' => 'Green str, 67',
         'lastname' => 'Smith',
         'firstname' => 'John',
-        'parent_id' => 1,
         'region_id' => 1,
         'customer_id' => $customer->getId()
     ]
