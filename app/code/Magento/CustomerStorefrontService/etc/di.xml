@@ -6,7 +6,7 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference type="Magento\CustomerStorefrontService\Model\CustomerDocumentRepository" for="Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface"/>
+    <preference type="Magento\CustomerStorefrontService\Model\CustomerRepository" for="Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface"/>
 
     <type name="Magento\Framework\Setup\Declaration\Schema\Sharding">
         <arguments>

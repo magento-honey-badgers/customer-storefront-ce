@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontService\Model\ResourceModel;
 
 use Magento\Customer\Model\AccountConfirmation;
-use Magento\Customer\Model\Customer\NotificationStorage;
 use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
@@ -27,7 +26,7 @@ use Magento\Framework\App\ResourceConnection;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Customer extends AbstractDb
+class CustomerDocument extends AbstractDb
 {
     /**
      * CustomerInterfaceFactory
@@ -298,8 +297,8 @@ class Customer extends AbstractDb
     protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
     {
         // TODO: handle logic about session
-//        ObjectManager::getInstance()->get(NotificationStorage::class)->add(
-//            NotificationStorage::UPDATE_CUSTOMER_SESSION,
+//        ObjectManager::getInstance()->get(Magento\Customer\Model\Customer\NotificationStorage::class)->add(
+//            Magento\Customer\Model\Customer\NotificationStorage::UPDATE_CUSTOMER_SESSION,
 //            $object->getId()
 //        );
         return parent::_afterSave($object);
@@ -326,12 +325,14 @@ class Customer extends AbstractDb
             $data = $connection->fetchRow($select);
 
             if ($data) {
+                // TODO: loop through keys and set data
+                //foreach($data)
                 //$object->setData($key, $value);
             }
         }
 
-        //TODO: handle unserialization better
-//        $this->unserializeFields($object);
+        // TODO: handle unserialization better
+        // $this->unserializeFields($object);
         $this->_afterLoad($object);
         $object->afterLoad();
         $object->setOrigData();

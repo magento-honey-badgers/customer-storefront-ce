@@ -11,13 +11,13 @@ use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory;
 use Magento\CustomerStorefrontService\Model\Data\AddressDocumentFactory;
-use Magento\CustomerStorefrontService\Model\ResourceModel\Customer as CustomerResourceModel;
+use Magento\CustomerStorefrontService\Model\ResourceModel\CustomerDocument as CustomerResourceModel;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 
 /**
- * Customer Document repository
+ * Customer repository
  */
-class CustomerDocumentRepository implements CustomerRepositoryInterface
+class CustomerRepository implements CustomerRepositoryInterface
 {
     /**
      * @var CustomerResourceModel
@@ -35,7 +35,7 @@ class CustomerDocumentRepository implements CustomerRepositoryInterface
     private $customerFactory;
 
     /**
-     * @var \Magento\CustomerStorefrontService\Model\ResourceModel\Address
+     * @var \Magento\CustomerStorefrontService\Model\ResourceModel\AddressDocument
      */
     private $addressResourceModel;
 

@@ -16,6 +16,16 @@ use Magento\Framework\Model\AbstractModel;
 class AddressDocument extends AbstractModel
 {
     /**
+     * Initialize resource model
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        $this->_init(\Magento\CustomerStorefrontService\Model\ResourceModel\AddressDocument::class);
+    }
+
+    /**
      * Get CustomerAddress Row ID
      *
      * @return string|null

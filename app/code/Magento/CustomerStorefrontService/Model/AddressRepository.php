@@ -17,9 +17,9 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\InputException;
 
 /**
- * Address Document repository.
+ * Address repository.
  */
-class AddressDocumentRepository implements \Magento\Customer\Api\AddressRepositoryInterface
+class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterface
 {
     /**
      * Directory data

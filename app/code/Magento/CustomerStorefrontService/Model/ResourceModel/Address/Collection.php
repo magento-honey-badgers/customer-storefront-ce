@@ -23,7 +23,7 @@ class Collection extends AbstractCollection
     {
         $this->_init(
             \Magento\CustomerStorefrontService\Model\Data\AddressDocument::class,
-            \Magento\CustomerStorefrontService\Model\ResourceModel\Address::class
+            \Magento\CustomerStorefrontService\Model\ResourceModel\AddressDocument::class
         );
     }
 

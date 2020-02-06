@@ -16,6 +16,16 @@ use Magento\Framework\Model\AbstractModel;
 class CustomerDocument extends AbstractModel
 {
     /**
+     * Initialize resource model
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        $this->_init(\Magento\CustomerStorefrontService\Model\ResourceModel\CustomerDocument::class);
+    }
+
+    /**
      * @return string|null
      */
     public function getCustomerRowId(): ?string

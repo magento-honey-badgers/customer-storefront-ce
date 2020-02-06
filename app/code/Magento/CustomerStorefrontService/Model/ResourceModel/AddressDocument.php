@@ -12,7 +12,7 @@ namespace Magento\CustomerStorefrontService\Model\ResourceModel;
 use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\ResourceModel\Address\DeleteRelation;
-use Magento\CustomerStorefrontService\Model\Data\AddressDocument;
+use Magento\CustomerStorefrontService\Model\Data\AddressDocument as AddressDocumentDto;
 use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerAddressInterfaceFactory;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
@@ -28,7 +28,7 @@ use Magento\Framework\Validator\Factory as ValidatorFactory;
  *
  * @package Magento\Customer\Model\ResourceModel
  */
-class Address extends AbstractDb
+class AddressDocument extends AbstractDb
 {
     /**
      * @var \Magento\Framework\Validator\Factory
@@ -183,7 +183,7 @@ class Address extends AbstractDb
     /**
      * After delete entity process
      *
-     * @param AddressDocument $address
+     * @param AddressDocumentDto $address
      * @return $this
      */
     protected function _afterDelete(\Magento\Framework\Model\AbstractModel $address)
