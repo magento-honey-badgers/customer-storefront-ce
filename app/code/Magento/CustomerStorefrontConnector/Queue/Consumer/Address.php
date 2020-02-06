@@ -86,12 +86,12 @@ class Address
                 MessageGenerator::EVENT_KEY => $incomingMessageArray[MessageGenerator::EVENT_KEY]
             ];
             $message = $this->messageGenerator->generateSerialized($addressData, $metaData);
+            $this->publisher->publish(self::SAVE_TOPIC, $message);
+            $this->logger->info('Message processed', [$incomingMessage]);
         } catch (\Exception $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
         }
-
-        $this->publisher->publish(self::SAVE_TOPIC, $message);
     }
 
     /**
@@ -110,11 +110,11 @@ class Address
             ];
 
             $message = $this->messageGenerator->generateSerialized($incomingMessageArray['data'], $metaData);
+            $this->publisher->publish(self::DELETE_TOPIC, $message);
+            $this->logger->info('Message processed', [$incomingMessage]);
         } catch (InvalidArgumentException $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
         }
-
-        $this->publisher->publish(self::DELETE_TOPIC, $message);
     }
 }
