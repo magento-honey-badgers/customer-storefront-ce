@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontConnector\Queue\Consumer;
 
-use Magento\CustomerStorefrontConnector\Model\DataProvider\Address as AddressDataProvider;
+use Magento\CustomerStorefrontConnector\Model\AddressRepositoryWrapper;
 use Magento\CustomerStorefrontConnector\Queue\MessageGenerator;
 use Magento\Framework\Mail\Exception\InvalidArgumentException;
 use Magento\Framework\MessageQueue\PublisherInterface;
@@ -19,20 +19,14 @@ use Psr\Log\LoggerInterface;
  */
 class Address
 {
-    const ENTITY_TYPE = 'address';
-
     const SAVE_TOPIC = 'customer.connector.service.address.save';
 
     const DELETE_TOPIC = 'customer.connector.service.address.delete';
 
-    const SAVE_ACTION = 'save';
-
-    const DELETE_ACTION = 'delete';
-
     /**
-     * @var AddressDataProvider
+     * @var AddressRepositoryWrapper
      */
-    private $addressDataProvider;
+    private $addressRepository;
 
     /**
      * @var LoggerInterface
@@ -55,20 +49,20 @@ class Address
     private $messageGenerator;
 
     /**
-     * @param AddressDataProvider $addressDataProvider
+     * @param AddressRepositoryWrapper $addressRepository
      * @param MessageGenerator $messageGenerator
      * @param SerializerInterface $serializer
      * @param PublisherInterface $publisher
      * @param LoggerInterface $logger
      */
     public function __construct(
-        AddressDataProvider $addressDataProvider,
+        AddressRepositoryWrapper $addressRepository,
         MessageGenerator $messageGenerator,
         SerializerInterface $serializer,
         PublisherInterface $publisher,
         LoggerInterface $logger
     ) {
-        $this->addressDataProvider = $addressDataProvider;
+        $this->addressRepository = $addressRepository;
         $this->messageGenerator = $messageGenerator;
         $this->serializer = $serializer;
         $this->publisher = $publisher;
@@ -82,22 +76,22 @@ class Address
      */
     public function forwardAddressChanges(string $incomingMessage): void
     {
-        $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-        $addressId = (int) $incomingMessageArray['data']['id'];
         try {
-            $addressData = $this->addressDataProvider->getData($addressId);
+            $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
+            $addressId = (int) $incomingMessageArray['data']['id'];
+            $addressData = $this->addressRepository->getById($addressId);
             $metaData = [
-                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray['correlation_id'],
-                MessageGenerator::ENTITY_TYPE_KEY => self::ENTITY_TYPE,
-                MessageGenerator::EVENT_KEY => self::SAVE_ACTION
+                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray[MessageGenerator::CORRELATION_ID_KEY],
+                MessageGenerator::ENTITY_TYPE_KEY => $incomingMessageArray[MessageGenerator::ENTITY_TYPE_KEY],
+                MessageGenerator::EVENT_KEY => $incomingMessageArray[MessageGenerator::EVENT_KEY]
             ];
             $message = $this->messageGenerator->generateSerialized($addressData, $metaData);
+            $this->publisher->publish(self::SAVE_TOPIC, $message);
+            $this->logger->info('Message processed', [$incomingMessage]);
         } catch (\Exception $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
         }
-
-        $this->publisher->publish(self::SAVE_TOPIC, $message);
     }
 
     /**
@@ -109,18 +103,18 @@ class Address
     {
         try {
             $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-            $metadata = [
-                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray['correlation_id'],
-                MessageGenerator::ENTITY_TYPE_KEY => self::ENTITY_TYPE,
-                MessageGenerator::EVENT_KEY => self::DELETE_ACTION
+            $metaData = [
+                MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray[MessageGenerator::CORRELATION_ID_KEY],
+                MessageGenerator::ENTITY_TYPE_KEY => $incomingMessageArray[MessageGenerator::ENTITY_TYPE_KEY],
+                MessageGenerator::EVENT_KEY => $incomingMessageArray[MessageGenerator::EVENT_KEY]
             ];
 
-            $message = $this->messageGenerator->generateSerialized($incomingMessageArray['data'], $metadata);
+            $message = $this->messageGenerator->generateSerialized($incomingMessageArray['data'], $metaData);
+            $this->publisher->publish(self::DELETE_TOPIC, $message);
+            $this->logger->info('Message processed', [$incomingMessage]);
         } catch (InvalidArgumentException $e) {
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
         }
-
-        $this->publisher->publish(self::DELETE_TOPIC, $message);
     }
 }
