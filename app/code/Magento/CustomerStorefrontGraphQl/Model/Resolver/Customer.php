@@ -47,14 +47,6 @@ class Customer implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-//        $o = \Magento\Framework\App\ObjectManager::getInstance();
-//        /** @var \Magento\CustomerStorefrontService\Model\CustomerRepository $repo */
-//        $repo = $o->get(\Magento\CustomerStorefrontService\Model\CustomerRepository::class);
-//        $customerFactory = $o->create(\Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory::class);
-//        $customerData = "{\"data\":{\"id\":2,\"store_id\":1,\"website_id\":1,\"default_billing\":\"0\",\"default_shipping\":\"0\",\"dob\":null,\"email\":\"John.Doe@example.com\",\"prefix\":\"Magento\",\"firstname\":\"John\",\"middlename\":null,\"lastname\":\"Doe\",\"suffix\":\"Doe\",\"gender\":0,\"taxvat\":null,\"addresses\":[],\"extension_attributes\":{\"is_subscribed\":false},\"custom_attributes\":[]}}";
-//        $customer = $customerFactory->create(json_decode($customerData, true));
-//        $repo->save($customer);
-
         try {
             $currentUserId = $context->getUserId();
             if ($currentUserId) {
