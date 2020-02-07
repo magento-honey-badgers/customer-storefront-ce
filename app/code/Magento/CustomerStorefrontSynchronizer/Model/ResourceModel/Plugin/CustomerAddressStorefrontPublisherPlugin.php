@@ -61,6 +61,7 @@ class CustomerAddressStorefrontPublisherPlugin
         AddressInterface $addressInput
     ) {
         $addressId = $address->getId();
+        // TODO Fix this logic. The $addressInput reference is being compromised
         $event = !$addressInput->getId() ? self::SAVE_EVENT : self::UPDATE_EVENT;
         $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, $event, ['id' => $addressId]);
         $this->eventPublisher->publish(self::ADDRESS_SAVE_TOPIC, $message);
