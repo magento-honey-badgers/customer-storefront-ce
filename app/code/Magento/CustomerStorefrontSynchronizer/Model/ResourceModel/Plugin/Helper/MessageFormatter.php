@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin\Helper;
 
 /**
- * Formats Event Data
+ * Format Event Data
  */
 class MessageFormatter
 {
@@ -16,12 +16,11 @@ class MessageFormatter
      * Format Customer Event Message
      *
      * @param string $entityType
-     * @param string $correlationId
      * @param string $event
      * @param array $data
      * @return array
      */
-    public function formatEventData($entityType, $event, $data)
+    public function formatEventData(string $entityType, string $event, array $data)
     {
         $message = [];
         $message['entity_type'] = $entityType;

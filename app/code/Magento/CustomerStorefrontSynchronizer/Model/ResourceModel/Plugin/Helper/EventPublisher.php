@@ -19,14 +19,13 @@ class EventPublisher
     /** @var PublisherInterface  */
     private $publisher;
 
-    /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
-     */
+    /** @var Json */
     private $serializer;
 
     /** @var array */
     private $publishedIds = [];
 
+    /** @var LoggerInterface  */
     private $logger;
 
     /**
@@ -48,10 +47,10 @@ class EventPublisher
      * Publishes the messages after validation
      *
      * @param string $topic
-     * @param object|array $message
+     * @param array $message
      * @return boolean
      */
-    public function publish($topic, $message)
+    public function publish(string $topic, array $message) :bool
     {
         $correlationId = uniqid($message['event'], true);
         $message['correlation_id'] = $correlationId;
@@ -74,10 +73,10 @@ class EventPublisher
      * Handle exceptions while publishing events
      *
      * @param \Exception $exception
-     * @param object $message
+     * @param array $message
      * @return bool
      */
-    private function handlePublishErrors(\Exception $exception, $message)
+    private function handlePublishErrors(\Exception $exception, array $message): bool
     {
         //TODO Persist all the events that failed
         $this->logger->error($exception->getMessage(), $message);
@@ -90,7 +89,7 @@ class EventPublisher
      * @param int $entityId
      * @return bool
      */
-    private function validateMessageDuplication($entityId)
+    private function validateMessageDuplication(int $entityId): bool
     {
         if (isset($entityId)) {
             return !in_array($entityId, $this->publishedIds);
@@ -101,14 +100,14 @@ class EventPublisher
     /**
      * Get Entity Id
      *
-     * @param object|array $message
-     * @return string|null
+     * @param array $message
+     * @return int
      */
-    private function getEntityIdfromMessage($message)
+    private function getEntityIdfromMessage(array $message)
     {
         if (isset($message['data']) && isset($message['data']['id'])) {
             $entityId = $message['data']['id'];
-            return $entityId;
+            return (int)$entityId;
         }
         return null;
     }
