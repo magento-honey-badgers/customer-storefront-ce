@@ -34,4 +34,13 @@ interface CustomerRepositoryInterface
      * @throws LocalizedException
      */
     public function save(CustomerInterface $customer): CustomerInterface;
+
+    /**
+     * Delete Customer
+     *
+     * @param CustomerInterface $customer
+     * @return CustomerInterface
+     * @throws LocalizedException
+     */
+    public function delete(CustomerInterface $customer): CustomerInterface;
 }
