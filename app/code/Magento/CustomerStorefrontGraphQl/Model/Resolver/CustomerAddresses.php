@@ -61,8 +61,6 @@ class CustomerAddresses implements ResolverInterface
         $addressesData = [];
         if (!empty($addresses)) {
             foreach ($addresses as $address) {
-                //TODO: handle DTO recursive extractor if regions is also a DTO, or move the toArray into the DTO
-                //$addressesData[] = $this->extractCustomerAddressData->execute($address);
                 $addressesData[] = $address->__toArray();
             }
         }
