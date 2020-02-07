@@ -27,7 +27,13 @@ class CustomerAddressStorefrontPublisherPlugin
 
     private const SAVE_EVENT = 'save';
 
+    private const UPDATE_EVENT = 'update';
+
     private const DELETE_EVENT = 'delete';
+
+    private const ADDRESS_SAVE_TOPIC = 'customer.monolith.connector.address.save';
+
+    private const ADDRESS_DELETE_TOPIC = 'customer.monolith.connector.address.delete';
 
     /**
      * @param MessageFormatter $messageFormatter
@@ -46,13 +52,18 @@ class CustomerAddressStorefrontPublisherPlugin
      *
      * @param AddressRepositoryInterface $addressRepository
      * @param AddressInterface $address
+     * @param AddressInterface $addressInput
      * @return AddressInterface
      */
-    public function afterSave(AddressRepositoryInterface $addressRepository, AddressInterface $address)
-    {
+    public function afterSave(
+        AddressRepositoryInterface $addressRepository,
+        AddressInterface $address,
+        AddressInterface $addressInput
+    ) {
         $addressId = $address->getId();
-        $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, self::SAVE_EVENT, ['id' => $addressId]);
-        $this->eventPublisher->publish('customer.monolith.connector.address.save', $message);
+        $event = !$addressInput->getId() ? self::SAVE_EVENT : self::UPDATE_EVENT;
+        $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, $event, ['id' => $addressId]);
+        $this->eventPublisher->publish(self::ADDRESS_SAVE_TOPIC, $message);
         return $address;
     }
 
@@ -72,7 +83,7 @@ class CustomerAddressStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $addressId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.address.delete', $message);
+        $this->eventPublisher->publish(self::ADDRESS_DELETE_TOPIC, $message);
         return $result;
     }
 
@@ -91,7 +102,7 @@ class CustomerAddressStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $addressId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.address.delete', $message);
+        $this->eventPublisher->publish(self::ADDRESS_DELETE_TOPIC, $message);
         return $result;
     }
 }

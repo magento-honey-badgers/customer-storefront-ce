@@ -30,6 +30,10 @@ class CustomerStorefrontPublisherPlugin
 
     private const DELETE_EVENT = 'delete';
 
+    private const CUSTOMER_SAVE_TOPIC = 'customer.monolith.connector.customer.save';
+
+    private const CUSTOMER_DELETE_TOPIC = 'customer.monolith.connector.customer.delete';
+
     /**
      * @param MessageFormatter $messageFormatter
      * @param EventPublisher $eventPublisher
@@ -58,7 +62,7 @@ class CustomerStorefrontPublisherPlugin
         $customerId = $customer->getId();
         $event = !$customerInput->getId() ? self::SAVE_EVENT : self::UPDATE_EVENT;
         $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, $event, ['id'=> $customerId]);
-        $this->eventPublisher->publish('customer.monolith.connector.customer.save', $message);
+        $this->eventPublisher->publish(self::CUSTOMER_SAVE_TOPIC, $message);
         return $customer;
     }
 
@@ -78,7 +82,7 @@ class CustomerStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $customerId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.customer.delete', $message);
+        $this->eventPublisher->publish(self::CUSTOMER_DELETE_TOPIC, $message);
         return $result;
     }
 
@@ -97,7 +101,7 @@ class CustomerStorefrontPublisherPlugin
             self::DELETE_EVENT,
             ['id'=> $customerId]
         );
-        $this->eventPublisher->publish('customer.monolith.connector.customer.delete', $message);
+        $this->eventPublisher->publish(self::CUSTOMER_DELETE_TOPIC, $message);
         return $result;
     }
 }
