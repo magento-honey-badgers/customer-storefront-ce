@@ -11,9 +11,13 @@ use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
 
+/**
+ * Persistence layer for Customer model
+ */
 class Customer
 {
     const TABLE = 'storefront_customer';
@@ -46,21 +50,27 @@ class Customer
         CustomerValidator $validator,
         CustomerInterfaceFactory $customerInterfaceFactory,
         Json $serializer
-    )
-    {
+    ) {
         $this->resourceConnection = $resourceConnection;
         $this->validator = $validator;
         $this->customerInterfaceFactory = $customerInterfaceFactory;
         $this->serializer = $serializer;
     }
 
+    /**
+     * Fetch customer by id
+     *
+     * @param int $customerId
+     * @return CustomerInterface
+     * @throws NoSuchEntityException
+     */
     public function fetchById(int $customerId)
     {
+        $bind = ['customer_id' => $customerId];
         $select = $this->getConnection()
             ->select()
             ->from(self::TABLE)
             ->where('customer_id = :customer_id');
-        $bind = ['customer_id' => $customerId];
 
         $result = $this->getConnection()->fetchAssoc($select, $bind);
         if (!$result) {
@@ -74,7 +84,14 @@ class Customer
         return $customerModel;
     }
 
-    public function persist(CustomerInterface $customer)
+    /**
+     * Persist customer to database
+     *
+     * @param CustomerInterface $customer
+     * @return CustomerInterface
+     * @throws InputException
+     */
+    public function persist(CustomerInterface $customer): CustomerInterface
     {
         if ($this->validator->validate($customer)) {
             if ($this->customerExists($customer)) {
@@ -83,11 +100,32 @@ class Customer
                 $this->doInsert($customer);
             }
         } else {
-            throw new \InvalidArgumentException("Customer invalid. TODO make this better");
+            throw new InputException(__($this->validator->getErrorMessage()));
         }
         //TODO retrieve customer using storefront_customer_id
+        return $customer;
     }
 
+    /**
+     * Delete customer from database
+     *
+     * @param CustomerInterface $customer
+     * @return bool
+     * @throws NoSuchEntityException
+     */
+    public function delete(CustomerInterface $customer): bool
+    {
+        if (empty($customer->getId()) || !$this->customerExists($customer)) {
+            throw NoSuchEntityException::singleField('customerId', $customer->getId());
+        }
+        return $this->doDelete($customer);
+    }
+
+    /**
+     * Perform customer insert
+     *
+     * @param CustomerInterface $customer
+     */
     private function doInsert(CustomerInterface $customer)
     {
         $customerDocument = $this->serializer->serialize($customer->__toArray());
@@ -95,6 +133,12 @@ class Customer
         $this->getConnection()->insert(self::TABLE, ['customer_document' => $customerDocument]);
     }
 
+    /**
+     * Perform customer update
+     *
+     * @param CustomerInterface $customer
+     * @throws NoSuchEntityException
+     */
     private function doUpdate(CustomerInterface $customer)
     {
         $existingCustomer = $this->fetchById($customer->getId());
@@ -118,7 +162,40 @@ class Customer
         );
     }
 
-    private function customerExists(CustomerInterface $customer)
+    /**
+     * Perform customer delete
+     *
+     * @param CustomerInterface $customer
+     * @return bool
+     * @throws \Exception
+     */
+    private function doDelete(CustomerInterface $customer): bool
+    {
+        $this->getConnection()->beginTransaction();
+
+        //TODO fetch by id and email, then perform delete by PK fields
+
+        try {
+            //delete all addresses
+            //TODO Use constant for table name from address storage (or maybe address storage class directly)
+            $this->getConnection()->delete('storefront_customer_address', ['customer_id = ?' => $customer->getId()]);
+            $this->getConnection()->delete(self::TABLE, ['customer_id = ?' => $customer->getId()]);
+        } catch (\Exception $e) {
+            $this->getConnection()->rollBack();
+            throw $e;
+        }
+
+        $this->getConnection()->commit();
+        return true;
+    }
+
+    /**
+     * Check if customer already exists
+     *
+     * @param CustomerInterface $customer
+     * @return bool
+     */
+    private function customerExists(CustomerInterface $customer): bool
     {
         $bind = ['customer_id' => $customer->getId()];
         $select = $this->getConnection()->select()->from(self::TABLE);
@@ -128,9 +205,13 @@ class Customer
         return !empty($result);
     }
 
+    /**
+     * Get database connection
+     *
+     * @return AdapterInterface
+     */
     private function getConnection(): AdapterInterface
     {
         return $this->resourceConnection->getConnection();
     }
-
 }

@@ -8,9 +8,16 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontService\Model\Storage;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use function implode;
 
+/**
+ * Composite validator for customer
+ */
 class CustomerValidator implements ValidatorInterface
 {
+    /**
+     * @var ValidatorInterface[]
+     */
     private $validators;
 
     public function __construct(array $validators = [])
@@ -34,4 +41,18 @@ class CustomerValidator implements ValidatorInterface
         return true;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getErrorMessage(): ?string
+    {
+        $errorMessages = [];
+        foreach ($this->validators as $validator) {
+            if (!empty($validator->getErrorMessage())) {
+                $errorMessages[] = $validator->getErrorMessage();
+            }
+        }
+
+        return empty($errorMessages) ? null : implode("\n", $errorMessages);
+    }
 }

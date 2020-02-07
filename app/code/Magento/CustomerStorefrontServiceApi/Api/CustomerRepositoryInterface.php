@@ -8,8 +8,11 @@
 namespace Magento\CustomerStorefrontServiceApi\Api;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\Framework\DB\Adapter\DuplicateException;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\State\InputMismatchException;
 
 /**
  * Customer CRUD interface.
@@ -25,4 +28,24 @@ interface CustomerRepositoryInterface
      * @throws LocalizedException
      */
     public function getById(int $customerId): CustomerInterface;
+
+    /**
+     * Save customer
+     *
+     * @param CustomerInterface $customer
+     * @return CustomerInterface
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
+    public function save(CustomerInterface $customer): CustomerInterface;
+
+    /**
+     * Delete customer
+     *
+     * @param CustomerInterface $customer
+     * @return bool
+     * @throws LocalizedException
+     */
+    public function delete(CustomerInterface $customer): bool;
 }
