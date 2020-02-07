@@ -66,11 +66,11 @@ class Customer
      */
     public function fetchById(int $customerId)
     {
-        $bind = ['customer_id' => $customerId];
         $select = $this->getConnection()
             ->select()
             ->from(self::TABLE)
             ->where('customer_id = :customer_id');
+        $bind = ['customer_id' => $customerId];
 
         $result = $this->getConnection()->fetchAssoc($select, $bind);
         if (!$result) {
