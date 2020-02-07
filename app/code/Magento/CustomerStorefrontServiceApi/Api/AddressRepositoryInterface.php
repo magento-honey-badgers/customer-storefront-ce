@@ -4,9 +4,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\CustomerStorefrontApi\Api;
+namespace Magento\CustomerStorefrontServiceApi\Api;
 
-use Magento\CustomerStorefrontApi\Api\Data\AddressInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -31,7 +31,7 @@ interface AddressRepositoryInterface
      * @return AddressInterface
      * @throws LocalizedException
      */
-    public function getById($addressId): AddressInterface;
+    public function getById(int $addressId): AddressInterface;
 
     /**
      * Delete customer address by ID.

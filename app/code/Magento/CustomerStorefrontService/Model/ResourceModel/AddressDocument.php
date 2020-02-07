@@ -13,8 +13,8 @@ use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\ResourceModel\Address\DeleteRelation;
 use Magento\CustomerStorefrontService\Model\Data\AddressDocument as AddressDocumentDto;
-use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory as CustomerDocumentFactory;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerAddressInterfaceFactory;
+use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory;
+use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterfaceFactory;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\DataObject;
@@ -24,9 +24,7 @@ use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Validator\Factory as ValidatorFactory;
 
 /**
- * Class Address
- *
- * @package Magento\Customer\Model\ResourceModel
+ * Class AddressDocument
  */
 class AddressDocument extends AbstractDb
 {
@@ -51,9 +49,9 @@ class AddressDocument extends AbstractDb
     private $customerRegistry;
 
     /**
-     * CustomerAddressInterfaceFactory
+     * AddressInterfaceFactory
      */
-    private $customerAddressFactory;
+    private $addressFactory;
 
     /**
      * Serializable fields
@@ -90,7 +88,7 @@ class AddressDocument extends AbstractDb
      * @param ValidatorFactory $validatorFactory
      * @param DateTime $dateTime,
      * @param AccountConfirmation $accountConfirmation
-     * @param CustomerAddressInterfaceFactory $customerAddressFactory
+     * @param AddressInterfaceFactory $addressFactory
      * @param CustomerDocumentFactory $customerDocumentFactory
      * @param DeleteRelation $deleteRelation
      * @param CustomerRegistry $customerRegistry
@@ -103,7 +101,7 @@ class AddressDocument extends AbstractDb
         ValidatorFactory $validatorFactory,
         DateTime $dateTime,
         AccountConfirmation $accountConfirmation,
-        CustomerAddressInterfaceFactory $customerAddressFactory,
+        AddressInterfaceFactory $addressFactory,
         CustomerDocumentFactory $customerDocumentFactory,
         DeleteRelation $deleteRelation,
         CustomerRegistry $customerRegistry,
@@ -115,7 +113,7 @@ class AddressDocument extends AbstractDb
         $this->_validatorFactory = $validatorFactory;
         $this->dateTime = $dateTime;
         $this->accountConfirmation = $accountConfirmation;
-        $this->customerAddressFactory = $customerAddressFactory;
+        $this->addressFactory = $addressFactory;
         $this->customerDocumentFactory = $customerDocumentFactory;
         $this->customerRegistry = $customerRegistry;
         $this->deleteRelation = $deleteRelation;
@@ -135,10 +133,10 @@ class AddressDocument extends AbstractDb
     /**
      * Check customer address before saving
      *
-     * @param \Magento\Framework\DataObject $address
+     * @param \Magento\Framework\Model\AbstractModel $address
      * @return $this
      */
-    protected function _beforeSave(\Magento\Framework\DataObject $address)
+    protected function _beforeSave(\Magento\Framework\Model\AbstractModel $address)
     {
         parent::_beforeSave($address);
 
@@ -173,7 +171,7 @@ class AddressDocument extends AbstractDb
     /**
      * @inheritdoc
      */
-    public function delete($object)
+    public function delete(\Magento\Framework\Model\AbstractModel $object)
     {
         $result = parent::delete($object);
         $object->setData([]);
@@ -205,7 +203,7 @@ class AddressDocument extends AbstractDb
     protected function _unserializeField(DataObject $object, $field, $defaultValue = null)
     {
         parent::_unserializeField($object, $field, $defaultValue);
-        $customer = $this->customerAddressFactory->create(['data' => $object->getData('customer_document')]);
+        $customer = $this->addressFactory->create(['data' => $object->getData('customer_document')]);
         $object->setData('customer_document', $customer);
     }
 }

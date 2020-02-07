@@ -7,7 +7,7 @@
  */
 namespace Magento\CustomerStorefrontService\Model;
 
-use Magento\Customer\Api\Data\AddressInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\Customer\Model\Address as CustomerAddressModel;
 use Magento\Customer\Model\Customer as CustomerModel;
 use Magento\Customer\Model\ResourceModel\Address\Collection;
@@ -15,11 +15,15 @@ use Magento\Framework\Api\Search\FilterGroup;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\InputException;
+use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
+use Magento\CustomerStorefrontService\Model\Data\AddressDocumentFactory;
+use Magento\CustomerStorefrontService\Model\ResourceModel\CustomerDocument as CustomerDocumentResource;
+use Magento\CustomerStorefrontService\Model\ResourceModel\AddressDocument as AddressDocumentResource;
 
 /**
  * Address repository.
  */
-class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterface
+class AddressRepository implements AddressRepositoryInterface
 {
     /**
      * Directory data
@@ -29,9 +33,19 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
     protected $directoryData;
 
     /**
-     * @var \Magento\Customer\Model\AddressFactory
+     * @var AddressDocumentFactory
      */
-    protected $addressFactory;
+    protected $addressDocumentFactory;
+
+    /**
+     * @var CustomerDocumentResource
+     */
+    private $customerDocumentResource;
+
+    /**
+     * @var AddressDocumentResource
+     */
+    private $addressDocumentResource;
 
     /**
      * @var \Magento\Customer\Model\AddressRegistry
@@ -69,7 +83,9 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
     private $collectionProcessor;
 
     /**
-     * @param \Magento\Customer\Model\AddressFactory $addressFactory
+     * @param AddressDocumentFactory $addressDocumentFactory
+     * @param CustomerDocumentResource $customerDocumentResource
+     * @param AddressDocumentResource $addressDocumentResource
      * @param \Magento\Customer\Model\AddressRegistry $addressRegistry
      * @param \Magento\Customer\Model\CustomerRegistry $customerRegistry
      * @param \Magento\Customer\Model\ResourceModel\Address $addressResourceModel
@@ -80,7 +96,9 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
      * @param CollectionProcessorInterface $collectionProcessor
      */
     public function __construct(
-        \Magento\Customer\Model\AddressFactory $addressFactory,
+        AddressDocumentFactory $addressDocumentFactory,
+        CustomerDocumentResource $customerDocumentResource,
+        AddressDocumentResource $addressDocumentResource,
         \Magento\Customer\Model\AddressRegistry $addressRegistry,
         \Magento\Customer\Model\CustomerRegistry $customerRegistry,
         \Magento\Customer\Model\ResourceModel\Address $addressResourceModel,
@@ -88,9 +106,11 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
         \Magento\Customer\Api\Data\AddressSearchResultsInterfaceFactory $addressSearchResultsFactory,
         \Magento\Customer\Model\ResourceModel\Address\CollectionFactory $addressCollectionFactory,
         \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface $extensionAttributesJoinProcessor,
-        CollectionProcessorInterface $collectionProcessor = null
+        CollectionProcessorInterface $collectionProcessor
     ) {
-        $this->addressFactory = $addressFactory;
+        $this->addressDocumentFactory = $addressDocumentFactory;
+        $this->customerDocumentResource = $customerDocumentResource;
+        $this->addressDocumentResource = $addressDocumentResource;
         $this->addressRegistry = $addressRegistry;
         $this->customerRegistry = $customerRegistry;
         $this->addressResourceModel = $addressResourceModel;
@@ -98,17 +118,17 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
         $this->addressSearchResultsFactory = $addressSearchResultsFactory;
         $this->addressCollectionFactory = $addressCollectionFactory;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
-        $this->collectionProcessor = $collectionProcessor ?: $this->getCollectionProcessor();
+        $this->collectionProcessor = $collectionProcessor;
     }
 
     /**
      * Save customer address.
      *
-     * @param \Magento\Customer\Api\Data\AddressInterface $address
-     * @return \Magento\Customer\Api\Data\AddressInterface
+     * @param AddressInterface $address
+     * @return AddressInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function save(\Magento\Customer\Api\Data\AddressInterface $address)
+    public function save(AddressInterface $address): AddressInterface
     {
         $addressModel = null;
         $customerModel = $this->customerRegistry->retrieve($address->getCustomerId());
@@ -118,7 +138,7 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
 
         if ($addressModel === null) {
             /** @var \Magento\Customer\Model\Address $addressModel */
-            $addressModel = $this->addressFactory->create();
+            $addressModel = $this->addressDocumentFactory->create();
             $addressModel->updateData($address);
             $addressModel->setCustomer($customerModel);
         } else {
@@ -145,6 +165,39 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
     }
 
     /**
+     * Delete customer address by ID.
+     *
+     * @param int $addressId
+     * @return bool true on success
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function deleteById($addressId): bool
+    {
+        $address = $this->addressRegistry->retrieve($addressId);
+        $customerModel = $this->customerRegistry->retrieve($address->getCustomerId());
+        $customerModel->getAddressesCollection()->removeItemByKey($addressId);
+        $this->addressResourceModel->delete($address);
+        $this->addressRegistry->remove($addressId);
+        return true;
+    }
+
+    /**
+     * Retrieve customer address.
+     *
+     * @param int $addressId
+     * @return AddressInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getById(int $addressId): AddressInterface
+    {
+        /** @var \Magento\CustomerStorefrontService\Model\Data\AddressDocument $addressDocument */
+        $addressDocument = $this->addressDocumentFactory->create();
+        $this->addressDocumentResource->load($addressDocument, $addressId);
+        return $addressDocument->getAddressModel();
+    }
+
+    /**
      * Update address collection.
      *
      * @param Customer $customer
@@ -156,19 +209,6 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
     {
         $customer->getAddressesCollection()->removeItemByKey($address->getId());
         $customer->getAddressesCollection()->addItem($address);
-    }
-
-    /**
-     * Retrieve customer address.
-     *
-     * @param int $addressId
-     * @return \Magento\Customer\Api\Data\AddressInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function getById($addressId)
-    {
-        $address = $this->addressRegistry->retrieve($addressId);
-        return $address->getDataModel();
     }
 
     /**
@@ -184,7 +224,7 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
         $collection = $this->addressCollectionFactory->create();
         $this->extensionAttributesJoinProcessor->process(
             $collection,
-            \Magento\Customer\Api\Data\AddressInterface::class
+            AddressInterface::class
         );
 
         $this->collectionProcessor->process($searchCriteria, $collection);
@@ -230,11 +270,11 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
     /**
      * Delete customer address.
      *
-     * @param \Magento\Customer\Api\Data\AddressInterface $address
+     * @param AddressInterface $address
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function delete(\Magento\Customer\Api\Data\AddressInterface $address)
+    public function delete(AddressInterface $address)
     {
         $addressId = $address->getId();
         $address = $this->addressRegistry->retrieve($addressId);
@@ -243,39 +283,5 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
         $this->addressResourceModel->delete($address);
         $this->addressRegistry->remove($addressId);
         return true;
-    }
-
-    /**
-     * Delete customer address by ID.
-     *
-     * @param int $addressId
-     * @return bool true on success
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function deleteById($addressId)
-    {
-        $address = $this->addressRegistry->retrieve($addressId);
-        $customerModel = $this->customerRegistry->retrieve($address->getCustomerId());
-        $customerModel->getAddressesCollection()->removeItemByKey($addressId);
-        $this->addressResourceModel->delete($address);
-        $this->addressRegistry->remove($addressId);
-        return true;
-    }
-
-    /**
-     * Retrieve collection processor
-     *
-     * @deprecated 100.2.0
-     * @return CollectionProcessorInterface
-     */
-    private function getCollectionProcessor()
-    {
-        if (!$this->collectionProcessor) {
-            $this->collectionProcessor = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                'Magento\Eav\Model\Api\SearchCriteria\CollectionProcessor'
-            );
-        }
-        return $this->collectionProcessor;
     }
 }

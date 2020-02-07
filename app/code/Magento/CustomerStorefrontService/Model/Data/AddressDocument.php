@@ -40,7 +40,7 @@ class AddressDocument extends AbstractModel
      *
      * @return AddressInterface|null
      */
-    public function getCustomerAddressModel(): ?AddressInterface
+    public function getAddressModel(): ?AddressInterface
     {
         return $this->getData('customer_address_document');
     }

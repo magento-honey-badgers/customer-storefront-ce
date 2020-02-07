@@ -10,8 +10,7 @@ namespace Magento\CustomerStorefrontService\Model;
 use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\CustomerStorefrontService\Model\Data\CustomerDocumentFactory;
-use Magento\CustomerStorefrontService\Model\Data\AddressDocumentFactory;
-use Magento\CustomerStorefrontService\Model\ResourceModel\CustomerDocument as CustomerResourceModel;
+use Magento\CustomerStorefrontService\Model\ResourceModel\CustomerDocument as CustomerDocumentResource;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 
 /**
@@ -20,9 +19,9 @@ use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 class CustomerRepository implements CustomerRepositoryInterface
 {
     /**
-     * @var CustomerResourceModel
+     * @var CustomerDocumentResource
      */
-    private $customerResourceModel;
+    private $customerDocumentResource;
 
     /**
      * @var CustomerDocumentFactory
@@ -32,35 +31,21 @@ class CustomerRepository implements CustomerRepositoryInterface
     /**
      * @var CustomerInterfaceFactory
      */
-    private $customerFactory;
+    private $customerDtoFactory;
 
     /**
-     * @var \Magento\CustomerStorefrontService\Model\ResourceModel\AddressDocument
-     */
-    private $addressResourceModel;
-
-    /**
-     * @var AddressDocumentFactory
-     */
-    private $addressDocumentFactory;
-
-    /**
-     * @param CustomerResourceModel $customerResourceModel
+     * @param CustomerDocumentResource $customerDocumentResource
      * @param CustomerDocumentFactory $customerDocumentFactory
-     * @param AddressDocumentFactory $addressDocumentFactory
-     * @param CustomerInterfaceFactory $customerFactory
+     * @param CustomerInterfaceFactory $customerDtoFactory
      */
     public function __construct(
-        CustomerResourceModel $customerResourceModel,
+        CustomerDocumentResource $customerDocumentResource,
         CustomerDocumentFactory $customerDocumentFactory,
-        AddressDocumentFactory $addressDocumentFactory,
-        CustomerInterfaceFactory $customerFactory
+        CustomerInterfaceFactory $customerDtoFactory
     ) {
-        $this->customerResourceModel = $customerResourceModel;
+        $this->customerDocumentResource = $customerDocumentResource;
         $this->customerDocumentFactory = $customerDocumentFactory;
-        $this->addressDocumentFactory = $addressDocumentFactory;
-        //$this->addressResourceModel = $addressResourceModel;
-        $this->customerFactory = $customerFactory;
+        $this->customerDtoFactory = $customerDtoFactory;
     }
 
     /**
@@ -69,26 +54,23 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function getById(int $customerId): CustomerInterface
     {
         /** @var \Magento\CustomerStorefrontService\Model\Data\CustomerDocument $customerDocument */
-//        $addressDocument = $this->addressDocumentFactory->create();
-//        $this->addressResourceModel->load($addressDocument, 32323);
-        /** @var \Magento\CustomerStorefrontService\Model\Data\CustomerDocument $customerDocument */
         $customerDocument = $this->customerDocumentFactory->create();
-        $this->customerResourceModel->load($customerDocument, $customerId);
+        $this->customerDocumentResource->load($customerDocument, $customerId);
         return $customerDocument->getCustomerModel();
     }
 
     public function save(CustomerInterface $customer): CustomerInterface
     {
+        /** @var \Magento\CustomerStorefrontService\Model\Data\CustomerDocument $customerDocument */
         $customerDocument = $this->customerDocumentFactory->create([
             'data' => [
                 'customer_document' => $customer,
-//                'customer_model' => $customer
             ]
         ]);
         $customerDocument->setHasDataChanges(true);
-        $this->customerResourceModel->save($customerDocument);
-        $savedCustomer = $this->customerFactory->create(['data' => ['website_id' => $customer->getWebsiteId()]]);
-        $this->customerResourceModel->loadByField($customerDocument, $customer->getEmail(), CustomerInterface::EMAIL);
+        $this->customerDocumentResource->save($customerDocument);
+        $savedCustomer = $this->customerDtoFactory->create(['data' => ['website_id' => $customer->getWebsiteId()]]);
+        $this->customerDocumentResource->loadByField($customerDocument, $customer->getEmail(), CustomerInterface::EMAIL);
 
         return $savedCustomer;
     }
