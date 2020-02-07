@@ -193,7 +193,7 @@ class AddressDocument extends AbstractDb
     }
 
     /**
-     * Replace 'customer_document' with DTO from Array
+     * Replace 'customer_address_document' with DTO from Array
      *
      * @param \Magento\Framework\Model\AbstractModel $object
      * @param string $field
@@ -203,7 +203,7 @@ class AddressDocument extends AbstractDb
     protected function _unserializeField(DataObject $object, $field, $defaultValue = null)
     {
         parent::_unserializeField($object, $field, $defaultValue);
-        $customer = $this->addressFactory->create(['data' => $object->getData('customer_document')]);
-        $object->setData('customer_document', $customer);
+        $address = $this->addressFactory->create(['data' => $object->getData('customer_address_document')]);
+        $object->setData('customer_address_document', $address);
     }
 }

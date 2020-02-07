@@ -42,5 +42,14 @@ interface AddressRepositoryInterface
      * @throws LocalizedException
      */
     public function deleteById($addressId): bool;
+
+    /**
+     * Retrieve customers addresses matching the specified criteria.
+     *
+     * @param int $customerId
+     * @return \Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface[]
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getList(int $customerId): array;
 }
 

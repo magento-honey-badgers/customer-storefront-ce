@@ -8,11 +8,11 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontGraphQl\Model\Resolver;
 
 use Magento\CustomerStorefrontService\Model\Customer\Address\ExtractCustomerAddressData;
+use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
 
 /**
  * Customers addresses field resolver
@@ -56,17 +56,16 @@ class CustomerAddresses implements ResolverInterface
         }
         $customer_id = $value['customer_id'];
 
-        //TODO: use \Magento\CustomerStorefrontService\Model\AddressRepository::getList instead of getById
-        $address = $this->addressRepository->getById(32323);
+        $addresses = $this->addressRepository->getList($customer_id);
 
-        $addressesData = [$address];
-//        $addresses = $customer->getAddresses();
-//
-//        if (count($addresses)) {
-//            foreach ($addresses as $address) {
-//                $addressesData[] = $this->extractCustomerAddressData->execute($address);
-//            }
-//        }
+        $addressesData = [];
+        if (!empty($addresses)) {
+            foreach ($addresses as $address) {
+                //TODO: handle DTO recursive extractor if regions is also a DTO, or move the toArray into the DTO
+                //$addressesData[] = $this->extractCustomerAddressData->execute($address);
+                $addressesData[] = $address->__toArray();
+            }
+        }
         return $addressesData;
     }
 }
