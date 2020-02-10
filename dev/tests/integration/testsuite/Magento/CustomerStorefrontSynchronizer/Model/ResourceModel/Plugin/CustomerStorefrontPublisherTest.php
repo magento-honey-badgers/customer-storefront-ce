@@ -100,7 +100,7 @@ class CustomerStorefrontPublisherTest extends TestCase
      */
     public function testReadMessageCustomerDelete()
     {
-        $customer = $this->customerRepository->get('customer@example.com', 1);
+        $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
         $this->customerRepository->delete($customer);
         /** @var QueueInterface $queue */
         $queue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.delete');

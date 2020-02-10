@@ -86,7 +86,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
      */
     public function testForwardCustomerDeleteMessageToConnectorConsumer()
     {
-        $customer = $this->customerRepository->get('customer@example.com', 1);
+        $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
         $this->customerRepository->delete($customer);
 
         /** @var QueueInterface $monolithQueue */
