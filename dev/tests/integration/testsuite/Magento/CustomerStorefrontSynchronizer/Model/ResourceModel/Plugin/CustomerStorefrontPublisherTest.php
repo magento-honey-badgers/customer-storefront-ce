@@ -15,18 +15,20 @@ use Magento\Framework\MessageQueue\EnvelopeInterface;
 use Magento\Framework\MessageQueue\QueueInterface;
 use Magento\Framework\MessageQueue\QueueRepository;
 use Magento\Framework\Serialize\SerializerInterface;
+use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test publish customer save  and delete events to the first queue
+ *
+ * @magentoDbIsolation disabled
+ * @magentoAppIsolation enabled
  */
 class CustomerStorefrontPublisherTest extends TestCase
 {
-    /**
-     * @var CustomerInterface
-     */
-    private $customer;
+    /** @var CustomerInterface */
+ //   private $customer;
 
     /**
      * @var CustomerRepositoryInterface
@@ -37,7 +39,7 @@ class CustomerStorefrontPublisherTest extends TestCase
     private $serializer;
 
     /** @var QueueRepository */
-    private $queueRepostiory;
+    private $queueRepository;
 
     /** @var CustomerInterfaceFactory */
     private $customerFactory;
@@ -45,14 +47,23 @@ class CustomerStorefrontPublisherTest extends TestCase
     /** @var EncryptorInterface */
     private $encryptor;
 
+    /** @var CustomerConnectorConsumer  */
+    private $customerConnectorConsumer;
+
+    /** @var ResourceModel\Customer */
+    private $customerResource;
+
     protected function setup()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
         $this->serializer = $objectManager->get(SerializerInterface::class);
-        $this->queueRepostiory = $objectManager->create(QueueRepository::class);
+        $this->queueRepository = $objectManager->create(QueueRepository::class);
         $this->customerFactory = $objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $objectManager->get(EncryptorInterface::class);
+      //  $this->customer = $objectManager->get(CustomerInterface::class);
+        $this->customerConnectorConsumer = $objectManager->get(CustomerConnectorConsumer::class);
+        $this->customerResource = $objectManager->get(ResourceModel\Customer::class);
     }
 
     /**
@@ -66,7 +77,7 @@ class CustomerStorefrontPublisherTest extends TestCase
         $customer->setLastname('SmithUpdated');
         $this->customerRepository->save($customer);
         /** @var QueueInterface $queue */
-        $queue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.save' );
+        $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save' );
         /** @var EnvelopeInterface $message */
         $message = $queue->dequeue();
         $messageBody = $message->getBody();
@@ -76,7 +87,7 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->assertNotEmpty($parsedData);
         $this->assertArrayHasKey('correlation_id',$parsedData);
         $this->assertEquals('customer',$parsedData['entity_type']);
-        $this->assertEquals('save', $parsedData['event']);
+        $this->assertEquals('create', $parsedData['event']);
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
         $queue->acknowledge($message);
     }
@@ -91,12 +102,11 @@ class CustomerStorefrontPublisherTest extends TestCase
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
         $this->customerRepository->delete($customer);
-        sleep(5);
         /** @var QueueInterface $queue */
         $queue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.delete');
         /** @var EnvelopeInterface $message */
         $message = $queue->dequeue();
-         $messageBody = $message->getBody();
+        $messageBody = $message->getBody();
         $unserializedJson = $this->serializer->unserialize($messageBody);
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
@@ -107,4 +117,5 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
         $queue->acknowledge($message);
     }
+
 }
