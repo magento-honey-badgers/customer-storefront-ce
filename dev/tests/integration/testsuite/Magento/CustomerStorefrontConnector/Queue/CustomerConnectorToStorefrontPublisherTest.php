@@ -165,39 +165,4 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $serviceQueue->acknowledge($customerSaveMessage);
         $monolithQueue->acknowledge($monolithMessage);
     }
-    /**
-     * DataProvider with expected customer data
-     *
-     * @return array
-     */
-    public function customerDataProvider() : array
-    {
-        return [
-            [
-                    'id' => $this->customerRepository->get('customer@example.com', 1)->getId(),
-                    'store_id' => 1,
-                    'website_id' => 1,
-                    'default_billing' => '0',
-                    'default_shipping' => '0',
-                    'dob'=> '01-01-1970',
-                    'email' =>'customer@example.com',
-                    'prefix' =>'Mr.',
-                    'firstname' =>'John@example.com',
-                    'middlename' =>'A',
-                    'lastname' =>'Smith',
-                    'suffix' =>'Esq',
-                    'gender' =>0,
-                    'taxvat' =>'12',
-                    'addresses'=> [],
-                    'extension_attributes'=>[
-                        'is_subscribed'=> false
-                    ],
-                    'custom_attributes'=>[]
-                ]
-
-        ];
-    }
-
-
-
 }
