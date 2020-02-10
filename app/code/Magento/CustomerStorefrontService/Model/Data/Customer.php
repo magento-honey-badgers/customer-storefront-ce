@@ -85,6 +85,26 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     }
 
     /**
+     * Get middle name
+     *
+     * @return string|null
+     */
+    public function getMiddlename()
+    {
+        return $this->_get(self::MIDDLENAME);
+    }
+
+    /**
+     * Get gender
+     *
+     * @return string|null
+     */
+    public function getGender()
+    {
+        return $this->_get(self::GENDER);
+    }
+
+    /**
      * Get addresses
      *
      * @return AddressInterface[]|null
@@ -102,6 +122,56 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     public function getDateOfBirth()
     {
         return $this->_get(self::DATE_OF_BIRTH);
+    }
+
+    /**
+     * Get prefix
+     *
+     * @return string|null
+     */
+    public function getPrefix()
+    {
+        return $this->_get(self::PREFIX);
+    }
+
+    /**
+     * Get suffix
+     *
+     * @return string|null
+     */
+    public function getSuffix()
+    {
+        return $this->_get(self::SUFFIX);
+    }
+
+    /**
+     * Get store id
+     *
+     * @return int|null
+     */
+    public function getStoreId()
+    {
+        return $this->_get(self::STORE_ID);
+    }
+
+    /**
+     * Get website id
+     *
+     * @return int|null
+     */
+    public function getWebsiteId()
+    {
+        return $this->_get(self::WEBSITE_ID);
+    }
+
+    /**
+     * Get tax Vat.
+     *
+     * @return string|null
+     */
+    public function getTaxvat()
+    {
+        return $this->_get(self::TAXVAT);
     }
 
     /**
@@ -174,7 +244,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * Set last name
      *
      * @param string $lastname
-     * @return string
+     * @return $this
      */
     public function setLastname($lastname)
     {
@@ -182,20 +252,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     }
 
     /**
-     * Get middle name
-     *
-     * @return string|null
-     */
-    public function getMiddlename()
-    {
-        return $this->_get(self::MIDDLENAME);
-    }
-
-    /**
      * Set middle name
      *
      * @param string $middlename
-     * @return CustomerInterface
+     * @return $this
      */
     public function setMiddlename($middlename)
     {
@@ -203,20 +263,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     }
 
     /**
-     * Get gender
-     *
-     * @return string|null
-     */
-    public function getGender()
-    {
-        return $this->_get(self::GENDER);
-    }
-
-    /**
      * Set gender
      *
      * @param string $gender
-     * @return Customer
+     * @return $this
      */
     public function setGender($gender)
     {
@@ -224,20 +274,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     }
 
     /**
-     * Get prefix
-     *
-     * @return string|null
-     */
-    public function getPrefix()
-    {
-        return $this->_get(self::PREFIX);
-    }
-
-    /**
      * Set prefix
      *
      * @param string $prefix
-     * @return  Customer
+     * @return  $this
      */
     public function setPrefix($prefix)
     {
@@ -245,20 +285,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     }
 
     /**
-     * Get suffix
-     *
-     * @return string|null
-     */
-    public function getSuffix()
-    {
-        return $this->_get(self::SUFFIX);
-    }
-
-    /**
      * Set suffix
      *
      * @param string $suffix
-     * @return  Customer
+     * @return  $this
      */
     public function setSuffix($suffix)
     {
@@ -269,21 +299,11 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * Set store id
      *
      * @param int $storeId
-     * @return  Customer
+     * @return  $this
      */
     public function setStoreId($storeId)
     {
         return $this->setData(self::STORE_ID, $storeId);
-    }
-
-    /**
-     * Get store id
-     *
-     * @return int|null
-     */
-    public function getStoreId()
-    {
-        return $this->_get(self::STORE_ID);
     }
 
     /**
@@ -298,30 +318,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     }
 
     /**
-     * Get website id
-     *
-     * @return int|null
-     */
-    public function getWebsiteId()
-    {
-        return $this->_get(self::WEBSITE_ID);
-    }
-
-    /**
-     * Get tax Vat.
-     *
-     * @return string|null
-     */
-    public function getTaxvat()
-    {
-        return $this->_get(self::TAXVAT);
-    }
-
-    /**
      * Set tax Vat
      *
      * @param string $taxvat
-     * @return CustomerInterface
+     * @return $this
      */
     public function setTaxvat($taxvat)
     {
@@ -334,7 +334,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param AddressInterface[] $addresses
      * @return $this
      */
-    public function setAddresses(array $addresses = null)
+    public function setAddresses(array $addresses = [])
     {
         return $this->setData(self::KEY_ADDRESSES, $addresses);
     }
@@ -343,7 +343,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * Set data of birth
      *
      * @param string $dateOfbirth
-     * @return Customer|CustomerInterface
+     * @return $this
      */
     public function setDateOfBirth(string $dateOfbirth)
     {

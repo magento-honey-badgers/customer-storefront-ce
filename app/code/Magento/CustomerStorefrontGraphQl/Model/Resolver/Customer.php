@@ -14,6 +14,9 @@ use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 
+/**
+ * Customers field resolver
+ */
 class Customer implements ResolverInterface
 {
     /**
@@ -23,7 +26,6 @@ class Customer implements ResolverInterface
 
     /**
      * @param CustomerRepositoryInterface $customerRepository
-     *
      */
     public function __construct(CustomerRepositoryInterface $customerRepository)
     {
@@ -31,14 +33,7 @@ class Customer implements ResolverInterface
     }
 
     /**
-     * @param Field $field
-     * @param \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context
-     * @param ResolveInfo $info
-     * @param array|null $value
-     * @param array|null $args
-     * @return \Magento\Framework\GraphQl\Query\Resolver\Value|mixed
-     * @throws GraphQlNoSuchEntityException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @inheritdoc
      */
     public function resolve(
         Field $field,

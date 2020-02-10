@@ -29,7 +29,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
     /**
      * Get customer id
      *
-     * @return string|null
+     * @return int|null
      */
     public function getCustomerId()
     {
@@ -69,7 +69,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
     /**
      * Get region
      *
-     * @return RegionInterface|null
+     * @return string|null
      */
     public function getRegionCode()
     {
@@ -79,7 +79,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
     /**
      * Get country code
      *
-     * @return RegionInterface|null
+     * @return string|null
      */
     public function getCountryCode()
     {

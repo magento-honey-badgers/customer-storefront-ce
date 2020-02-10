@@ -1,11 +1,9 @@
 <?php
 /**
- *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
-
 
 /**
  * Customer address region interface.
@@ -32,7 +30,7 @@ interface RegionInterface
      * @param string $regionCode
      * @return $this
      */
-    public function setRegionCode($regionCode): string;
+    public function setRegionCode($regionCode);
 
     /**
      * Get region

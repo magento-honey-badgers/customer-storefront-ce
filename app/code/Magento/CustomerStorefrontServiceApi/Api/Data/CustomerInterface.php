@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -252,5 +251,5 @@ interface CustomerInterface
      * @param AddressInterface[] $addresses
      * @return $this
      */
-    public function setAddresses(array $addresses = null);
+    public function setAddresses(array $addresses = []);
 }

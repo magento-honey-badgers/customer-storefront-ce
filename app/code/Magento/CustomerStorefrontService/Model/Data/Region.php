@@ -11,7 +11,6 @@ use Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface;
 
 /**
  * Data Model implementing Address Region interface
- *
  */
 class Region extends \Magento\Framework\Api\AbstractSimpleObject implements
     RegionInterface
