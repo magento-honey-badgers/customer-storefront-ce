@@ -44,7 +44,7 @@ class Address
     public function __construct(
         ResourceConnection $resourceConnection,
         AddressInterfaceFactory $addressInterfaceFactory,
-        Json $serializersy
+        Json $serializer
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->addressInterfaceFactory = $addressInterfaceFactory;
