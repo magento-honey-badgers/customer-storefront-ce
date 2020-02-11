@@ -140,7 +140,7 @@ class Address
      * @return bool
      * @throws NoSuchEntityException
      */
-    public function delete(int $addressId): bool
+    public function deleteById(int $addressId): bool
     {
         if (!$this->addressExists($addressId)) {
             throw NoSuchEntityException::singleField('address_id', $addressId);
@@ -160,11 +160,11 @@ class Address
         try {
             $address = $this->fetchByAddressId($addressId);
             $customer = $this->customerStorage->fetchById($address->getCustomerId());
-            if (($customer->getDefaultBilling() == (string)$address->getId())) {
-                $customer->setDefaultBilling("");
+            if (($customer->getDefaultBilling() == $address->getId())) {
+                $customer->setDefaultBilling(0);
             }
-            if (($customer->getDefaultShipping() == (string)$address->getId())) {
-                $customer->setDefaultShipping("");
+            if (($customer->getDefaultShipping() == $address->getId())) {
+                $customer->setDefaultShipping(0);
             }
             $this->getConnection()->beginTransaction();
             $this->customerStorage->persist($customer);
