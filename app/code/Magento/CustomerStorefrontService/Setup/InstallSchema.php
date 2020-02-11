@@ -109,10 +109,17 @@ ADDCOLUMN;
 
         //Add Columns
         $setup->getConnection()->query($addColumnSql);
+
+        //Add Unique Index
+        $setup->getConnection()->addIndex(
+            $addressTable,
+            'STOREFRONT_CUSTOMER_ADDRESS_ADDRESS_ID',
+            ['customer_address_id'],
+            AdapterInterface::INDEX_TYPE_UNIQUE
+        );
         //Add Indexes
         $indexes = [
             'STOREFRONT_CUSTOMER_ADDRESS_ROW_ID' => 'customer_row_id',
-            'STOREFRONT_CUSTOMER_ADDRESS_ADDRESS_ID' => 'customer_address_id',
             'STOREFRONT_CUSTOMER_ADDRESS_CUSTOMER_ID' => 'customer_id'
         ];
         foreach ($indexes as $indexName => $column) {

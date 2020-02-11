@@ -149,19 +149,6 @@ class Address
     }
 
     /**
-     * Delete all addresses belonging to a customer
-     *
-     * @param int $customerId
-     */
-    public function deleteAllAddresses(int $customerId)
-    {
-        $this->getConnection()->delete(
-            self::TABLE,
-            ['customer_id = ?' => $customerId]
-        );
-    }
-
-    /**
      * Perform address delete
      *
      * @param int $addressId
@@ -223,7 +210,7 @@ class Address
         $this->getConnection()->update(
             self::TABLE,
             ['customer_address_document' => $addressDocument],
-            ['customer_address_id' => $addressId]
+            ['customer_address_id = ?' => $addressId]
         );
     }
 
