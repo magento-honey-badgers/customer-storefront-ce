@@ -17,7 +17,7 @@ use Magento\Framework\Api\AbstractSimpleObject;
 class Customer extends AbstractSimpleObject implements CustomerInterface
 {
     /**
-     * @return string|null
+     * @return int|null
      */
     public function getDefaultBilling()
     {
@@ -27,7 +27,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Get default shipping address id
      *
-     * @return string|null
+     * @return int|null
      */
     public function getDefaultShipping()
     {
@@ -188,10 +188,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Set default billing address id
      *
-     * @param string $defaultBilling
+     * @param int $defaultBilling
      * @return $this
      */
-    public function setDefaultBilling(string $defaultBilling)
+    public function setDefaultBilling(int $defaultBilling)
     {
         return $this->setData(self::DEFAULT_BILLING, $defaultBilling);
     }
@@ -199,10 +199,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Set default shipping address id
      *
-     * @param string $defaultShipping
+     * @param int $defaultShipping
      * @return $this
      */
-    public function setDefaultShipping(string $defaultShipping)
+    public function setDefaultShipping(int $defaultShipping)
     {
         return $this->setData(self::DEFAULT_SHIPPING, $defaultShipping);
     }

@@ -8,11 +8,9 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontService\Queue\Consumer;
 
 use Psr\Log\LoggerInterface;
-use Magento\CustomerStorefrontService\Model\Data\Mapper\AddressMapper;
+use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterfaceFactory;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\CustomerStorefrontService\Model\AddressRepository;
-use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
-use Magento\CustomerStorefrontService\Model\Storage\Address as AddressStorage;
+use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
 
 /**
  * Handle address save messages
@@ -24,38 +22,37 @@ class AddressReactor
      */
     private $logger;
 
+    /**
+     * @var AddressRepositoryInterface
+     */
     private $addressRepository;
 
-    private $address;
+    /**
+     * @var AddressInterfaceFactory
+     */
+    private $addressFactory;
 
-    private $addressMapper;
-
+    /**
+     * @var SerializerInterface
+     */
     private $serializer;
-
-    private $addressStorage;
 
     /**
      * @param LoggerInterface $logger
-     * @param AddressRepository $addressRepository
-     * @param AddressInterface $address
-     * @param AddressMapper $addressMapper
+     * @param AddressRepositoryInterface $addressRepository
+     * @param AddressInterfaceFactory $addressFactory
      * @param SerializerInterface $serializer
-     * @param AddressStorage $addressStorage
      */
     public function __construct(
         LoggerInterface $logger,
-        AddressRepository $addressRepository,
-        AddressInterface $address,
-        AddressMapper $addressMapper,
-        SerializerInterface $serializer,
-        AddressStorage $addressStorage
+        AddressRepositoryInterface $addressRepository,
+        AddressInterfaceFactory $addressFactory,
+        SerializerInterface $serializer
     ) {
         $this->logger = $logger;
         $this->addressRepository = $addressRepository;
-        $this->address = $address;
-        $this->addressMapper = $addressMapper;
+        $this->addressFactory = $addressFactory;
         $this->serializer = $serializer;
-        $this->addressStorage = $addressStorage;
     }
 
     /**
@@ -67,13 +64,8 @@ class AddressReactor
     {
         $this->logger->info('Message Received', [$incomingMessage]);
         $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-        /**
-         * @var $customer AddressInterface
-         */
-        $address = $this->addressMapper->mapAddressData($incomingMessageArray);
-        // TODO clean up Address repo and move storage there
-        $this->addressStorage->persist($address);
-//        $this->addressRepository->save($address);
+        $address = $this->addressFactory->create(['data' => $incomingMessageArray['data']]);
+        $this->addressRepository->save($address);
         $this->logger->info('Address Saved', [$address->getId()]);
     }
 
@@ -87,7 +79,7 @@ class AddressReactor
     {
         $this->logger->info('Message Received', [$incomingMessage]);
         $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-        $this->addressStorage->delete((int)$incomingMessageArray['data']['id']);
+        $this->addressRepository->deleteById((int)$incomingMessageArray['data']['id']);
         $this->logger->info('Address Deleted', [$incomingMessage]);
     }
 }

@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontGraphQl\Model\Resolver;
 
 use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
@@ -18,7 +19,6 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
  */
 class CustomerAddresses implements ResolverInterface
 {
-
     /**
      * @var AddressRepositoryInterface
      */
@@ -53,9 +53,25 @@ class CustomerAddresses implements ResolverInterface
         $addressesData = [];
         if (!empty($addresses)) {
             foreach ($addresses as $address) {
-                $addressesData[] = $address->__toArray();
+                $addressesData[] = $this->formatOutput($address);
             }
         }
         return $addressesData;
     }
+
+    /**
+     * Format address for graphql
+     *
+     * TODO this is a temporary solution
+     *
+     * @param AddressInterface $Address
+     * @return array
+     */
+    private function formatOutput(AddressInterface $address): array
+    {
+        $addressArray = $address->__toArray();
+        $addressArray['country_code'] = $address->getCountryCode();
+        return $addressArray;
+    }
+
 }

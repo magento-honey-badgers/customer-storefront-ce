@@ -17,7 +17,7 @@ interface CustomerInterface
     const FIRSTNAME = 'firstname';
     const LASTNAME = 'lastname';
     const MIDDLENAME = 'middlename';
-    const DATE_OF_BIRTH = 'date_of_birth';
+    const DATE_OF_BIRTH = 'dob';
     const EMAIL = 'email';
     const GENDER = 'gender';
     const PREFIX = 'prefix';
@@ -211,32 +211,32 @@ interface CustomerInterface
     /**
      * Get default billing address id
      *
-     * @return string|null
+     * @return int|null
      */
     public function getDefaultBilling();
 
     /**
      * Set default billing address id
      *
-     * @param string $defaultBilling
+     * @param int $defaultBilling
      * @return $this
      */
-    public function setDefaultBilling(string $defaultBilling);
+    public function setDefaultBilling(int $defaultBilling);
 
     /**
      * Get default shipping address id
      *
-     * @return string|null
+     * @return int|null
      */
     public function getDefaultShipping();
 
     /**
      * Set default shipping address id
      *
-     * @param string $defaultShipping
+     * @param int $defaultShipping
      * @return $this
      */
-    public function setDefaultShipping(string $defaultShipping);
+    public function setDefaultShipping(int $defaultShipping);
 
     /**
      * Get customer addresses.

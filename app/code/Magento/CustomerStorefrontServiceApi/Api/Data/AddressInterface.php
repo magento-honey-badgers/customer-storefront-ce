@@ -1,9 +1,5 @@
 <?php
 /**
-<<<<<<< HEAD
- *
-=======
->>>>>>> c7668162639996a1ab638de1fec30b1e57cc7657
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -23,7 +19,7 @@ interface AddressInterface
     const LASTNAME = 'lastname';
     const REGION = 'region';
     const REGION_CODE = 'region_code';
-    const COUNTRY_CODE = 'country_code';
+    const COUNTRY_CODE = 'country_id';
     const STREET = 'street';
     const TELEPHONE = 'telephone';
     const FAX = 'fax';

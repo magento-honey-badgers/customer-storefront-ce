@@ -3,18 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\CustomerStorefrontService\Model;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
-use Magento\Framework\Exception\InputException;
 use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
-use Magento\CustomerStorefrontService\Model\Data\AddressDocumentFactory;
+use Magento\CustomerStorefrontService\Model\Storage\Address as AddressStorage;
 
 /**
  * Address repository.
  */
 class AddressRepository implements AddressRepositoryInterface
 {
+    /**
+     * @var AddressStorage
+     */
+    private $addressStorage;
+
+    /**
+     * @var CustomerRepository
+     */
+    private $customerRepository;
+
+    /**
+     * @param AddressStorage $addressStorage
+     * @param CustomerRepository $customerRepository
+     */
+    public function __construct(
+        AddressStorage $addressStorage,
+        CustomerRepository $customerRepository
+    ) {
+        $this->addressStorage = $addressStorage;
+        $this->customerRepository = $customerRepository;
+    }
+
     /**
      * Save customer address.
      *
@@ -24,6 +47,21 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function save(AddressInterface $address): AddressInterface
     {
+        $this->addressStorage->persist($address);
+
+        if (($address->isDefaultShipping() || $address->isDefaultBilling()) && $address->getCustomerId()) {
+            $customer = $this->customerRepository->getById($address->getCustomerId());
+            if ($address->isDefaultShipping()) {
+                $customer->setDefaultShipping($address->getId());
+            }
+            if ($address->isDefaultBilling()) {
+                $customer->setDefaultBilling($address->getId());
+            }
+            $this->customerRepository->save($customer);
+        }
+
+        //TODO this won't work when creating an address in storefront (new address won't have an ID)
+        return $this->getById($address->getId());
     }
 
     /**
@@ -36,6 +74,7 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function deleteById(int $addressId): bool
     {
+        return $this->addressStorage->delete($addressId);
     }
 
     /**
@@ -47,6 +86,7 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function getById(int $addressId): AddressInterface
     {
+        return $this->addressStorage->fetchByAddressId($addressId);
     }
 
     /**
@@ -58,6 +98,7 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function getList(int $customerId): array
     {
+        return $this->addressStorage->fetchAddressesByCustomerId($customerId);
     }
 
     /**
@@ -69,5 +110,6 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function delete(AddressInterface $address): bool
     {
+        $this->addressStorage->delete($address->getId());
     }
 }

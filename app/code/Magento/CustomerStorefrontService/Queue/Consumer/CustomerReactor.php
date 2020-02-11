@@ -8,10 +8,9 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontService\Queue\Consumer;
 
 use Psr\Log\LoggerInterface;
-use Magento\CustomerStorefrontService\Model\Data\Mapper\CustomerMapper;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\CustomerStorefrontService\Model\CustomerRepository;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
 
 /**
  * Handle customer save messages
@@ -23,26 +22,35 @@ class CustomerReactor
      */
     private $logger;
 
-    private $customerMapper;
+    /**
+     * @var CustomerInterfaceFactory
+     */
+    private $customerFactory;
 
+    /**
+     * @var SerializerInterface
+     */
     private $serializer;
 
+    /**
+     * @var CustomerRepositoryInterface
+     */
     private $customerRepository;
 
     /**
      * @param LoggerInterface $logger
-     * @param CustomerMapper $customerMapper
+     * @param CustomerInterfaceFactory $customerFactory
      * @param SerializerInterface $serializer
-     * @param CustomerRepository $customerRepository
+     * @param CustomerRepositoryInterface $customerRepository
      */
     public function __construct(
         LoggerInterface $logger,
-        CustomerMapper $customerMapper,
+        CustomerInterfaceFactory $customerFactory,
         SerializerInterface $serializer,
-        CustomerRepository $customerRepository
+        CustomerRepositoryInterface $customerRepository
     ) {
         $this->logger = $logger;
-        $this->customerMapper = $customerMapper;
+        $this->customerFactory = $customerFactory;
         $this->serializer = $serializer;
         $this->customerRepository = $customerRepository;
     }
@@ -59,10 +67,7 @@ class CustomerReactor
     {
         $this->logger->info('Message Received', [$incomingMessage]);
         $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-        /**
-         * @var $customer CustomerInterface
-         */
-        $customer = $this->customerMapper->mapCustomerData($incomingMessageArray);
+        $customer = $this->customerFactory->create(['data' => $incomingMessageArray['data']]);
         $this->customerRepository->save($customer);
     }
 

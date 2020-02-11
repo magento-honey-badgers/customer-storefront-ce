@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontGraphQl\Model\Resolver;
 
 use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
+use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
@@ -45,7 +46,6 @@ class Customer implements ResolverInterface
         try {
             $currentUserId = $context->getUserId();
             if ($currentUserId) {
-                /** @var \Magento\CustomerStorefrontService\Model\Data\Customer $customer */
                 $customer = $this->customerRepository->getById($currentUserId);
             } else {
                 throw new GraphQlNoSuchEntityException(__('Customer not authenticated'));
@@ -53,8 +53,23 @@ class Customer implements ResolverInterface
         } catch (NoSuchEntityException $e) {
             throw new GraphQlNoSuchEntityException(__($e->getMessage()));
         }
+        return $this->formatOutput($customer);
+    }
+
+    /**
+     * Format array for output to graphql
+     *
+     * TODO this is temp solution
+     * Final solution should be more generic and allow for transforming various data object
+     *
+     * @param CustomerInterface $customer
+     * @return array
+     */
+    private function formatOutput(CustomerInterface $customer): array
+    {
         $customerArray = $customer->__toArray();
-        $customerArray['customer_id'] = $currentUserId;
+        $customerArray['customer_id'] = $customer->getId();
+        $customerArray['date_of_birth'] = $customer->getDateOfBirth();
         return $customerArray;
     }
 }

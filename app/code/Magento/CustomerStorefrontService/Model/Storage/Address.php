@@ -67,7 +67,6 @@ class Address
      *
      * @param int $customerId
      * @return array
-     * @throws NoSuchEntityException
      */
     public function fetchAddressesByCustomerId(int $customerId)
     {
@@ -78,9 +77,6 @@ class Address
         $bind = ['customer_id' => $customerId];
 
         $result = $this->getConnection()->fetchAssoc($select, $bind);
-        if (!$result) {
-            throw NoSuchEntityException::singleField('customer_id', $customerId);
-        }
 
         $addresses = [];
         foreach ($result as $rowItem) {
@@ -111,7 +107,7 @@ class Address
 
         $result = $this->getConnection()->fetchAssoc($select, $bind);
         if (!$result) {
-            throw NoSuchEntityException::singleField('customer_address_id', $addressId);
+            throw NoSuchEntityException::singleField('address_id', $addressId);
         }
 
         $addressModel = $this->addressInterfaceFactory->create([
