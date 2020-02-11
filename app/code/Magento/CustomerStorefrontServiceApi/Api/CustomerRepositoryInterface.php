@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -8,7 +7,6 @@
 namespace Magento\CustomerStorefrontServiceApi\Api;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
-use Magento\Framework\DB\Adapter\DuplicateException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;

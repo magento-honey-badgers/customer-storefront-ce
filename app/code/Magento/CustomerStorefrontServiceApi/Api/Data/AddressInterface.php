@@ -1,6 +1,9 @@
 <?php
 /**
+<<<<<<< HEAD
  *
+=======
+>>>>>>> c7668162639996a1ab638de1fec30b1e57cc7657
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
