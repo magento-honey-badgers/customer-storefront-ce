@@ -34,17 +34,10 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomerConnectorToStorefrontPublisherTest extends TestCase
 {
-    /** @var CustomerInterface */
-    //   private $customer;
-
     /** @var ObjectManagerInterface */
     private $objectManager;
 
-    /** @var CustomerRepositoryInterface|MockObject */
-    private $customerRepositoryMock;
-
-    /**
-     * @var CustomerRepositoryInterface */
+    /** @var CustomerRepositoryInterface */
     private $customerRepository;
 
     /** @var SerializerInterface */
@@ -80,12 +73,17 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
     }
 
     /**
-     * Test forward customer save event into the connector-consumer into the second queue
+     * Forward customer delete event
+     *
+     * Test published customer delete event from synchronizer to connector
+     *
      * @magentoAppArea adminhtml
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
      */
     public function testForwardCustomerDeleteMessageToConnectorConsumer()
     {
+      //$this->cleanUpMonolithConnectorCustomerQueue('customer.monolith.connector.customer.delete');
+
         $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
         $this->customerRepository->delete($customer);
 
@@ -113,10 +111,10 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
-      $this->assertArrayHasKey('correlation_id',$parsedData);
-      $this->assertEquals('customer',$parsedData['entity_type']);
-      $this->assertEquals('delete', $parsedData['event']);
-      $this->assertEquals($customer->getId(), $parsedData['data']['id']);
+        $this->assertArrayHasKey('correlation_id',$parsedData);
+        $this->assertEquals('customer',$parsedData['entity_type']);
+        $this->assertEquals('delete', $parsedData['event']);
+        $this->assertEquals($customer->getId(), $parsedData['data']['id']);
 
       //Clean up - making sure to acknowledge all the messages from all the queues involved
       $serviceQueue->acknowledge($serviceMessage);
@@ -125,8 +123,9 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
     }
 
     /**
-     * Once customer is saved in monolith, the message gets published to first queue from where it gets picked up by the Consumer on Connector side and
-     * gets published to the second queue
+     * Forward customer save event to Connector consumer
+     *
+     * Test published customer save event from synchronizer to connector
      *
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer.php
      * @magentoAppArea adminhtml
@@ -145,8 +144,8 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $monolithMessage = $monolithQueue->dequeue();
         $unserializedMonolithMessage = $this->serializer->unserialize($monolithMessage->getBody());
         $customerData = include __DIR__ . '/../_files/customer_data.php';
-      //  $customerData = include '/opt/local/www/apache2/html/CustomerStorefront/CustomerStorefrontApp/dev/tests/integration/testsuite/Magento/CustomerStorefrontConnector/_files/customer_data.php';
-        $this->customerRepositoryWrapperMock->expects($this->once())->method('getById')->with($customerId)->willReturn($customerData);
+        $this->customerRepositoryWrapperMock->expects($this->once())->method('getById')
+            ->with($customerId)->willReturn($customerData);
         $this->customerConnectorConsumer->forwardCustomerChanges($unserializedMonolithMessage);
 
         $customerSaveMessage = $serviceQueue->dequeue();
