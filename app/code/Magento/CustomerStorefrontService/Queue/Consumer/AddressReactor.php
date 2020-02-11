@@ -36,6 +36,11 @@ class AddressReactor
 
     /**
      * @param LoggerInterface $logger
+     * @param AddressRepository $addressRepository
+     * @param AddressInterface $address
+     * @param AddressMapper $addressMapper
+     * @param SerializerInterface $serializer
+     * @param AddressStorage $addressStorage
      */
     public function __construct(
         LoggerInterface $logger,
@@ -54,7 +59,7 @@ class AddressReactor
     }
 
     /**
-     * Send address data to storefront service queue
+     * Handle Address save
      *
      * @param string $incomingMessage
      */
@@ -69,16 +74,21 @@ class AddressReactor
         // TODO clean up Address repo and move storage there
         $this->addressStorage->persist($address);
 //        $this->addressRepository->save($address);
+        $this->logger->info('Address Saved', [$address->getId()]);
     }
 
     /**
-     * Forward deleted address ID to storefront service queue
+     * Handle Address Deletion
      *
      * @param string $incomingMessage
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function handleAddressDelete(string $incomingMessage): void
     {
         $this->logger->info('Message Received', [$incomingMessage]);
+        $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
+        $this->addressStorage->delete((int)$incomingMessageArray['data']['id']);
+        $this->logger->info('Address Deleted', [$incomingMessage]);
     }
 }
 
