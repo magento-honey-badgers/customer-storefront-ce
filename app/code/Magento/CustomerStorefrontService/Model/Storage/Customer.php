@@ -44,6 +44,9 @@ class Customer
 
     /**
      * @param ResourceConnection $resourceConnection
+     * @param CustomerValidator $validator
+     * @param CustomerInterfaceFactory $customerInterfaceFactory
+     * @param Json $serializer
      */
     public function __construct(
         ResourceConnection $resourceConnection,
@@ -90,6 +93,7 @@ class Customer
      * @param CustomerInterface $customer
      * @return CustomerInterface
      * @throws InputException
+     * @throws NoSuchEntityException
      */
     public function persist(CustomerInterface $customer): CustomerInterface
     {
@@ -119,6 +123,18 @@ class Customer
             throw NoSuchEntityException::singleField('customerId', $customer->getId());
         }
         return $this->doDelete($customer);
+    }
+
+    /**
+     * Delete customer from database based on customerId
+     *
+     * @param int $customerId
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteById(int $customerId): bool
+    {
+        return $this->doDeleteById($customerId);
     }
 
     /**
@@ -171,15 +187,23 @@ class Customer
      */
     private function doDelete(CustomerInterface $customer): bool
     {
+        return $this->doDeleteById($customer->getId());
+    }
+
+    /**
+     * Perform Customer Delete by Id
+     *
+     * @param int $customerID
+     * @return bool
+     * @throws \Exception
+     */
+    private function doDeleteById(int $customerID): bool
+    {
         $this->getConnection()->beginTransaction();
-
-        //TODO fetch by id and email, then perform delete by PK fields
-
         try {
             //delete all addresses
-            //TODO Use constant for table name from address storage (or maybe address storage class directly)
-            $this->getConnection()->delete('storefront_customer_address', ['customer_id = ?' => $customer->getId()]);
-            $this->getConnection()->delete(self::TABLE, ['customer_id = ?' => $customer->getId()]);
+            $this->getConnection()->delete('storefront_customer_address', ['customer_id = ?' => $customerID]);
+            $this->getConnection()->delete(self::TABLE, ['customer_id = ?' => $customerID]);
         } catch (\Exception $e) {
             $this->getConnection()->rollBack();
             throw $e;

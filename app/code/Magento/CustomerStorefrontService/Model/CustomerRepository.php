@@ -11,6 +11,9 @@ use Magento\CustomerStorefrontService\Model\Storage\Customer as CustomerStorage;
 use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface as CustomerInterface;
 
+/**
+ * Repository for Customer
+ */
 class CustomerRepository implements CustomerRepositoryInterface
 {
     /**
@@ -51,5 +54,13 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function delete(CustomerInterface $customer): bool
     {
         return $this->customerStorage->delete($customer);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteById(int $customerId): bool
+    {
+        return $this->customerStorage->deleteById($customerId);
     }
 }

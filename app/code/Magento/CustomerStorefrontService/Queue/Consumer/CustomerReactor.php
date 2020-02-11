@@ -48,9 +48,12 @@ class CustomerReactor
     }
 
     /**
-     * Send address data to storefront service queue
+     * Handle Customer Save
      *
      * @param string $incomingMessage
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
     public function handleCustomerSave(string $incomingMessage): void
     {
@@ -64,12 +67,16 @@ class CustomerReactor
     }
 
     /**
-     * Forward deleted address ID to storefront service queue
+     * Handle Customer Delete
      *
      * @param string $incomingMessage
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function handleCustomerDelete(string $incomingMessage): void
     {
         $this->logger->info('Message Received', [$incomingMessage]);
+        $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
+        $this->customerRepository->deleteById((int)$incomingMessageArray['data']['id']);
+        $this->logger->info('Customer Deleted', [$incomingMessage]);
     }
 }
