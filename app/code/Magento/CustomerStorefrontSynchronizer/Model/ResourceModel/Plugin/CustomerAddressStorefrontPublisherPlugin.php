@@ -9,8 +9,8 @@ namespace Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
-use Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin\Helper\MessageFormatter;
 use Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin\Helper\EventPublisher;
+use Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin\Helper\MessageFormatter;
 
 /**
  * Customer address storefront publisher

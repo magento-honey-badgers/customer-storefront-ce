@@ -7,15 +7,15 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Queue\Consumer;
 
-use Psr\Log\LoggerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterfaceFactory;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
- * Handle address save messages
+ * Consume messages for address entity changes and apply changes on storefront data
  */
-class AddressReactor
+class Address
 {
     /**
      * @var LoggerInterface
@@ -83,4 +83,3 @@ class AddressReactor
         $this->logger->info('Address Deleted', [$incomingMessage]);
     }
 }
-

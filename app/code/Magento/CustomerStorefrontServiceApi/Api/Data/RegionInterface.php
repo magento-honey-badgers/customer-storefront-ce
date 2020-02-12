@@ -3,6 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
 
 /**
@@ -20,9 +22,9 @@ interface RegionInterface
     /**
      * Get region code
      *
-     * @return string
+     * @return string|null
      */
-    public function getRegionCode();
+    public function getRegionCode(): ?string;
 
     /**
      * Set region code
@@ -30,14 +32,14 @@ interface RegionInterface
      * @param string $regionCode
      * @return $this
      */
-    public function setRegionCode($regionCode);
+    public function setRegionCode(string $regionCode): RegionInterface;
 
     /**
      * Get region
      *
-     * @return string
+     * @return string|null
      */
-    public function getRegion();
+    public function getRegion(): ?string;
 
     /**
      * Set region
@@ -45,14 +47,14 @@ interface RegionInterface
      * @param string $region
      * @return $this
      */
-    public function setRegion($region);
+    public function setRegion(string $region): RegionInterface;
 
     /**
      * Get region id
      *
-     * @return int
+     * @return int|null
      */
-    public function getRegionId();
+    public function getRegionId(): ?int;
 
     /**
      * Set region id
@@ -60,5 +62,5 @@ interface RegionInterface
      * @param int $regionId
      * @return $this
      */
-    public function setRegionId($regionId);
+    public function setRegionId(int $regionId): RegionInterface;
 }

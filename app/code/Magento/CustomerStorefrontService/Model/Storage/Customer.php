@@ -67,7 +67,7 @@ class Customer
      * @return CustomerInterface
      * @throws NoSuchEntityException
      */
-    public function fetchById(int $customerId)
+    public function fetchById(int $customerId): CustomerInterface
     {
         $select = $this->getConnection()
             ->select()

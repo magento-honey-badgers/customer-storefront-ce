@@ -12,6 +12,14 @@ namespace Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin\Help
  */
 class MessageFormatter
 {
+    const ENTITY_TYPE_KEY = 'entity_type';
+
+    const EVENT_KEY = 'event';
+
+    const DATA_KEY = 'data';
+
+    const CORRELATION_KEY = 'correlation_id';
+
     /**
      * Format Customer Event Message
      *
@@ -20,12 +28,12 @@ class MessageFormatter
      * @param array $data
      * @return array
      */
-    public function formatEventData(string $entityType, string $event, array $data)
+    public function formatEventData(string $entityType, string $event, array $data): array
     {
-        $message = [];
-        $message['entity_type'] = $entityType;
-        $message['event']=$event;
-        $message['data']=$data;
-        return $message;
+        return [
+            self::ENTITY_TYPE_KEY => $entityType,
+            self::EVENT_KEY => $event,
+            self::DATA_KEY => $data
+        ];
     }
 }

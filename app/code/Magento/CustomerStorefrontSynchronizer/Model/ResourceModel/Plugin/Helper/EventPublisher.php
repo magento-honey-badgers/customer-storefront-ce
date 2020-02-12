@@ -46,14 +46,22 @@ class EventPublisher
     /**
      * Publishes the messages after validation
      *
+     * Message template
+     * [
+     *   'correlation_id' => '<unique_message_id>',
+     *   'event' => '<create|update|delete>',
+     *   'entity_type' => '<customer|address>',
+     *   'data'=> [...] //entity data
+     * ]
+     *
      * @param string $topic
      * @param array $message
      * @return boolean
      */
-    public function publish(string $topic, array $message) :bool
+    public function publish(string $topic, array $message): bool
     {
-        $correlationId = uniqid($message['event'], true);
-        $message['correlation_id'] = $correlationId;
+        $correlationId = uniqid($message[MessageFormatter::EVENT_KEY], true);
+        $message[MessageFormatter::CORRELATION_KEY] = $correlationId;
 
         $messageIdentifier = $this->generateMessageIdentifier($message);
         if ($this->validateMessageDuplication($messageIdentifier)) {
@@ -103,9 +111,11 @@ class EventPublisher
      * @param array $message
      * @return string
      */
-    private function generateMessageIdentifier(array $message)
+    private function generateMessageIdentifier(array $message): string
     {
-        $entityId = $message['data']['id'] ?? 0;
-        return $message['event'] . '-' . $message['entity_type'] . '-' . $entityId;
+        $entityId = $message[MessageFormatter::DATA_KEY]['id'] ?? 0;
+        return $message[MessageFormatter::EVENT_KEY]
+            . '-' . $message[MessageFormatter::ENTITY_TYPE_KEY]
+            . '-' . $entityId;
     }
 }

@@ -3,6 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
 
 /**
@@ -34,7 +36,7 @@ interface CustomerInterface
      *
      * @return int|null
      */
-    public function getId();
+    public function getId(): ?int;
 
     /**
      * Set customer id
@@ -42,14 +44,14 @@ interface CustomerInterface
      * @param int $id
      * @return $this
      */
-    public function setId($id);
+    public function setId(int $id): CustomerInterface;
 
     /**
      * Get first name
      *
-     * @return string
+     * @return string|null
      */
-    public function getFirstname();
+    public function getFirstname(): ?string;
 
     /**
      * Set first name
@@ -57,13 +59,13 @@ interface CustomerInterface
      * @param string $firstname
      * @return $this
      */
-    public function setFirstname(string $firstname);
+    public function setFirstname(string $firstname): CustomerInterface;
     /**
      * Get last name
      *
-     * @return string
+     * @return string|null
      */
-    public function getLastname();
+    public function getLastname(): ?string;
 
     /**
      * Set last name
@@ -71,14 +73,14 @@ interface CustomerInterface
      * @param string $lastname
      * @return $this
      */
-    public function setLastname($lastname);
+    public function setLastname(string $lastname): CustomerInterface;
 
     /**
      * Get last name
      *
-     * @return string
+     * @return string|null
      */
-    public function getMiddlename();
+    public function getMiddlename(): ?string;
 
     /**
      * Set last name
@@ -86,29 +88,29 @@ interface CustomerInterface
      * @param string $middlename
      * @return $this
      */
-    public function setMiddlename($middlename);
+    public function setMiddlename(string $middlename): CustomerInterface;
 
     /**
      * Get date of birth
      *
      * @return string|null
      */
-    public function getDateOfBirth();
+    public function getDateOfBirth(): ?string;
 
     /**
      * Set date of birth
      *
-     * @param string $dateOfbirth
+     * @param string $dateOfBirth
      * @return $this
      */
-    public function setDateOfBirth(string $dateOfbirth);
+    public function setDateOfBirth(string $dateOfBirth): CustomerInterface;
 
     /**
      * Get email address
      *
-     * @return string
+     * @return string|null
      */
-    public function getEmail();
+    public function getEmail(): ?string;
 
     /**
      * Set email address
@@ -116,14 +118,14 @@ interface CustomerInterface
      * @param string $email
      * @return $this
      */
-    public function setEmail($email);
+    public function setEmail(string $email): CustomerInterface;
 
     /**
      * Get gender
      *
      * @return int|null
      */
-    public function getGender();
+    public function getGender(): ?int;
 
     /**
      * Set gender
@@ -131,14 +133,14 @@ interface CustomerInterface
      * @param int $gender
      * @return $this
      */
-    public function setGender($gender);
+    public function setGender(int $gender): CustomerInterface;
 
     /**
      * Get prefix
      *
      * @return string|null
      */
-    public function getPrefix();
+    public function getPrefix(): ?string;
 
     /**
      * Set prefix
@@ -146,14 +148,14 @@ interface CustomerInterface
      * @param string $prefix
      * @return $this
      */
-    public function setPrefix($prefix);
+    public function setPrefix(string $prefix): CustomerInterface;
 
     /**
      * Get suffix
      *
      * @return string|null
      */
-    public function getSuffix();
+    public function getSuffix(): ?string;
 
     /**
      * Set suffix
@@ -161,14 +163,14 @@ interface CustomerInterface
      * @param string $suffix
      * @return $this
      */
-    public function setSuffix($suffix);
+    public function setSuffix(string $suffix): CustomerInterface;
 
     /**
      * Get store id
      *
      * @return int|null
      */
-    public function getStoreId();
+    public function getStoreId(): ?int;
 
     /**
      * Set store id
@@ -176,14 +178,14 @@ interface CustomerInterface
      * @param int $storeId
      * @return $this
      */
-    public function setStoreId($storeId);
+    public function setStoreId(int $storeId): CustomerInterface;
 
     /**
      * Get website id
      *
      * @return int|null
      */
-    public function getWebsiteId();
+    public function getWebsiteId(): ?int;
 
     /**
      * Set website id
@@ -191,14 +193,14 @@ interface CustomerInterface
      * @param int $websiteId
      * @return $this
      */
-    public function setWebsiteId($websiteId);
+    public function setWebsiteId(int $websiteId): CustomerInterface;
 
     /**
      * Get tax Vat
      *
      * @return string|null
      */
-    public function getTaxvat();
+    public function getTaxvat(): ?string;
 
     /**
      * Set tax Vat
@@ -206,14 +208,14 @@ interface CustomerInterface
      * @param string $taxvat
      * @return $this
      */
-    public function setTaxvat($taxvat);
+    public function setTaxvat(string $taxvat): CustomerInterface;
 
     /**
      * Get default billing address id
      *
      * @return int|null
      */
-    public function getDefaultBilling();
+    public function getDefaultBilling(): ?int;
 
     /**
      * Set default billing address id
@@ -221,14 +223,14 @@ interface CustomerInterface
      * @param int $defaultBilling
      * @return $this
      */
-    public function setDefaultBilling(int $defaultBilling);
+    public function setDefaultBilling(int $defaultBilling): CustomerInterface;
 
     /**
      * Get default shipping address id
      *
      * @return int|null
      */
-    public function getDefaultShipping();
+    public function getDefaultShipping(): ?int;
 
     /**
      * Set default shipping address id
@@ -236,14 +238,14 @@ interface CustomerInterface
      * @param int $defaultShipping
      * @return $this
      */
-    public function setDefaultShipping(int $defaultShipping);
+    public function setDefaultShipping(int $defaultShipping): CustomerInterface;
 
     /**
      * Get customer addresses.
      *
      * @return AddressInterface[]|null
      */
-    public function getAddresses();
+    public function getAddresses(): ?array;
 
     /**
      * Set customer addresses.
@@ -251,5 +253,5 @@ interface CustomerInterface
      * @param AddressInterface[] $addresses
      * @return $this
      */
-    public function setAddresses(array $addresses = []);
+    public function setAddresses(array $addresses): CustomerInterface;
 }

@@ -68,7 +68,7 @@ class Address
      * @param int $customerId
      * @return array
      */
-    public function fetchAddressesByCustomerId(int $customerId)
+    public function fetchAddressesByCustomerId(int $customerId): array
     {
         $select = $this->getConnection()
             ->select()
@@ -97,7 +97,7 @@ class Address
      * @return AddressInterface
      * @throws NoSuchEntityException
      */
-    public function fetchByAddressId(int $addressId)
+    public function fetchByAddressId(int $addressId): AddressInterface
     {
         $select = $this->getConnection()
             ->select()

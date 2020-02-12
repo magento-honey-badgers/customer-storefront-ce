@@ -16,6 +16,7 @@ use Magento\Framework\Setup\SchemaSetupInterface;
  * Temporary solution to add generated columns to schema
  *
  * TODO: MC-31333
+ * Declarative schema does not support create of generated columns
  */
 class InstallSchema implements InstallSchemaInterface
 {
