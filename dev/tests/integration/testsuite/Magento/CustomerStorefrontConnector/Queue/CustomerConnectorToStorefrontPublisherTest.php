@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontConnector\Queue;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\CustomerStorefrontConnector\Model\CustomerRepositoryWrapper;
 use Magento\Framework\Encryption\EncryptorInterface;
@@ -20,9 +19,6 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\MessageQueue\EnvironmentPreconditionException;
-use Magento\TestFramework\MessageQueue\PreconditionFailedException;
-use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
