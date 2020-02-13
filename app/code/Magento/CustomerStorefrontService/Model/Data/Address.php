@@ -143,7 +143,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      */
     public function isDefaultShipping(): bool
     {
-        return $this->_get(self::DEFAULT_SHIPPING);
+        return (bool) $this->_get(self::DEFAULT_SHIPPING);
     }
 
     /**
@@ -153,7 +153,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      */
     public function isDefaultBilling(): bool
     {
-        return $this->_get(self::DEFAULT_BILLING);
+        return (bool) $this->_get(self::DEFAULT_BILLING);
     }
 
     /**

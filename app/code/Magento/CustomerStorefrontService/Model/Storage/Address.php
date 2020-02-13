@@ -28,11 +28,6 @@ class Address
     private $resourceConnection;
 
     /**
-     * @var CustomerValidator
-     */
-    private $validator;
-
-    /**
      * @var AddressInterfaceFactory
      */
     private $addressInterfaceFactory;
@@ -42,13 +37,16 @@ class Address
      */
     private $serializer;
 
+    /**
+     * @var CustomerStorage
+     */
     private $customerStorage;
 
     /**
      * @param ResourceConnection $resourceConnection
      * @param AddressInterfaceFactory $addressInterfaceFactory
      * @param Json $serializer
-     * @param Customer $customerStorage
+     * @param CustomerStorage $customerStorage
      */
     public function __construct(
         ResourceConnection $resourceConnection,
@@ -66,7 +64,7 @@ class Address
      * Fetch all addresses belonging to a customer
      *
      * @param int $customerId
-     * @return array
+     * @return AddressInterface[]
      */
     public function fetchAddressesByCustomerId(int $customerId): array
     {
@@ -169,7 +167,7 @@ class Address
             $this->getConnection()->beginTransaction();
             $this->customerStorage->persist($customer);
             $this->getConnection()->delete(
-                'storefront_customer_address',
+                self::TABLE,
                 ['customer_address_id = ?' => $addressId]
             );
         } catch (\Exception $e) {
@@ -215,7 +213,7 @@ class Address
     }
 
     /**
-     * Checks address exists
+     * Check if address exists
      *
      * @param int $addressId
      * @return bool
@@ -231,7 +229,7 @@ class Address
     }
 
     /**
-     * Connection helper
+     * Get connection adapter
      *
      * @return AdapterInterface
      */
