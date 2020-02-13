@@ -62,13 +62,12 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->queueRepository = $objectManager->create(QueueRepository::class);
         $this->customerFactory = $objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $objectManager->get(EncryptorInterface::class);
-      //  $this->customer = $objectManager->get(CustomerInterface::class);
         $this->customerConnectorConsumer = $objectManager->get(CustomerConnectorConsumer::class);
         $this->customerResource = $objectManager->get(ResourceModel\Customer::class);
     }
 
     /**
-     * Test customer save event
+     * Test customer save event Synchronizer queue
      *
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer.php
      */
@@ -94,7 +93,7 @@ class CustomerStorefrontPublisherTest extends TestCase
     }
 
     /**
-     * Test customer delete event
+     * Test customer delete event Synchronizer queue
      *
      * @magentoAppArea adminhtml
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
@@ -116,7 +115,7 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->assertEquals('customer',$parsedData['entity_type']);
         $this->assertEquals('delete', $parsedData['event']);
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
+        //clean up the monolith.customer.delete queue
         $queue->acknowledge($message);
     }
-
 }
