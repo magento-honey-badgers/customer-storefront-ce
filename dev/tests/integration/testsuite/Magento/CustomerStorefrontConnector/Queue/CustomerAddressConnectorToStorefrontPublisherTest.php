@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -11,7 +10,6 @@ namespace Magento\CustomerStorefrontConnector\Queue;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\CustomerStorefrontConnector\Model\AddressRepositoryWrapper;
 use Magento\Framework\Encryption\EncryptorInterface;
@@ -101,8 +99,7 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
         $monolithCustomerSaveMessage = $monolithCustomerSaveQueue ->dequeue();
 
         $unserializedMonolithMessage = $this->serializer->unserialize($monolithAddressSaveMessage->getBody());
-       // $customerAddressData = include __DIR__ . '/../_files/customer_address_data.php';
-       $customerAddressData = include '/opt/local/www/apache2/html/CustomerStorefront/CustomerStorefrontApp/dev/tests/integration/testsuite/Magento/CustomerStorefrontConnector/_files/customer_address_data.php';
+        $customerAddressData = include __DIR__ . '/../_files/customer_address_data.php';
         $this->customerAddressRepositoryWrapperMock->expects($this->once())
             ->method('getById')->with($addressId)->willReturn($customerAddressData);
         $this->customerAddressConnectorConsumer->forwardAddressChanges($unserializedMonolithMessage);

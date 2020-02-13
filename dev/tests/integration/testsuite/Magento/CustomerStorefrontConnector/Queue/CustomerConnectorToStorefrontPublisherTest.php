@@ -23,7 +23,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test combined functioning of synchronizer and connector where customer save and delete events are published to the second queue
+ * Test combined functioning of synchronizer and connector
  *
  * @magentoDbIsolation disabled
  * @magentoAppArea adminhtml
