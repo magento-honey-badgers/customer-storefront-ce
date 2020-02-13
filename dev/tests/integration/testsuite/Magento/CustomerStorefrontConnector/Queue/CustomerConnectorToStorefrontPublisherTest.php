@@ -11,13 +11,13 @@ namespace Magento\CustomerStorefrontConnector\Queue;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\CustomerStorefrontConnector\Model\CustomerRepositoryWrapper;
+use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\MessageQueue\EnvelopeInterface;
 use Magento\Framework\MessageQueue\QueueInterface;
 use Magento\Framework\MessageQueue\QueueRepository;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -62,10 +62,14 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $this->queueRepostiory = $this->objectManager->create(QueueRepository::class);
         $this->customerFactory = $this->objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $this->objectManager->get(EncryptorInterface::class);
-        $this->customerRepositoryWrapperMock = $this->createPartialMock(CustomerRepositoryWrapper::class,
-            ['getById']);
-        $this->customerConnectorConsumer = $this->objectManager->create(CustomerConnectorConsumer::class,
-            ['customerRepository' => $this->customerRepositoryWrapperMock]);
+        $this->customerRepositoryWrapperMock = $this->createPartialMock(
+            CustomerRepositoryWrapper::class,
+            ['getById']
+        );
+        $this->customerConnectorConsumer = $this->objectManager->create(
+            CustomerConnectorConsumer::class,
+            ['customerRepository' => $this->customerRepositoryWrapperMock]
+        );
     }
 
     /**
@@ -105,15 +109,15 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
-        $this->assertArrayHasKey('correlation_id',$parsedData);
-        $this->assertEquals('customer',$parsedData['entity_type']);
+        $this->assertArrayHasKey('correlation_id', $parsedData);
+        $this->assertEquals('customer', $parsedData['entity_type']);
         $this->assertEquals('delete', $parsedData['event']);
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
 
-      //Clean up - making sure to acknowledge all the messages from all the queues involved
-      $serviceQueue->acknowledge($serviceMessage);
-      $monolithQueue->acknowledge($monolithMessage);
-      $monolithSaveQueue->acknowledge($monolithSaveMessage);
+        //Clean up - making sure to acknowledge all the messages from all the queues involved
+        $serviceQueue->acknowledge($serviceMessage);
+        $monolithQueue->acknowledge($monolithMessage);
+        $monolithSaveQueue->acknowledge($monolithSaveMessage);
     }
 
     /**
@@ -148,10 +152,11 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
-        $this->assertArrayHasKey('correlation_id',$parsedData);
-        $this->assertEquals('customer',$parsedData['entity_type']);
+        $this->assertArrayHasKey('correlation_id', $parsedData);
+        $this->assertEquals('customer', $parsedData['entity_type']);
         $this->assertEquals('create', $parsedData['event']);
-        $this->assertNotEmpty($parsedData['data']); $this->assertEquals('customer@example.com', $parsedData['data'][0]['email']);
+        $this->assertNotEmpty($parsedData['data']);
+        $this->assertEquals('customer@example.com', $parsedData['data'][0]['email']);
         $this->assertEquals('Johny', $parsedData['data'][0]['firstname']);
         $this->assertEquals('Smith', $parsedData['data'][0]['lastname']);
         $this->assertEquals('01-01-1970', $parsedData['data'][0]['dob']);

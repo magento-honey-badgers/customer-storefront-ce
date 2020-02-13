@@ -8,14 +8,13 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
+use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\MessageQueue\EnvelopeInterface;
 use Magento\Framework\MessageQueue\QueueInterface;
 use Magento\Framework\MessageQueue\QueueRepository;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -27,12 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomerStorefrontPublisherTest extends TestCase
 {
-    /** @var CustomerInterface */
- //   private $customer;
-
-    /**
-     * @var CustomerRepositoryInterface
-     */
+    /** @var CustomerRepositoryInterface */
     private $customerRepository;
 
     /** @var SerializerInterface */
@@ -74,7 +68,7 @@ class CustomerStorefrontPublisherTest extends TestCase
         /** @var QueueInterface $monolithDeleteQueue */
         $monolithDeleteQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.delete');
         /** @var QueueInterface $monolithSaveQueue */
-        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save' );
+        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save');
         /** @var EnvelopeInterface $message */
         $monolithSaveMessage = $monolithSaveQueue->dequeue();
 
@@ -86,8 +80,8 @@ class CustomerStorefrontPublisherTest extends TestCase
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
-        $this->assertArrayHasKey('correlation_id',$parsedData);
-        $this->assertEquals('customer',$parsedData['entity_type']);
+        $this->assertArrayHasKey('correlation_id', $parsedData);
+        $this->assertEquals('customer', $parsedData['entity_type']);
         $this->assertEquals('delete', $parsedData['event']);
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
         $monolithDeleteQueue->acknowledge($monolithDeleteMessage);
@@ -102,9 +96,8 @@ class CustomerStorefrontPublisherTest extends TestCase
     public function testReadMessageCustomerSave()
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
-
         /** @var QueueInterface $queue */
-        $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save' );
+        $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save');
         /** @var EnvelopeInterface $message */
         $message = $queue->dequeue();
         $messageBody = $message->getBody();
@@ -112,8 +105,8 @@ class CustomerStorefrontPublisherTest extends TestCase
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
-        $this->assertArrayHasKey('correlation_id',$parsedData);
-        $this->assertEquals('customer',$parsedData['entity_type']);
+        $this->assertArrayHasKey('correlation_id', $parsedData);
+        $this->assertEquals('customer', $parsedData['entity_type']);
         $this->assertEquals('create', $parsedData['event']);
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
         $queue->acknowledge($message);

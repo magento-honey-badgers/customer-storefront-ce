@@ -7,10 +7,12 @@
 declare(strict_types=1);
 
 use Magento\Customer\Api\Data\AddressInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\TestFramework\ObjectManager;
 
-ObjectManager::getInstance()->get(Magento\Customer\Api\CustomerRepositoryInterface::class);
-/** @var \Magento\Customer\Api\Data\CustomerInterface $customer */
+ObjectManager::getInstance()->get(CustomerRepositoryInterface::class);
+/** @var CustomerInterface $customer */
 $customer = $this->customerRepository->get('customer@example.com', 1);
 $customerId = $customer->getId();
 

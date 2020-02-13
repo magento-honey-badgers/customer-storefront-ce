@@ -7,8 +7,9 @@
 declare(strict_types=1);
 
 use Magento\TestFramework\ObjectManager;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 
-ObjectManager::getInstance()->get(Magento\Customer\Api\CustomerRepositoryInterface::class);
+ObjectManager::getInstance()->get(CustomerRepositoryInterface::class);
 $customer = $this->customerRepository->get('customer@example.com', 1);
 $customerId = $customer->getId();
 

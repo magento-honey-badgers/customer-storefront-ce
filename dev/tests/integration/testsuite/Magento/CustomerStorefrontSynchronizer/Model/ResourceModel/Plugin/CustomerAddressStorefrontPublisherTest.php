@@ -10,7 +10,6 @@ namespace Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\MessageQueue\EnvelopeInterface;
@@ -25,11 +24,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomerAddressStorefrontPublisherTest extends TestCase
 {
-    /**
-     * @var CustomerInterface
-     */
-    private $customer;
-
     /**
      * @var CustomerRepositoryInterface
      */
@@ -72,19 +66,19 @@ class CustomerAddressStorefrontPublisherTest extends TestCase
         $customerAddress->setCompany('New updated CompanyName');
         $this->addressRepository->save($customerAddress);
         /** @var QueueInterface $queue */
-        $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.address.save' );
+        $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.address.save');
         /** @var EnvelopeInterface $message */
         $message = $queue->dequeue();
         $messageBody = $message->getBody();
         $unserializedJson = $this->serializer->unserialize($messageBody);
-        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save' );
+        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save');
         /** @var EnvelopeInterface $message */
         $monolithSaveMessage = $monolithSaveQueue->dequeue();
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
-        $this->assertArrayHasKey('correlation_id',$parsedData);
-        $this->assertEquals('address',$parsedData['entity_type']);
+        $this->assertArrayHasKey('correlation_id', $parsedData);
+        $this->assertEquals('address', $parsedData['entity_type']);
         $this->assertEquals('update', $parsedData['event']);
         $this->assertEquals($customerAddress->getId(), $parsedData['data']['id']);
         $queue->acknowledge($message);

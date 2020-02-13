@@ -12,13 +12,13 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\CustomerStorefrontConnector\Model\AddressRepositoryWrapper;
+use Magento\CustomerStorefrontConnector\Queue\Consumer\Address as CustomerAddressConnectorConsumer;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\MessageQueue\EnvelopeInterface;
 use Magento\Framework\MessageQueue\QueueInterface;
 use Magento\Framework\MessageQueue\QueueRepository;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\CustomerStorefrontConnector\Queue\Consumer\Address as CustomerAddressConnectorConsumer;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -68,10 +68,14 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
         $this->queueRepostiory = $this->objectManager->create(QueueRepository::class);
         $this->customerFactory = $this->objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $this->objectManager->get(EncryptorInterface::class);
-        $this->customerAddressRepositoryWrapperMock = $this->createPartialMock(AddressRepositoryWrapper::class,
-            ['getById']);
-        $this->customerAddressConnectorConsumer = $this->objectManager->create(CustomerAddressConnectorConsumer::class,
-            ['addressRepository' => $this->customerAddressRepositoryWrapperMock]);
+        $this->customerAddressRepositoryWrapperMock = $this->createPartialMock(
+            AddressRepositoryWrapper::class,
+            ['getById']
+        );
+        $this->customerAddressConnectorConsumer = $this->objectManager->create(
+            CustomerAddressConnectorConsumer::class,
+            ['addressRepository' => $this->customerAddressRepositoryWrapperMock]
+        );
     }
 
     /**
@@ -96,7 +100,7 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
 
         /** @var EnvelopeInterface $monolithAddressSaveMessage */
         $monolithAddressSaveMessage = $monolithAddressQueue->dequeue();
-        $monolithCustomerSaveMessage = $monolithCustomerSaveQueue ->dequeue();
+        $monolithCustomerSaveMessage = $monolithCustomerSaveQueue->dequeue();
 
         $unserializedMonolithMessage = $this->serializer->unserialize($monolithAddressSaveMessage->getBody());
         $customerAddressData = include __DIR__ . '/../_files/customer_address_data.php';
@@ -110,8 +114,8 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
-        $this->assertArrayHasKey('correlation_id',$parsedData);
-        $this->assertEquals('address',$parsedData['entity_type']);
+        $this->assertArrayHasKey('correlation_id', $parsedData);
+        $this->assertEquals('address', $parsedData['entity_type']);
         $this->assertEquals('update', $parsedData['event']);
         $this->assertNotEmpty($parsedData['data']);
         $this->assertEquals($addressId, $parsedData['data'][0]['id']);
