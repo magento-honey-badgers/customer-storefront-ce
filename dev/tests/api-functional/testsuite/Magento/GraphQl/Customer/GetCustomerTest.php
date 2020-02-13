@@ -32,12 +32,11 @@ class GetCustomerTest extends GraphQlAbstract
 
     protected function setUp(): void
     {
-       // parent::setUp();
         $objectManager = Bootstrap::getObjectManager();
-        $this->publisherConsumerController = $objectManager->create(PublisherConsumerController::class,
+        $this->publisherConsumerController = $objectManager->create(
+            PublisherConsumerController::class,
             [
-                'consumers' =>
-                    [
+                'consumers' => [
                         'customer.monolith.connector.customer.save',
                         'customer.connector.service.customer.save'
                 ],
@@ -91,7 +90,7 @@ QUERY;
 
     protected function tearDown()
     {
-       $this->publisherConsumerController->stopConsumers();
+        $this->publisherConsumerController->stopConsumers();
     }
 
     /**

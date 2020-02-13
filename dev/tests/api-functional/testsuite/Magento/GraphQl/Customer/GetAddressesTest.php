@@ -7,32 +7,24 @@ declare(strict_types=1);
 
 namespace Magento\GraphQl\Customer;
 
-use Exception;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Integration\Api\CustomerTokenServiceInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\MessageQueue\EnvironmentPreconditionException;
 use Magento\TestFramework\MessageQueue\PreconditionFailedException;
 use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 use Magento\TestFramework\ObjectManager;
 use Magento\TestFramework\TestCase\GraphQlAbstract;
-use Magento\Integration\Api\CustomerTokenServiceInterface;
 
 /**
  * Test for customer address retrieval.
  */
 class GetAddressesTest extends GraphQlAbstract
 {
-    /**
-     * @var CustomerTokenServiceInterface
-     */
+    /** @var CustomerTokenServiceInterface */
     private $customerTokenService;
-
-    /**
-     * @var LockCustomer
-     */
-    private $lockCustomer;
 
     /** @var PublisherConsumerController */
     private $publisherConsumerController;
@@ -43,10 +35,10 @@ class GetAddressesTest extends GraphQlAbstract
 
         $objectManager = Bootstrap::getObjectManager();
 
-        $this->publisherConsumerController = $objectManager->create(PublisherConsumerController::class,
+        $this->publisherConsumerController = $objectManager->create(
+            PublisherConsumerController::class,
             [
-                'consumers' =>
-                    [
+                'consumers' => [
                         'customer.monolith.connector.customer.save',
                         'customer.monolith.connector.address.save',
                         'customer.connector.service.customer.save',
@@ -71,7 +63,6 @@ class GetAddressesTest extends GraphQlAbstract
         }
 
         $this->customerTokenService = $objectManager->get(CustomerTokenServiceInterface::class);
-        $this->lockCustomer = $objectManager->get(LockCustomer::class);
     }
 
     protected function tearDown()
@@ -102,9 +93,8 @@ class GetAddressesTest extends GraphQlAbstract
             " Addresses field must be of an array type."
         );
         $this->assertNotEmpty($response['customer']['addresses']);
-        $this->assertEquals( 'US', $response['customer']['addresses'][0]['country_id']);
+        $this->assertEquals('US', $response['customer']['addresses'][0]['country_id']);
         $this->assertEquals('5127779999', $response['customer']['addresses'][0]['telephone']);
-      //  self::assertEquals(null, $response['customer']['id']);
         $this->assertCustomerAddressesFields($customer, $response);
     }
 
@@ -122,8 +112,6 @@ class GetAddressesTest extends GraphQlAbstract
             $this->assertNotEmpty($addressValue);
             $assertionMap = [
                 ['response_field' => 'id', 'expected_value' => $addresses[$addressKey]->getId()],
-             //   ['response_field' => 'customer_id', 'expected_value' => 0],
-             //   ['response_field' => 'region_id', 'expected_value' => $addresses[$addressKey]->getRegionId()],
                 ['response_field' => 'country_id', 'expected_value' => $addresses[$addressKey]->getCountryId()],
                 ['response_field' => 'telephone', 'expected_value' => $addresses[$addressKey]->getTelephone()],
                 ['response_field' => 'postcode', 'expected_value' => $addresses[$addressKey]->getPostcode()],
@@ -140,8 +128,7 @@ class GetAddressesTest extends GraphQlAbstract
      */
     private function getQuery(): string
     {
-        $query
-            = <<<QUERY
+        return <<<QUERY
 {
   customer {
     id
@@ -159,6 +146,6 @@ class GetAddressesTest extends GraphQlAbstract
    }
 }
 QUERY;
-        return $query;
+
     }
 }
