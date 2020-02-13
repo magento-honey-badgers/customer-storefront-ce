@@ -39,7 +39,7 @@ class CustomerAddressStorefrontPublisherTest extends TestCase
     private $serializer;
 
     /** @var QueueRepository */
-    private $queueRepostiory;
+    private $queueRepository;
 
     /** @var CustomerInterfaceFactory */
     private $customerFactory;
@@ -55,7 +55,7 @@ class CustomerAddressStorefrontPublisherTest extends TestCase
         $objectManager = Bootstrap::getObjectManager();
         $this->customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
         $this->serializer = $objectManager->get(SerializerInterface::class);
-        $this->queueRepostiory = $objectManager->create(QueueRepository::class);
+        $this->queueRepository = $objectManager->create(QueueRepository::class);
         $this->customerFactory = $objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $objectManager->get(EncryptorInterface::class);
         $this->addressRepository = $objectManager->get(AddressRepositoryInterface::class);
@@ -72,18 +72,22 @@ class CustomerAddressStorefrontPublisherTest extends TestCase
         $customerAddress->setCompany('New updated CompanyName');
         $this->addressRepository->save($customerAddress);
         /** @var QueueInterface $queue */
-        $queue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.address.save' );
+        $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.address.save' );
         /** @var EnvelopeInterface $message */
         $message = $queue->dequeue();
         $messageBody = $message->getBody();
         $unserializedJson = $this->serializer->unserialize($messageBody);
+        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save' );
+        /** @var EnvelopeInterface $message */
+        $monolithSaveMessage = $monolithSaveQueue->dequeue();
         //de-serialize it the second time to get array format.
         $parsedData = $this->serializer->unserialize($unserializedJson);
         $this->assertNotEmpty($parsedData);
         $this->assertArrayHasKey('correlation_id',$parsedData);
         $this->assertEquals('address',$parsedData['entity_type']);
-        $this->assertEquals('save', $parsedData['event']);
+        $this->assertEquals('update', $parsedData['event']);
         $this->assertEquals($customerAddress->getId(), $parsedData['data']['id']);
         $queue->acknowledge($message);
+        $monolithSaveQueue->acknowledge($monolithSaveMessage);
     }
 }

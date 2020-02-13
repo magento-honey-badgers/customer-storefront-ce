@@ -50,9 +50,6 @@ class CustomerStorefrontPublisherTest extends TestCase
     /** @var CustomerConnectorConsumer  */
     private $customerConnectorConsumer;
 
-    /** @var ResourceModel\Customer */
-    private $customerResource;
-
     protected function setup()
     {
         $objectManager = Bootstrap::getObjectManager();
@@ -61,9 +58,40 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->queueRepository = $objectManager->create(QueueRepository::class);
         $this->customerFactory = $objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $objectManager->get(EncryptorInterface::class);
-      //  $this->customer = $objectManager->get(CustomerInterface::class);
         $this->customerConnectorConsumer = $objectManager->get(CustomerConnectorConsumer::class);
-        $this->customerResource = $objectManager->get(ResourceModel\Customer::class);
+    }
+
+    /**
+     * Test customer delete event
+     *
+     * @magentoAppArea adminhtml
+     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
+     */
+    public function testReadMessageCustomerDelete()
+    {
+        $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
+        $this->customerRepository->delete($customer);
+        /** @var QueueInterface $monolithDeleteQueue */
+        $monolithDeleteQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.delete');
+        /** @var QueueInterface $monolithSaveQueue */
+        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save' );
+        /** @var EnvelopeInterface $message */
+        $monolithSaveMessage = $monolithSaveQueue->dequeue();
+
+        /** @var EnvelopeInterface $monolithDeleteMessage */
+        $monolithDeleteMessage = $monolithDeleteQueue->dequeue();
+        $messageBody = $monolithDeleteMessage->getBody();
+
+        $unserializedJson = $this->serializer->unserialize($messageBody);
+        //de-serialize it the second time to get array format.
+        $parsedData = $this->serializer->unserialize($unserializedJson);
+        $this->assertNotEmpty($parsedData);
+        $this->assertArrayHasKey('correlation_id',$parsedData);
+        $this->assertEquals('customer',$parsedData['entity_type']);
+        $this->assertEquals('delete', $parsedData['event']);
+        $this->assertEquals($customer->getId(), $parsedData['data']['id']);
+        $monolithDeleteQueue->acknowledge($monolithDeleteMessage);
+        $monolithSaveQueue->acknowledge($monolithSaveMessage);
     }
 
     /**
@@ -74,8 +102,7 @@ class CustomerStorefrontPublisherTest extends TestCase
     public function testReadMessageCustomerSave()
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
-        $customer->setLastname('SmithUpdated');
-        $this->customerRepository->save($customer);
+
         /** @var QueueInterface $queue */
         $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save' );
         /** @var EnvelopeInterface $message */
@@ -91,31 +118,4 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->assertEquals($customer->getId(), $parsedData['data']['id']);
         $queue->acknowledge($message);
     }
-
-    /**
-     * Test customer delete event
-     *
-     * @magentoAppArea adminhtml
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
-     */
-    public function testReadMessageCustomerDelete()
-    {
-        $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
-        $this->customerRepository->delete($customer);
-        /** @var QueueInterface $queue */
-        $queue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.delete');
-        /** @var EnvelopeInterface $message */
-        $message = $queue->dequeue();
-        $messageBody = $message->getBody();
-        $unserializedJson = $this->serializer->unserialize($messageBody);
-        //de-serialize it the second time to get array format.
-        $parsedData = $this->serializer->unserialize($unserializedJson);
-        $this->assertNotEmpty($parsedData);
-        $this->assertArrayHasKey('correlation_id',$parsedData);
-        $this->assertEquals('customer',$parsedData['entity_type']);
-        $this->assertEquals('delete', $parsedData['event']);
-        $this->assertEquals($customer->getId(), $parsedData['data']['id']);
-        $queue->acknowledge($message);
-    }
-
 }

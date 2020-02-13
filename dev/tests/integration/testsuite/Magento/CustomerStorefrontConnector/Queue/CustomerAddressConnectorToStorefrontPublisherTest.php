@@ -115,7 +115,7 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
         $this->assertNotEmpty($parsedData);
         $this->assertArrayHasKey('correlation_id',$parsedData);
         $this->assertEquals('address',$parsedData['entity_type']);
-        $this->assertEquals('save', $parsedData['event']);
+        $this->assertEquals('update', $parsedData['event']);
         $this->assertNotEmpty($parsedData['data']);
         $this->assertEquals($addressId, $parsedData['data'][0]['id']);
         $this->assertEquals('Green str, 67', $parsedData['data'][0]['street'][0]);
