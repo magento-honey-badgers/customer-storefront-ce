@@ -21,7 +21,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->_get(self::ID);
     }
@@ -31,7 +31,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return int|null
      */
-    public function getCustomerId()
+    public function getCustomerId(): ?int
     {
         return $this->_get(self::CUSTOMER_ID);
     }
@@ -41,7 +41,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getFirstname()
+    public function getFirstname(): ?string
     {
         return $this->_get(self::FIRSTNAME);
     }
@@ -51,7 +51,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getLastname()
+    public function getLastname(): ?string
     {
         return $this->_get(self::LASTNAME);
     }
@@ -61,7 +61,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return RegionInterface|null
      */
-    public function getRegion()
+    public function getRegion(): ?RegionInterface
     {
         return $this->_get(self::REGION);
     }
@@ -71,7 +71,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getRegionCode()
+    public function getRegionCode(): ?string
     {
         return $this->_get(self::REGION_CODE);
     }
@@ -81,7 +81,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getCountryCode()
+    public function getCountryCode(): ?string
     {
         return $this->_get(self::COUNTRY_CODE);
     }
@@ -91,7 +91,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string[]|null
      */
-    public function getStreet()
+    public function getStreet(): ?array
     {
         return $this->_get(self::STREET);
     }
@@ -101,7 +101,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getTelephone()
+    public function getTelephone(): ?string
     {
         return $this->_get(self::TELEPHONE);
     }
@@ -111,7 +111,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getFax()
+    public function getFax(): ?string
     {
         return $this->_get(self::FAX);
     }
@@ -121,7 +121,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getPostcode()
+    public function getPostcode(): ?string
     {
         return $this->_get(self::POSTCODE);
     }
@@ -131,7 +131,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      *
      * @return string|null
      */
-    public function getCity()
+    public function getCity(): ?string
     {
         return $this->_get(self::CITY);
     }
@@ -139,21 +139,21 @@ class Address extends AbstractSimpleObject implements AddressInterface
     /**
      * Get if this address is default shipping address.
      *
-     * @return bool|null
+     * @return bool
      */
-    public function isDefaultShipping()
+    public function isDefaultShipping(): bool
     {
-        return $this->_get(self::DEFAULT_SHIPPING);
+        return (bool) $this->_get(self::DEFAULT_SHIPPING);
     }
 
     /**
      * Get if this address is default billing address
      *
-     * @return bool|null
+     * @return bool
      */
-    public function isDefaultBilling()
+    public function isDefaultBilling(): bool
     {
-        return $this->_get(self::DEFAULT_BILLING);
+        return (bool) $this->_get(self::DEFAULT_BILLING);
     }
 
     /**
@@ -162,7 +162,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param int $id
      * @return $this
      */
-    public function setId($id)
+    public function setId(int $id): AddressInterface
     {
         return $this->setData(self::ID, $id);
     }
@@ -173,7 +173,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param int $customerId
      * @return $this
      */
-    public function setCustomerId($customerId)
+    public function setCustomerId(int $customerId): AddressInterface
     {
         return $this->setData(self::CUSTOMER_ID, $customerId);
     }
@@ -184,7 +184,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $firstName
      * @return $this
      */
-    public function setFirstname($firstName)
+    public function setFirstname(string $firstName): AddressInterface
     {
         return $this->setData(self::FIRSTNAME, $firstName);
     }
@@ -195,7 +195,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $lastName
      * @return $this
      */
-    public function setLastname($lastName)
+    public function setLastname(string $lastName): AddressInterface
     {
         return $this->setData(self::LASTNAME, $lastName);
     }
@@ -206,7 +206,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param RegionInterface $region
      * @return $this
      */
-    public function setRegion(RegionInterface $region = null)
+    public function setRegion(RegionInterface $region): AddressInterface
     {
         return $this->setData(self::REGION, $region);
     }
@@ -217,7 +217,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $regionCode
      * @return $this
      */
-    public function setRegionCode($regionCode)
+    public function setRegionCode(string $regionCode): AddressInterface
     {
         return $this->setData(self::REGION_CODE, $regionCode);
     }
@@ -228,7 +228,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $countryCode
      * @return $this
      */
-    public function setCountryCode($countryCode)
+    public function setCountryCode(string $countryCode): AddressInterface
     {
         return $this->setData(self::COUNTRY_CODE, $countryCode);
     }
@@ -239,7 +239,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string[] $street
      * @return $this
      */
-    public function setStreet(array $street)
+    public function setStreet(array $street): AddressInterface
     {
         return $this->setData(self::STREET, $street);
     }
@@ -250,7 +250,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $telephone
      * @return $this
      */
-    public function setTelephone($telephone)
+    public function setTelephone(string $telephone): AddressInterface
     {
         return $this->setData(self::TELEPHONE, trim($telephone));
     }
@@ -261,7 +261,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $fax
      * @return $this
      */
-    public function setFax($fax)
+    public function setFax(string $fax): AddressInterface
     {
         return $this->setData(self::FAX, $fax);
     }
@@ -272,7 +272,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $postcode
      * @return $this
      */
-    public function setPostcode($postcode)
+    public function setPostcode(string $postcode): AddressInterface
     {
         return $this->setData(self::POSTCODE, $postcode);
     }
@@ -283,7 +283,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param string $city
      * @return $this
      */
-    public function setCity($city)
+    public function setCity(string $city): AddressInterface
     {
         return $this->setData(self::CITY, $city);
     }
@@ -294,7 +294,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param bool $isDefaultShipping
      * @return $this
      */
-    public function setIsDefaultShipping($isDefaultShipping)
+    public function setIsDefaultShipping(bool $isDefaultShipping): AddressInterface
     {
         return $this->setData(self::DEFAULT_SHIPPING, $isDefaultShipping);
     }
@@ -305,7 +305,7 @@ class Address extends AbstractSimpleObject implements AddressInterface
      * @param bool $isDefaultBilling
      * @return $this
      */
-    public function setIsDefaultBilling($isDefaultBilling)
+    public function setIsDefaultBilling(bool $isDefaultBilling): AddressInterface
     {
         return $this->setData(self::DEFAULT_BILLING, $isDefaultBilling);
     }

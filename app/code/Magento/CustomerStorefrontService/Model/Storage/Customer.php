@@ -67,7 +67,7 @@ class Customer
      * @return CustomerInterface
      * @throws NoSuchEntityException
      */
-    public function fetchById(int $customerId)
+    public function fetchById(int $customerId): CustomerInterface
     {
         $select = $this->getConnection()
             ->select()
@@ -202,7 +202,7 @@ class Customer
         $this->getConnection()->beginTransaction();
         try {
             //delete all addresses
-            $this->getConnection()->delete('storefront_customer_address', ['customer_id = ?' => $customerID]);
+            $this->getConnection()->delete(Address::TABLE, ['customer_id = ?' => $customerID]);
             $this->getConnection()->delete(self::TABLE, ['customer_id = ?' => $customerID]);
         } catch (\Exception $e) {
             $this->getConnection()->rollBack();

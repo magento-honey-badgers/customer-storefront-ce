@@ -74,7 +74,7 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function deleteById(int $addressId): bool
     {
-        return $this->addressStorage->delete($addressId);
+        return $this->addressStorage->deleteById($addressId);
     }
 
     /**
@@ -110,6 +110,6 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function delete(AddressInterface $address): bool
     {
-        $this->addressStorage->delete($address->getId());
+        $this->addressStorage->deleteById($address->getId());
     }
 }

@@ -16,6 +16,7 @@ use Magento\Framework\Setup\SchemaSetupInterface;
  * Temporary solution to add generated columns to schema
  *
  * TODO: MC-31333
+ * Declarative schema does not support create of generated columns
  */
 class InstallSchema implements InstallSchemaInterface
 {
@@ -55,9 +56,9 @@ ALTER TABLE `$customerTable`
     ADD COLUMN `customer_id` int(11)
         GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.id'))) STORED,
     ADD COLUMN `default_billing_address_id` int(11)
-        GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.default_billing'))) STORED NULL,
+        GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.default_billing'))) STORED,
     ADD COLUMN `default_shipping_address_id` int(11)
-        GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.default_shipping'))) STORED NULL;
+        GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.default_shipping'))) STORED;
 ADDCOLUMN;
 
         //Add Columns
@@ -109,10 +110,17 @@ ADDCOLUMN;
 
         //Add Columns
         $setup->getConnection()->query($addColumnSql);
+
+        //Add Unique Index
+        $setup->getConnection()->addIndex(
+            $addressTable,
+            'STOREFRONT_CUSTOMER_ADDRESS_ADDRESS_ID',
+            ['customer_address_id'],
+            AdapterInterface::INDEX_TYPE_UNIQUE
+        );
         //Add Indexes
         $indexes = [
             'STOREFRONT_CUSTOMER_ADDRESS_ROW_ID' => 'customer_row_id',
-            'STOREFRONT_CUSTOMER_ADDRESS_ADDRESS_ID' => 'customer_address_id',
             'STOREFRONT_CUSTOMER_ADDRESS_CUSTOMER_ID' => 'customer_id'
         ];
         foreach ($indexes as $indexName => $column) {

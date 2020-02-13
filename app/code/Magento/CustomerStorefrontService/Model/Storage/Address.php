@@ -28,11 +28,6 @@ class Address
     private $resourceConnection;
 
     /**
-     * @var CustomerValidator
-     */
-    private $validator;
-
-    /**
      * @var AddressInterfaceFactory
      */
     private $addressInterfaceFactory;
@@ -42,13 +37,16 @@ class Address
      */
     private $serializer;
 
+    /**
+     * @var CustomerStorage
+     */
     private $customerStorage;
 
     /**
      * @param ResourceConnection $resourceConnection
      * @param AddressInterfaceFactory $addressInterfaceFactory
      * @param Json $serializer
-     * @param Customer $customerStorage
+     * @param CustomerStorage $customerStorage
      */
     public function __construct(
         ResourceConnection $resourceConnection,
@@ -66,9 +64,9 @@ class Address
      * Fetch all addresses belonging to a customer
      *
      * @param int $customerId
-     * @return array
+     * @return AddressInterface[]
      */
-    public function fetchAddressesByCustomerId(int $customerId)
+    public function fetchAddressesByCustomerId(int $customerId): array
     {
         $select = $this->getConnection()
             ->select()
@@ -97,7 +95,7 @@ class Address
      * @return AddressInterface
      * @throws NoSuchEntityException
      */
-    public function fetchByAddressId(int $addressId)
+    public function fetchByAddressId(int $addressId): AddressInterface
     {
         $select = $this->getConnection()
             ->select()
@@ -140,25 +138,12 @@ class Address
      * @return bool
      * @throws NoSuchEntityException
      */
-    public function delete(int $addressId): bool
+    public function deleteById(int $addressId): bool
     {
         if (!$this->addressExists($addressId)) {
             throw NoSuchEntityException::singleField('address_id', $addressId);
         }
         return $this->doDelete($addressId);
-    }
-
-    /**
-     * Delete all addresses belonging to a customer
-     *
-     * @param int $customerId
-     */
-    public function deleteAllAddresses(int $customerId)
-    {
-        $this->getConnection()->delete(
-            self::TABLE,
-            ['customer_id = ?' => $customerId]
-        );
     }
 
     /**
@@ -173,16 +158,16 @@ class Address
         try {
             $address = $this->fetchByAddressId($addressId);
             $customer = $this->customerStorage->fetchById($address->getCustomerId());
-            if (($customer->getDefaultBilling() == (string)$address->getId())) {
-                $customer->setDefaultBilling("");
+            if (($customer->getDefaultBilling() == $address->getId())) {
+                $customer->setDefaultBilling(0);
             }
-            if (($customer->getDefaultShipping() == (string)$address->getId())) {
-                $customer->setDefaultShipping("");
+            if (($customer->getDefaultShipping() == $address->getId())) {
+                $customer->setDefaultShipping(0);
             }
             $this->getConnection()->beginTransaction();
             $this->customerStorage->persist($customer);
             $this->getConnection()->delete(
-                'storefront_customer_address',
+                self::TABLE,
                 ['customer_address_id = ?' => $addressId]
             );
         } catch (\Exception $e) {
@@ -223,12 +208,12 @@ class Address
         $this->getConnection()->update(
             self::TABLE,
             ['customer_address_document' => $addressDocument],
-            ['customer_address_id' => $addressId]
+            ['customer_address_id = ?' => $addressId]
         );
     }
 
     /**
-     * Checks address exists
+     * Check if address exists
      *
      * @param int $addressId
      * @return bool
@@ -244,7 +229,7 @@ class Address
     }
 
     /**
-     * Connection helper
+     * Get connection adapter
      *
      * @return AdapterInterface
      */

@@ -19,7 +19,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * @return int|null
      */
-    public function getDefaultBilling()
+    public function getDefaultBilling(): ?int
     {
         return $this->_get(self::DEFAULT_BILLING);
     }
@@ -29,27 +29,17 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return int|null
      */
-    public function getDefaultShipping()
+    public function getDefaultShipping(): ?int
     {
         return $this->_get(self::DEFAULT_SHIPPING);
     }
 
     /**
-     * Get created at time
+     * Get email address
      *
      * @return string|null
      */
-    public function getCreatedAt()
-    {
-        return $this->_get(self::CREATED_AT);
-    }
-
-    /**
-     * Get email address
-     *
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->_get(self::EMAIL);
     }
@@ -57,9 +47,9 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Get first name
      *
-     * @return string
+     * @return string|null
      */
-    public function getFirstname()
+    public function getFirstname(): ?string
     {
         return $this->_get(self::FIRSTNAME);
     }
@@ -69,7 +59,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->_get(self::ID);
     }
@@ -77,9 +67,9 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Get last name
      *
-     * @return string
+     * @return string|null
      */
-    public function getLastname()
+    public function getLastname(): ?string
     {
         return $this->_get(self::LASTNAME);
     }
@@ -89,7 +79,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return string|null
      */
-    public function getMiddlename()
+    public function getMiddlename(): ?string
     {
         return $this->_get(self::MIDDLENAME);
     }
@@ -97,9 +87,9 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Get gender
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getGender()
+    public function getGender(): ?int
     {
         return $this->_get(self::GENDER);
     }
@@ -109,7 +99,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return AddressInterface[]|null
      */
-    public function getAddresses()
+    public function getAddresses(): ?array
     {
         return $this->_get(self::KEY_ADDRESSES);
     }
@@ -117,9 +107,9 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Get date of birth
      *
-     * @return mixed|string|null
+     * @return string|null
      */
-    public function getDateOfBirth()
+    public function getDateOfBirth(): ?string
     {
         return $this->_get(self::DATE_OF_BIRTH);
     }
@@ -129,7 +119,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return string|null
      */
-    public function getPrefix()
+    public function getPrefix(): ?string
     {
         return $this->_get(self::PREFIX);
     }
@@ -139,7 +129,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return string|null
      */
-    public function getSuffix()
+    public function getSuffix(): ?string
     {
         return $this->_get(self::SUFFIX);
     }
@@ -149,7 +139,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return int|null
      */
-    public function getStoreId()
+    public function getStoreId(): ?int
     {
         return $this->_get(self::STORE_ID);
     }
@@ -159,7 +149,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return int|null
      */
-    public function getWebsiteId()
+    public function getWebsiteId(): ?int
     {
         return $this->_get(self::WEBSITE_ID);
     }
@@ -169,7 +159,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      *
      * @return string|null
      */
-    public function getTaxvat()
+    public function getTaxvat(): ?string
     {
         return $this->_get(self::TAXVAT);
     }
@@ -180,7 +170,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param int $id
      * @return $this
      */
-    public function setId($id)
+    public function setId(int $id): CustomerInterface
     {
         return $this->setData(self::ID, $id);
     }
@@ -191,7 +181,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param int $defaultBilling
      * @return $this
      */
-    public function setDefaultBilling(int $defaultBilling)
+    public function setDefaultBilling(int $defaultBilling): CustomerInterface
     {
         return $this->setData(self::DEFAULT_BILLING, $defaultBilling);
     }
@@ -202,20 +192,9 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param int $defaultShipping
      * @return $this
      */
-    public function setDefaultShipping(int $defaultShipping)
+    public function setDefaultShipping(int $defaultShipping): CustomerInterface
     {
         return $this->setData(self::DEFAULT_SHIPPING, $defaultShipping);
-    }
-
-    /**
-     * Set created at time
-     *
-     * @param string $createdAt
-     * @return $this
-     */
-    public function setCreatedAt(string $createdAt)
-    {
-        return $this->setData(self::CREATED_AT, $createdAt);
     }
 
     /**
@@ -224,7 +203,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param string $email
      * @return $this
      */
-    public function setEmail($email)
+    public function setEmail(string $email): CustomerInterface
     {
         return $this->setData(self::EMAIL, $email);
     }
@@ -235,7 +214,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param string $firstname
      * @return $this
      */
-    public function setFirstname(string $firstname)
+    public function setFirstname(string $firstname): CustomerInterface
     {
         return $this->setData(self::FIRSTNAME, $firstname);
     }
@@ -246,7 +225,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param string $lastname
      * @return $this
      */
-    public function setLastname($lastname)
+    public function setLastname(string $lastname): CustomerInterface
     {
         return $this->setData(self::LASTNAME, $lastname);
     }
@@ -257,7 +236,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param string $middlename
      * @return $this
      */
-    public function setMiddlename($middlename)
+    public function setMiddlename(string $middlename): CustomerInterface
     {
         return $this->setData(self::MIDDLENAME, $middlename);
     }
@@ -265,10 +244,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Set gender
      *
-     * @param string $gender
+     * @param int $gender
      * @return $this
      */
-    public function setGender($gender)
+    public function setGender(int $gender): CustomerInterface
     {
         return $this->setData(self::GENDER, $gender);
     }
@@ -279,7 +258,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param string $prefix
      * @return  $this
      */
-    public function setPrefix($prefix)
+    public function setPrefix(string $prefix): CustomerInterface
     {
         return $this->setData(self::PREFIX, $prefix);
     }
@@ -290,7 +269,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param string $suffix
      * @return  $this
      */
-    public function setSuffix($suffix)
+    public function setSuffix(string $suffix): CustomerInterface
     {
         return $this->setData(self::SUFFIX, $suffix);
     }
@@ -301,7 +280,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param int $storeId
      * @return  $this
      */
-    public function setStoreId($storeId)
+    public function setStoreId(int $storeId): CustomerInterface
     {
         return $this->setData(self::STORE_ID, $storeId);
     }
@@ -312,7 +291,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param int $websiteId
      * @return $this
      */
-    public function setWebsiteId($websiteId)
+    public function setWebsiteId(int $websiteId): CustomerInterface
     {
         return $this->setData(self::WEBSITE_ID, $websiteId);
     }
@@ -323,7 +302,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param string $taxvat
      * @return $this
      */
-    public function setTaxvat($taxvat)
+    public function setTaxvat(string $taxvat): CustomerInterface
     {
         return $this->setData(self::TAXVAT, $taxvat);
     }
@@ -334,7 +313,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * @param AddressInterface[] $addresses
      * @return $this
      */
-    public function setAddresses(array $addresses = [])
+    public function setAddresses(array $addresses = []): CustomerInterface
     {
         return $this->setData(self::KEY_ADDRESSES, $addresses);
     }
@@ -342,10 +321,10 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     /**
      * Set data of birth
      *
-     * @param string $dateOfbirth
+     * @param string $dateOfBirth
      * @return $this
      */
-    public function setDateOfBirth(string $dateOfbirth)
+    public function setDateOfBirth(string $dateOfBirth): CustomerInterface
     {
         return $this->setData(self::DATE_OF_BIRTH, $dateOfbirth);
     }

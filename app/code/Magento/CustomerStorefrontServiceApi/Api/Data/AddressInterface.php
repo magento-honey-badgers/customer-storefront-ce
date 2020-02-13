@@ -3,6 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
 
 /**
@@ -33,7 +35,7 @@ interface AddressInterface
      *
      * @return int|null
      */
-    public function getId();
+    public function getId(): ?int;
 
     /**
      * Set ID
@@ -41,14 +43,14 @@ interface AddressInterface
      * @param int $id
      * @return $this
      */
-    public function setId($id);
+    public function setId(int $id): AddressInterface;
 
     /**
      * Get customer ID
      *
      * @return int|null
      */
-    public function getCustomerId();
+    public function getCustomerId(): ?int;
 
     /**
      * Set customer ID
@@ -56,14 +58,14 @@ interface AddressInterface
      * @param int $customerId
      * @return $this
      */
-    public function setCustomerId($customerId);
+    public function setCustomerId(int $customerId): AddressInterface;
 
     /**
      * Get first name
      *
      * @return string|null
      */
-    public function getFirstname();
+    public function getFirstname(): ?string;
 
     /**
      * Set first name
@@ -71,14 +73,14 @@ interface AddressInterface
      * @param string $firstName
      * @return $this
      */
-    public function setFirstname($firstName);
+    public function setFirstname(string $firstName): AddressInterface;
 
     /**
      * Get last name
      *
      * @return string|null
      */
-    public function getLastname();
+    public function getLastname(): ?string;
 
     /**
      * Set last name
@@ -86,14 +88,14 @@ interface AddressInterface
      * @param string $lastName
      * @return $this
      */
-    public function setLastname($lastName);
+    public function setLastname(string $lastName): AddressInterface;
 
     /**
      * Get region
      *
      * @return RegionInterface|null
      */
-    public function getRegion();
+    public function getRegion(): ?RegionInterface;
 
     /**
      * Set region
@@ -101,22 +103,22 @@ interface AddressInterface
      * @param RegionInterface $region
      * @return $this
      */
-    public function setRegion(RegionInterface $region = null);
+    public function setRegion(RegionInterface $region): AddressInterface;
 
     /**
      * Get region Code
      *
-     * @return int|null
+     * @return string|null
      */
-    public function getRegionCode();
+    public function getRegionCode(): ?string;
 
     /**
      * Set region Code
      *
-     * @param int $regionCode
+     * @param string $regionCode
      * @return $this
      */
-    public function setRegionCode($regionCode);
+    public function setRegionCode(string $regionCode): AddressInterface;
 
     /**
      * Two-letter country code in ISO_3166-2 format
@@ -131,14 +133,14 @@ interface AddressInterface
      * @param string $countryCode
      * @return $this
      */
-    public function setCountryCode($countryCode);
+    public function setCountryCode(string $countryCode): AddressInterface;
 
     /**
      * Get street
      *
      * @return string[]|null
      */
-    public function getStreet();
+    public function getStreet(): ?array;
 
     /**
      * Set street
@@ -146,14 +148,14 @@ interface AddressInterface
      * @param string[] $street
      * @return $this
      */
-    public function setStreet(array $street);
+    public function setStreet(array $street): AddressInterface;
 
     /**
      * Get telephone number
      *
      * @return string|null
      */
-    public function getTelephone();
+    public function getTelephone(): ?string;
 
     /**
      * Set telephone number
@@ -161,14 +163,14 @@ interface AddressInterface
      * @param string $telephone
      * @return $this
      */
-    public function setTelephone($telephone);
+    public function setTelephone(string $telephone): AddressInterface;
 
     /**
      * Get fax number
      *
      * @return string|null
      */
-    public function getFax();
+    public function getFax(): ?string;
 
     /**
      * Set fax number
@@ -176,14 +178,14 @@ interface AddressInterface
      * @param string $fax
      * @return $this
      */
-    public function setFax($fax);
+    public function setFax(string $fax): AddressInterface;
 
     /**
      * Get postcode
      *
      * @return string|null
      */
-    public function getPostcode();
+    public function getPostcode(): ?string;
 
     /**
      * Set postcode
@@ -191,14 +193,14 @@ interface AddressInterface
      * @param string $postcode
      * @return $this
      */
-    public function setPostcode($postcode);
+    public function setPostcode(string $postcode): AddressInterface;
 
     /**
      * Get city name
      *
      * @return string|null
      */
-    public function getCity();
+    public function getCity(): ?string;
 
     /**
      * Set city name
@@ -206,14 +208,14 @@ interface AddressInterface
      * @param string $city
      * @return $this
      */
-    public function setCity($city);
+    public function setCity(string $city): AddressInterface;
 
     /**
      * Get if this address is default shipping address.
      *
-     * @return bool|null
+     * @return bool
      */
-    public function isDefaultShipping();
+    public function isDefaultShipping(): bool;
 
     /**
      * Set if this address is default shipping address.
@@ -221,14 +223,14 @@ interface AddressInterface
      * @param bool $isDefaultShipping
      * @return $this
      */
-    public function setIsDefaultShipping($isDefaultShipping);
+    public function setIsDefaultShipping(bool $isDefaultShipping): AddressInterface;
 
     /**
      * Get if this address is default billing address
      *
-     * @return bool|null
+     * @return bool
      */
-    public function isDefaultBilling();
+    public function isDefaultBilling(): ?bool;
 
     /**
      * Set if this address is default billing address
@@ -236,5 +238,5 @@ interface AddressInterface
      * @param bool $isDefaultBilling
      * @return $this
      */
-    public function setIsDefaultBilling($isDefaultBilling);
+    public function setIsDefaultBilling(bool $isDefaultBilling): AddressInterface;
 }

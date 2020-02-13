@@ -46,25 +46,36 @@ class EventPublisher
     /**
      * Publishes the messages after validation
      *
+     * Message template
+     * [
+     *   'correlation_id' => '<unique_message_id>',
+     *   'event' => '<create|update|delete>',
+     *   'entity_type' => '<customer|address>',
+     *   'data'=> [...] //entity data
+     * ]
+     *
      * @param string $topic
      * @param array $message
      * @return boolean
      */
-    public function publish(string $topic, array $message) :bool
+    public function publish(string $topic, array $message): bool
     {
-        $correlationId = uniqid($message['event'], true);
-        $message['correlation_id'] = $correlationId;
-        $entityId=$this->getEntityIdfromMessage($message);
-        if ($this->validateMessageDuplication($entityId)) {
+        $correlationId = uniqid($message[MessageFormatter::EVENT_KEY], true);
+        $message[MessageFormatter::CORRELATION_KEY] = $correlationId;
+
+        $messageIdentifier = $this->generateMessageIdentifier($message);
+        if ($this->validateMessageDuplication($messageIdentifier)) {
             $topicName = $topic;
             try {
                 $serializedData = $this->serializer->serialize($message);
                 $this->publisher->publish($topicName, $serializedData);
                 $this->logger->info('event published', $message);
-                $this->publishedIds[] = $entityId;
+                $this->publishedIds[] = $messageIdentifier;
             } catch (\Exception $e) {
                 $this->handlePublishErrors($e, $message);
             }
+        } else {
+            $this->logger->info('Duplicate message was not published: "' . $messageIdentifier . '"');
         }
         return true;
     }
@@ -86,29 +97,25 @@ class EventPublisher
     /**
      * Checks if the event is being published more than once
      *
-     * @param int $entityId
+     * @param string $messageIdentifier
      * @return bool
      */
-    private function validateMessageDuplication(int $entityId): bool
+    private function validateMessageDuplication(string $messageIdentifier): bool
     {
-        if (isset($entityId)) {
-            return !in_array($entityId, $this->publishedIds);
-        }
-        return true;
+        return !in_array($messageIdentifier, $this->publishedIds);
     }
 
     /**
-     * Get Entity Id
+     * Generate a unique identifier for a message based on message attributes
      *
      * @param array $message
-     * @return int
+     * @return string
      */
-    private function getEntityIdfromMessage(array $message)
+    private function generateMessageIdentifier(array $message): string
     {
-        if (isset($message['data']) && isset($message['data']['id'])) {
-            $entityId = $message['data']['id'];
-            return (int)$entityId;
-        }
-        return null;
+        $entityId = $message[MessageFormatter::DATA_KEY]['id'] ?? 0;
+        return $message[MessageFormatter::EVENT_KEY]
+            . '-' . $message[MessageFormatter::ENTITY_TYPE_KEY]
+            . '-' . $entityId;
     }
 }

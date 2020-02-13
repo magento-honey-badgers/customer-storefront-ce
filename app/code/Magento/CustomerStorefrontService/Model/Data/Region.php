@@ -8,19 +8,19 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontService\Model\Data;
 
 use Magento\CustomerStorefrontServiceApi\Api\Data\RegionInterface;
+use Magento\Framework\Api\AbstractSimpleObject;
 
 /**
  * Data Model implementing Address Region interface
  */
-class Region extends \Magento\Framework\Api\AbstractSimpleObject implements
-    RegionInterface
+class Region extends AbstractSimpleObject implements RegionInterface
 {
     /**
      * Get region code
      *
-     * @return string
+     * @return string|null
      */
-    public function getRegionCode()
+    public function getRegionCode(): ?string
     {
         return $this->_get(self::REGION_CODE);
     }
@@ -28,9 +28,9 @@ class Region extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get region
      *
-     * @return string
+     * @return string|null
      */
-    public function getRegion()
+    public function getRegion(): ?string
     {
         return $this->_get(self::REGION);
     }
@@ -38,9 +38,9 @@ class Region extends \Magento\Framework\Api\AbstractSimpleObject implements
     /**
      * Get region id
      *
-     * @return int
+     * @return int|null
      */
-    public function getRegionId()
+    public function getRegionId(): ?int
     {
         return $this->_get(self::REGION_ID);
     }
@@ -51,7 +51,7 @@ class Region extends \Magento\Framework\Api\AbstractSimpleObject implements
      * @param string $regionCode
      * @return $this
      */
-    public function setRegionCode($regionCode)
+    public function setRegionCode(string $regionCode): RegionInterface
     {
         return $this->setData(self::REGION_CODE, $regionCode);
     }
@@ -62,7 +62,7 @@ class Region extends \Magento\Framework\Api\AbstractSimpleObject implements
      * @param string $region
      * @return $this
      */
-    public function setRegion($region)
+    public function setRegion(string $region): RegionInterface
     {
         return $this->setData(self::REGION, $region);
     }
@@ -73,7 +73,7 @@ class Region extends \Magento\Framework\Api\AbstractSimpleObject implements
      * @param int $regionId
      * @return $this
      */
-    public function setRegionId($regionId)
+    public function setRegionId(int $regionId): RegionInterface
     {
         return $this->setData(self::REGION_ID, $regionId);
     }

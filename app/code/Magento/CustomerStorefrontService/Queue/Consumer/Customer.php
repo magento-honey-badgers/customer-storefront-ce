@@ -7,15 +7,15 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontService\Queue\Consumer;
 
-use Psr\Log\LoggerInterface;
+use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
 use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
- * Handle customer save messages
+ * Consume messages for customer entity changes and apply changes on storefront data
  */
-class CustomerReactor
+class Customer
 {
     /**
      * @var LoggerInterface

@@ -7,5 +7,5 @@ type Query {
 
 type Customer {
     addresses: [CustomerAddress] @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\CustomerAddresses")
-    is_subscribed: Boolean @doc(description: "Indicates whether the customer is subscribed to the company's newsletter") @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\Customer\\IsSubscribed")
+    is_subscribed: Boolean @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\Customer\\IsSubscribed")
 }
