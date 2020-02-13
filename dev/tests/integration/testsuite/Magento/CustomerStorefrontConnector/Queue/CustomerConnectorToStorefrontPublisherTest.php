@@ -142,8 +142,10 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $monolithMessage = $monolithQueue->dequeue();
         $unserializedMonolithMessage = $this->serializer->unserialize($monolithMessage->getBody());
         $customerData = include __DIR__ . '/../_files/customer_data.php';
-        $this->customerRepositoryWrapperMock->expects($this->once())->method('getById')
-            ->with($customerId)->willReturn($customerData);
+        $this->customerRepositoryWrapperMock->expects($this->once())
+            ->method('getById')
+            ->with($customerId)
+            ->willReturn($customerData);
         $this->customerConnectorConsumer->forwardCustomerChanges($unserializedMonolithMessage);
 
         $customerSaveMessage = $serviceQueue->dequeue();

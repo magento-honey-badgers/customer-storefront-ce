@@ -58,7 +58,7 @@ class CustomerAddressStorefrontPublisherTest extends TestCase
     /**
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_address.php
      */
-    public function testReadMessageCustomerAddressSave()
+    public function testPublishCustomerAddressSaveMessage()
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
         /** @var AddressInterface $customerAddress */

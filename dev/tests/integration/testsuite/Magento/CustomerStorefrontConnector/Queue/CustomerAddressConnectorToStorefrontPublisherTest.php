@@ -105,7 +105,9 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
         $unserializedMonolithMessage = $this->serializer->unserialize($monolithAddressSaveMessage->getBody());
         $customerAddressData = include __DIR__ . '/../_files/customer_address_data.php';
         $this->customerAddressRepositoryWrapperMock->expects($this->once())
-            ->method('getById')->with($addressId)->willReturn($customerAddressData);
+            ->method('getById')
+            ->with($addressId)
+            ->willReturn($customerAddressData);
         $this->customerAddressConnectorConsumer->forwardAddressChanges($unserializedMonolithMessage);
 
         $customerSaveMessage = $serviceAddressQueue->dequeue();

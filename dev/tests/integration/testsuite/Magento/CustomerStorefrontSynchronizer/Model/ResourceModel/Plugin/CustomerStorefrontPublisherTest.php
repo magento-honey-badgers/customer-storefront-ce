@@ -61,7 +61,7 @@ class CustomerStorefrontPublisherTest extends TestCase
      * @magentoAppArea adminhtml
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
      */
-    public function testReadMessageCustomerDelete()
+    public function testPublishCustomerDeleteMessage()
     {
         $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
         $this->customerRepository->delete($customer);
@@ -93,7 +93,7 @@ class CustomerStorefrontPublisherTest extends TestCase
      *
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer.php
      */
-    public function testReadMessageCustomerSave()
+    public function testPublishCustomerSaveMessage()
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
         /** @var QueueInterface $queue */
