@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="storefront_customer" resource="default" engine="innodb" comment="Data">
+        <column xsi:type="bigint" name="customer_row_id" padding="20" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="json" name="customer_document" nullable="false" comment="Customer Entity data store"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="customer_row_id"/>
+        </constraint>
+    </table>
+    <table name="storefront_customer_address" resource="default" engine="innodb" comment="Data">
+        <column xsi:type="bigint" name="customer_address_row_id" padding="20" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="json" name="customer_address_document" nullable="false" comment="Customer Address Entity data store"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="customer_address_row_id"/>
+        </constraint>
+    </table>
+</schema>

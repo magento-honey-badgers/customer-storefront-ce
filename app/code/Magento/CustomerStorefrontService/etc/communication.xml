@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+  * Copyright © Magento, Inc. All rights reserved.
+  * See COPYING.txt for license details.
+  */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <topic name="customer.connector.service.customer.save" request="string">
+        <handler name="connector-to-service-customer-save"
+                 type="Magento\CustomerStorefrontService\Queue\Consumer\Customer"
+                 method="handleCustomerSave"/>
+    </topic>
+    <topic name="customer.connector.service.customer.delete" request="string">
+        <handler name="connector-to-service-customer-delete"
+                 type="Magento\CustomerStorefrontService\Queue\Consumer\Customer"
+                 method="handleCustomerDelete"/>
+    </topic>
+    <topic name="customer.connector.service.address.save" request="string">
+        <handler name="connector-to-service-address-save"
+                 type="Magento\CustomerStorefrontService\Queue\Consumer\Address"
+                 method="handleAddressSave"/>
+    </topic>
+    <topic name="customer.connector.service.address.delete" request="string">
+        <handler name="connector-to-service-address-delete"
+                 type="Magento\CustomerStorefrontService\Queue\Consumer\Address"
+                 method="handleAddressDelete"/>
+    </topic>
+</config>

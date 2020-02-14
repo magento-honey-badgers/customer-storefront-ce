@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+  * Copyright © Magento, Inc. All rights reserved.
+  * See COPYING.txt for license details.
+  */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="magento" type="topic" connection="amqp">
+        <!-- Bindings for messages originating from connector -->
+        <binding id="customer.connector.service.customer.save" topic="customer.connector.service.customer.save" destinationType="queue" destination="customer.connector.service.customer.save"/>
+        <binding id="customer.connector.service.customer.delete" topic="customer.connector.service.customer.delete" destinationType="queue" destination="customer.connector.service.customer.delete"/>
+        <binding id="customer.connector.service.address.save" topic="customer.connector.service.address.save" destinationType="queue" destination="customer.connector.service.address.save"/>
+        <binding id="customer.connector.service.address.delete" topic="customer.connector.service.address.delete" destinationType="queue" destination="customer.connector.service.address.delete"/>
+    </exchange>
+</config>

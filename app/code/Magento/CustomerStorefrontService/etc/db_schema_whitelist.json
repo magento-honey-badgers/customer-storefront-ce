@@ -1,0 +1,20 @@
+{
+    "storefront_customer": {
+        "column": {
+            "customer_row_id": true,
+            "customer_document": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "storefront_customer_address": {
+        "column": {
+            "customer_address_row_id": true,
+            "customer_address_document": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
