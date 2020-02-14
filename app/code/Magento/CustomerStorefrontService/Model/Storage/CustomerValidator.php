@@ -20,6 +20,9 @@ class CustomerValidator implements ValidatorInterface
      */
     private $validators;
 
+    /**
+     * @param array $validators
+     */
     public function __construct(array $validators = [])
     {
         $this->validators = $validators;

@@ -17,6 +17,8 @@ use Magento\Framework\Api\AbstractSimpleObject;
 class Customer extends AbstractSimpleObject implements CustomerInterface
 {
     /**
+     * Get default billing
+     *
      * @return int|null
      */
     public function getDefaultBilling(): ?int
@@ -256,7 +258,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * Set prefix
      *
      * @param string $prefix
-     * @return  $this
+     * @return $this
      */
     public function setPrefix(string $prefix): CustomerInterface
     {
@@ -267,7 +269,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * Set suffix
      *
      * @param string $suffix
-     * @return  $this
+     * @return $this
      */
     public function setSuffix(string $suffix): CustomerInterface
     {
@@ -278,7 +280,7 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      * Set store id
      *
      * @param int $storeId
-     * @return  $this
+     * @return $this
      */
     public function setStoreId(int $storeId): CustomerInterface
     {
@@ -326,6 +328,6 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      */
     public function setDateOfBirth(string $dateOfBirth): CustomerInterface
     {
-        return $this->setData(self::DATE_OF_BIRTH, $dateOfbirth);
+        return $this->setData(self::DATE_OF_BIRTH, $dateOfBirth);
     }
 }

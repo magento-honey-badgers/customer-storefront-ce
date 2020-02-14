@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
 
 /**
- * Customer interface.
+ * Storefront API interface for the customer.
  */
 interface CustomerInterface
 {

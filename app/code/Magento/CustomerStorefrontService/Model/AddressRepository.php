@@ -12,7 +12,7 @@ use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
 use Magento\CustomerStorefrontService\Model\Storage\Address as AddressStorage;
 
 /**
- * Address repository.
+ * Repository for customer address.
  */
 class AddressRepository implements AddressRepositoryInterface
 {
@@ -110,6 +110,6 @@ class AddressRepository implements AddressRepositoryInterface
      */
     public function delete(AddressInterface $address): bool
     {
-        $this->addressStorage->deleteById($address->getId());
+        return $this->addressStorage->deleteById($address->getId());
     }
 }

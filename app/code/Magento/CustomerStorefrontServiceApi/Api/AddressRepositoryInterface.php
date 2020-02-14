@@ -62,4 +62,3 @@ interface AddressRepositoryInterface
      */
     public function delete(AddressInterface $address): bool;
 }
-

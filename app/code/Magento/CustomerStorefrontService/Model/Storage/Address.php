@@ -237,6 +237,5 @@ class Address
     {
         return $this->resourceConnection->getConnection();
     }
-
 }
 

@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
 
 /**
- * Customer address region interface.
+ * Storefront API interface for the customer address region interface.
  */
 interface RegionInterface
 {

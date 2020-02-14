@@ -62,9 +62,9 @@ class CustomerAddresses implements ResolverInterface
     /**
      * Format address for graphql
      *
-     * TODO this is a temporary solution
+     * TODO: implement hydrator instead of ToArray
      *
-     * @param AddressInterface $Address
+     * @param AddressInterface $address
      * @return array
      */
     private function formatOutput(AddressInterface $address): array
@@ -73,5 +73,4 @@ class CustomerAddresses implements ResolverInterface
         $addressArray['country_code'] = $address->getCountryCode();
         return $addressArray;
     }
-
 }

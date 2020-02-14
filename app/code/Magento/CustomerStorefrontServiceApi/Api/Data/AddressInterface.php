@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontServiceApi\Api\Data;
 
 /**
- * Address interface.
+ * Storefront API interface for the customer address.
  */
 interface AddressInterface
 {
