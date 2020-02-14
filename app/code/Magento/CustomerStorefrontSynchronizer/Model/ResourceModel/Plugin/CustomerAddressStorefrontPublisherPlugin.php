@@ -54,6 +54,7 @@ class CustomerAddressStorefrontPublisherPlugin
      * @param AddressInterface $address
      * @param AddressInterface $addressInput
      * @return AddressInterface
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterSave(
         AddressRepositoryInterface $addressRepository,
@@ -75,6 +76,7 @@ class CustomerAddressStorefrontPublisherPlugin
      * @param boolean $result
      * @param AddressInterface $address
      * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterDelete(AddressRepositoryInterface $addressRepository, $result, AddressInterface $address)
     {
@@ -95,6 +97,7 @@ class CustomerAddressStorefrontPublisherPlugin
      * @param boolean $result
      * @param int $addressId
      * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterDeleteById(AddressRepositoryInterface $addressRepository, $result, $addressId)
     {

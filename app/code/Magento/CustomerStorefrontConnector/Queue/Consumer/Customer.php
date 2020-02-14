@@ -91,8 +91,6 @@ class Customer
             $this->logger->error('Message could not be processed: ' . $e->getMessage(), [$incomingMessage]);
             throw $e;
         }
-
-
     }
 
     /**
@@ -118,5 +116,4 @@ class Customer
             throw $e;
         }
     }
-
 }

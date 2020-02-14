@@ -53,6 +53,7 @@ class CustomerStorefrontPublisherPlugin
      * @param CustomerInterface $customer
      * @param CustomerInterface $customerInput
      * @return CustomerInterface
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterSave(
         CustomerRepository $customerRepository,
@@ -73,6 +74,7 @@ class CustomerStorefrontPublisherPlugin
      * @param boolean $result
      * @param CustomerInterface $customer
      * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterDelete(CustomerRepository $customerRepository, $result, CustomerInterface $customer)
     {
@@ -93,6 +95,7 @@ class CustomerStorefrontPublisherPlugin
      * @param boolean $result
      * @param int $customerId
      * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterDeleteById(CustomerRepository $customerRepository, $result, $customerId)
     {

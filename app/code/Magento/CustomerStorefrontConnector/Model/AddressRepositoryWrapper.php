@@ -67,7 +67,7 @@ class AddressRepositoryWrapper
             $addressData = $this->serializer->unserialize($response['body']);
             return $this->dataTransformer->toArray($addressData);
         } elseif (404 == $response['status']) {
-            throw NoSuchEntityException::singleField('addressId', $addressId);
+            throw new NoSuchEntityException(__('No such entity with addressId = %s', $addressId));
         } else {
             throw new LocalizedException(__('Could not fetch data for address with id: ' . $addressId));
         }

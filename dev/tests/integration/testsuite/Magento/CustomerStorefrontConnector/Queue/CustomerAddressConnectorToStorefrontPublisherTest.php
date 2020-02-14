@@ -87,7 +87,6 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
     public function testForwardCustomerAddressChangesToConnectorConsumer() : void
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
-        $customerId = $customer->getId();
         /** @var AddressInterface $customerAddress */
         $customerAddress = $this->addressRepository->getById($customer->getDefaultBilling());
         $addressId = $customerAddress->getId();

@@ -146,6 +146,5 @@ class GetAddressesTest extends GraphQlAbstract
    }
 }
 QUERY;
-
     }
 }

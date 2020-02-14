@@ -103,7 +103,7 @@ class Address
     {
         try {
             $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
-            $metaData = [
+            $metaData =  [
                 MessageGenerator::CORRELATION_ID_KEY => $incomingMessageArray[MessageGenerator::CORRELATION_ID_KEY],
                 MessageGenerator::ENTITY_TYPE_KEY => $incomingMessageArray[MessageGenerator::ENTITY_TYPE_KEY],
                 MessageGenerator::EVENT_KEY => $incomingMessageArray[MessageGenerator::EVENT_KEY]

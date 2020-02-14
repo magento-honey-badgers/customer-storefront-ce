@@ -67,7 +67,7 @@ class CustomerRepositoryWrapper
             $customerData = $this->serializer->unserialize($response['body']);
             return $this->dataTransformer->toArray($customerData);
         } elseif (404 == $response['status']) {
-            throw NoSuchEntityException::singleField('customerId', $customerId);
+            throw new NoSuchEntityException(__('No such entity with customerId = %s', $customerId));
         } else {
             throw new LocalizedException(__('Could not fetch data for customer with id: ' . $customerId));
         }
