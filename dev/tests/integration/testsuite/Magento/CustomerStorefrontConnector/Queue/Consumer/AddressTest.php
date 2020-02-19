@@ -8,120 +8,183 @@ declare(strict_types=1);
 namespace Magento\CustomerStorefrontConnector\Queue\Consumer;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Customer\Api\Data\AddressInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\MessageQueue\PublisherInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\CustomerStorefrontConnector\Model\AddressRepositoryWrapper;
+use Magento\CustomerStorefrontConnector\Queue\Consumer\Address as AddressConsumer;
+use Magento\CustomerStorefrontConnector\QueueManager;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test address save consumer
+ * Test combined functioning of synchronizer and connector
  */
 class AddressTest extends TestCase
 {
-    /**
-     * @var Address
-     */
-    private $addressConsumer;
+    /** @var ObjectManagerInterface */
+    private $objectManager;
 
-    /**
-     * @var PublisherInterface|MockObject
-     */
-    private $publisherMock;
+    /** @var CustomerRepositoryInterface */
+    private $customerRepository;
 
-    /**
-     * @var AddressRepositoryInterface
-     */
+    /** @var AddressRepositoryInterface */
     private $addressRepository;
 
-    /**
-     * @var SerializerInterface
-     */
+    /** @var SerializerInterface */
     private $serializer;
+
+    /** @var AddressConsumer */
+    private $addressConsumer;
+
+    /** @var AddressRepositoryWrapper|MockObject  */
+    private $addressRepositoryWrapperMock;
+
+    /** @var QueueManager */
+    private $queueManager;
+
+    private static $queues = [
+        'monolithCustomerSave' => 'customer.monolith.connector.customer.save',
+        'monolithAddressSave' => 'customer.monolith.connector.address.save',
+        'monolithCustomerDelete' => 'customer.monolith.connector.customer.delete',
+        'monolithAddressDelete' => 'customer.monolith.connector.address.delete',
+        'serviceCustomerSave' => 'customer.connector.service.customer.save',
+        'serviceAddressSave' => 'customer.connector.service.address.save',
+        'serviceCustomerDelete' => 'customer.connector.service.customer.delete',
+        'serviceAddressDelete' => 'customer.connector.service.address.delete'
+    ];
 
     protected function setup()
     {
-        $this->markTestSkipped('Test fails because REST calls fail in integration environment');
-        $objectManager = Bootstrap::getObjectManager();
+        $this->objectManager = Bootstrap::getObjectManager();
+        $this->customerRepository = $this->objectManager->get(CustomerRepositoryInterface::class);
+        $this->addressRepository = $this->objectManager->get(AddressRepositoryInterface::class);
+        $this->serializer = $this->objectManager->get(SerializerInterface::class);
+        $this->queueManager = $this->objectManager->get(QueueManager::class);
+        //AddressRepositoryWrapper must be mocked because REST calls are not possible in integration test env
+        $this->addressRepositoryWrapperMock = $this->createMock(AddressRepositoryWrapper::class);
 
-        $this->addressRepository = $objectManager->get(AddressRepositoryInterface::class);
-        $this->serializer = $objectManager->get(SerializerInterface::class);
-        $this->publisherMock = $this->createMock(PublisherInterface::class);
-        $this->addressConsumer = $objectManager->create(
-            Address::class,
-            ['publisher' => $this->publisherMock]
+        $this->addressConsumer = $this->objectManager->create(
+            AddressConsumer::class,
+            ['addressRepository' => $this->addressRepositoryWrapperMock]
         );
     }
 
     /**
-     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * Clean up queues between tests
      */
-    public function testForwardAddressChanges()
+    protected function tearDown()
     {
-        $address = $this->getAddressByField('postcode', '77777');
-        $mockMessage = $this->serializer->serialize([
-            'correlation_id' => '1000',
-            'data' => ['id' => $address->getId()]
-        ]);
-
-        $this->publisherMock
-            ->expects($this->once())
-            ->method('publish')
-            ->with(
-                Address::SAVE_TOPIC,
-                $this->logicalAnd(
-                    $this->stringContains('"correlation_id":"1000","entity_type":"address","event":"save"'),
-                    $this->stringContains(
-                        '"data":{"id":' . $address->getId() . ',"customer_id":' . $address->getCustomerId()
-                    ),
-                    $this->stringContains('"country_id":"US","street":["Green str, 67"]')
-                )
-            );
-
-        $this->addressConsumer->forwardAddressChanges($mockMessage);
+        $this->queueManager->cleanQueues(self::$queues);
     }
 
     /**
-     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * Clean up queues of rollback messages
      */
-    public function testForwardAddressDelete()
+    public static function tearDownAfterClass()
     {
-        $address = $this->getAddressByField('postcode', '77777');
-        $mockMessage = $this->serializer->serialize([
-            'correlation_id' => '1000',
-            'data' => ['id' => $address->getId()]
-        ]);
-
-        $this->publisherMock
-            ->expects($this->once())
-            ->method('publish')
-            ->with(
-                Address::DELETE_TOPIC,
-                $this->logicalAnd(
-                    $this->stringContains('"correlation_id":"1000","entity_type":"address","event":"delete"'),
-                    $this->stringContains('"data":{"id":' . $address->getId() . '}')
-                )
-            );
-
-        $this->addressConsumer->forwardAddressDelete($mockMessage);
+        $queueManager = Bootstrap::getObjectManager()->get(QueueManager::class);
+        $queueManager->cleanQueues(self::$queues);
     }
 
     /**
-     * Fetch address by field value
+     * Test forward customer address change events
      *
-     * @param string $field
-     * @param string $value
-     * @return AddressInterface
+     * @param array $addressData
+     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_address.php
+     * @dataProvider addressDataProvider
      */
-    private function getAddressByField(string $field, string $value)
+    public function testForwardCustomerAddressChanges(array $addressData)
     {
-        /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
-        $searchCriteriaBuilder = Bootstrap::getObjectManager()->get(SearchCriteriaBuilder::class);
-        $searchCriteria = $searchCriteriaBuilder->addFilter($field, $value)->create();
-        $addressResults = $this->addressRepository->getList($searchCriteria);
+        $customer = $this->customerRepository->get('customer@example.com', 1);
+        $customerAddress = $this->addressRepository->getById($customer->getDefaultBilling());
+        $addressId = $customerAddress->getId();
 
-        return $addressResults->getItems()[0];
+        $this->addressRepositoryWrapperMock->expects($this->once())
+            ->method('getById')
+            ->with($addressId)
+            ->willReturn($addressData);
+
+        $monolithAddressSaveMessage = $this->queueManager->popMessage(self::$queues['monolithAddressSave']);
+        $this->addressConsumer->forwardAddressChanges($monolithAddressSaveMessage);
+        $serviceAddressSaveMessage = $this->queueManager->popMessage(self::$queues['serviceAddressSave']);
+
+        $monolithAddressSaveData = $this->serializer->unserialize($monolithAddressSaveMessage);
+        $serviceAddressSaveData = $this->serializer->unserialize($serviceAddressSaveMessage);
+
+        $this->assertNotEmpty($serviceAddressSaveData);
+        $this->assertArrayHasKey('correlation_id', $serviceAddressSaveData);
+        $this->assertEquals($monolithAddressSaveData['correlation_id'], $serviceAddressSaveData['correlation_id']);
+        $this->assertEquals('address', $serviceAddressSaveData['entity_type']);
+        $this->assertEquals($monolithAddressSaveData['entity_type'], $serviceAddressSaveData['entity_type']);
+        $this->assertEquals('update', $serviceAddressSaveData['event']);
+        $this->assertEquals($monolithAddressSaveData['event'], $serviceAddressSaveData['event']);
+        $this->assertNotEmpty($serviceAddressSaveData['data']);
+        $this->assertEquals($addressData['street'], $serviceAddressSaveData['data']['street']);
+        $this->assertEquals($addressData['firstname'], $serviceAddressSaveData['data']['firstname']);
+        $this->assertEquals($addressData['city'], $serviceAddressSaveData['data']['city']);
+        $this->assertTrue($serviceAddressSaveData['data']['default_shipping']);
+    }
+
+    /**
+     * Test forward address delete message along queues
+     *
+     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_address.php
+     */
+    public function testForwardCustomerAddressDelete()
+    {
+        $customer = $this->customerRepository->get('customer@example.com', 1);
+        //Do delete address
+        $this->addressRepository->deleteById($customer->getDefaultShipping());
+
+        $monolithAddressDeleteMessage = $this->queueManager->popMessage(self::$queues['monolithAddressDelete']);
+        $this->addressConsumer->forwardAddressDelete($monolithAddressDeleteMessage);
+        $serviceAddressDeleteMessage = $this->queueManager->popMessage(self::$queues['serviceAddressDelete']);
+
+        $monolithAddressDeleteData = $this->serializer->unserialize($monolithAddressDeleteMessage);
+        $serviceAddressDeleteData = $this->serializer->unserialize($serviceAddressDeleteMessage);
+
+        $this->assertArrayHasKey('correlation_id', $serviceAddressDeleteData);
+        $this->assertEquals($monolithAddressDeleteData['correlation_id'], $serviceAddressDeleteData['correlation_id']);
+        $this->assertEquals('address', $serviceAddressDeleteData['entity_type']);
+        $this->assertEquals($monolithAddressDeleteData['entity_type'], $serviceAddressDeleteData['entity_type']);
+        $this->assertEquals('delete', $serviceAddressDeleteData['event']);
+        $this->assertEquals($monolithAddressDeleteData['event'], $serviceAddressDeleteData['event']);
+        $this->assertEquals($monolithAddressDeleteData['data']['id'], $serviceAddressDeleteData['data']['id']);
+    }
+
+    /**
+     * Address data to mock REST response
+     *
+     * @return array
+     */
+    public function addressDataProvider()
+    {
+        return [
+            [
+                [
+                    'country_id' => 'US',
+                    'street' => ['Green str, 67'],
+                    'company' => 'CompanyName',
+                    'telephone' => '5127779999',
+                    'postcode' => '77777',
+                    'city' => 'CityM',
+                    'firstname' => 'Johny',
+                    'lastname' => 'Smith',
+                    'middlename' => 'A',
+                    'prefix' => 'Mr.',
+                    'suffix' => 'Esq',
+                    'default_shipping' => true,
+                    'default_billing' => true,
+                    'region' => [
+                        'region_code' => 'AL',
+                        'region' => 'Alabama',
+                        'region_id' => 1
+                    ],
+                    'extension_attributes' => []
+                ]
+            ]
+        ];
     }
 }
