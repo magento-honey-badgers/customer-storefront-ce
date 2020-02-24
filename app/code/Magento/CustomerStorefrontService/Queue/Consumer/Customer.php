@@ -68,6 +68,7 @@ class Customer
         $this->logger->info('Message Received', [$incomingMessage]);
         $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
         $customer = $this->customerFactory->create(['data' => $incomingMessageArray['data']]);
+        $customer->setCreatedIn("monolith");
         $this->customerRepository->save($customer);
     }
 
@@ -83,5 +84,15 @@ class Customer
         $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
         $this->customerRepository->deleteById((int)$incomingMessageArray['data']['id']);
         $this->logger->info('Customer Deleted', [$incomingMessage]);
+    }
+
+    public function handleCustomerUpdateForId(string $incomingMessage): void
+    {
+        $this->logger->info('Message Received', [$incomingMessage]);
+        $incomingMessageArray = $this->serializer->unserialize($incomingMessage);
+        $customer = $this->customerFactory->create(['data' => $incomingMessageArray['data']]);
+        $customer->setCreatedIn("monolith");
+        $this->customerRepository->updateId($customer);
+        $this->logger->info('Customer Id Updated', [$incomingMessage]);
     }
 }

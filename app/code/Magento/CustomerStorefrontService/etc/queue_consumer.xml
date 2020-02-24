@@ -10,4 +10,5 @@
     <consumer name="customer.connector.service.customer.delete" queue="customer.connector.service.customer.delete" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
     <consumer name="customer.connector.service.address.save" queue="customer.connector.service.address.save" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
     <consumer name="customer.connector.service.address.delete" queue="customer.connector.service.address.delete" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.service.customer.updateId" queue="customer.monolith.service.customer.updateId" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
 </config>

@@ -22,6 +22,10 @@
     <preference for="Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface"
                 type="\Magento\CustomerStorefrontService\Model\Data\Address" />
 
+    <type name="Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface">
+        <plugin name="customer_service_synchronizer"
+                type="Magento\CustomerStorefrontService\Model\Plugin\CustomerPublisherPlugin"/>
+    </type>
     <type name="Magento\CustomerStorefrontService\Model\Storage\CustomerValidator">
         <arguments>
             <argument name="validators" xsi:type="array">

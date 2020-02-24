@@ -10,4 +10,10 @@
     <topic name="customer.monolith.connector.customer.delete" request="string" />
     <topic name="customer.monolith.connector.address.save" request="string" />
     <topic name="customer.monolith.connector.address.delete" request="string" />
+    <topic name="customer.service.monolith.customer.save" request="string">
+        <handler name="service-to-monolith-customer-save"
+                 type="Magento\CustomerStorefrontSynchronizer\Queue\Consumer\CreateCustomerEventConsumer"
+                 method="handleCreateCustomer"/>
+    </topic>
+    <topic name="customer.monolith.service.customer.updateId" request="string" />
 </config>

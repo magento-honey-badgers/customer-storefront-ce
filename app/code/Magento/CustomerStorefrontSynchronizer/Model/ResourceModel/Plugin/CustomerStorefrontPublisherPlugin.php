@@ -32,6 +32,8 @@ class CustomerStorefrontPublisherPlugin
 
     private const CUSTOMER_SAVE_TOPIC = 'customer.monolith.connector.customer.save';
 
+    private const CUSTOMER_UPDATE_ID_TOPIC = 'customer.monolith.service.customer.updateId';
+
     private const CUSTOMER_DELETE_TOPIC = 'customer.monolith.connector.customer.delete';
 
     /**
@@ -60,10 +62,15 @@ class CustomerStorefrontPublisherPlugin
         CustomerInterface $customer,
         CustomerInterface $customerInput
     ) {
-        $customerId = $customer->getId();
-        $event = !$customerInput->getId() ? self::SAVE_EVENT : self::UPDATE_EVENT;
-        $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, $event, ['id'=> $customerId]);
-        $this->eventPublisher->publish(self::CUSTOMER_SAVE_TOPIC, $message);
+        if (($customerInput->getCreatedIn() != "Store Front") || $customerInput->getId()) {
+            $customerId = $customer->getId();
+            $event = !$customerInput->getId() ? self::SAVE_EVENT : self::UPDATE_EVENT;
+            $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, $event, ['id'=> $customerId]);
+            $this->eventPublisher->publish(self::CUSTOMER_SAVE_TOPIC, $message);
+        } else {
+            $message = $this->messageFormatter->formatEventData(self::ENTITY_TYPE, 'updateId', $customer->__toArray());
+            $this->eventPublisher->publish(self::CUSTOMER_UPDATE_ID_TOPIC, $message);
+        }
         return $customer;
     }
 

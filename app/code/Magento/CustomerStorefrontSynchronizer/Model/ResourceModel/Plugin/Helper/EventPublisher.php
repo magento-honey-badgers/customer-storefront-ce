@@ -69,7 +69,7 @@ class EventPublisher
             try {
                 $serializedData = $this->serializer->serialize($message);
                 $this->publisher->publish($topicName, $serializedData);
-                $this->logger->info('event published', $message);
+                $this->logger->info('event published'.$topic, $message);
                 $this->publishedIds[] = $messageIdentifier;
             } catch (\Exception $e) {
                 $this->handlePublishErrors($e, $message);

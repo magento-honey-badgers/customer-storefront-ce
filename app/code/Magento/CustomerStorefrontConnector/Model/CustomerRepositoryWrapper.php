@@ -12,6 +12,7 @@ use Magento\CustomerStorefrontConnector\Model\Data\CustomerTransformer;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\SerializerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * CustomerRepository using REST API
@@ -43,11 +44,13 @@ class CustomerRepositoryWrapper
     public function __construct(
         Client $client,
         SerializerInterface $serializer,
-        CustomerTransformer $customerTransformer
+        CustomerTransformer $customerTransformer,
+        LoggerInterface $logger
     ) {
         $this->restClient = $client;
         $this->serializer = $serializer;
         $this->dataTransformer = $customerTransformer;
+        $this->logger = $logger;
     }
 
     /**

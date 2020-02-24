@@ -56,4 +56,6 @@ interface CustomerRepositoryInterface
      * @throws LocalizedException
      */
     public function deleteById(int $customerId): bool;
+
+    public function updateId(CustomerInterface $customer): CustomerInterface;
 }

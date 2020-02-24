@@ -58,7 +58,9 @@ ALTER TABLE `$customerTable`
     ADD COLUMN `default_billing_address_id` int(11)
         GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.default_billing'))) STORED,
     ADD COLUMN `default_shipping_address_id` int(11)
-        GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.default_shipping'))) STORED;
+        GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.default_shipping'))) STORED,
+    ADD COLUMN `updated_at` int(11)
+        GENERATED ALWAYS AS (json_unquote(json_extract(`customer_document`,'$.updated_at'))) STORED;
 ADDCOLUMN;
 
         //Add Columns

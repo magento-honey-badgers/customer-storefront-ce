@@ -330,4 +330,34 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     {
         return $this->setData(self::DATE_OF_BIRTH, $dateOfBirth);
     }
+
+    public function setCreatedAt(int $createdAt): CustomerInterface
+    {
+        return $this->setData(self::CREATED_AT, $createdAt);
+    }
+
+    public function getCreatedAt(): ?int
+    {
+        return $this->_get(self::CREATED_AT);
+    }
+
+    public function setUpdatedAt(int $updatedAt): CustomerInterface
+    {
+        return $this->setData(self::UPDATED_AT, $updatedAt);
+    }
+
+    public function getUpdatedAt(): ?int
+    {
+        return $this->_get(self::UPDATED_AT);
+    }
+
+    public function setCreatedIn(string $createdIn): ?CustomerInterface
+    {
+        return $this->setData(self::CREATED_IN, $createdIn);
+    }
+
+    public function getCreatedIn(): ?string
+    {
+        return $this->_get(self::CREATED_IN);
+    }
 }

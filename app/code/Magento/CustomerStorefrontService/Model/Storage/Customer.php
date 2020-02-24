@@ -137,6 +137,18 @@ class Customer
         return $this->doDeleteById($customerId);
     }
 
+    public function updateId(CustomerInterface $customer): CustomerInterface
+    {
+        $updateCustomerDocument = $this->serializer->serialize($customer->__toArray());
+
+        $this->getConnection()->update(
+            self::TABLE,
+            ['customer_document' => $updateCustomerDocument],
+            ['email = ?' => $customer->getEmail()]
+        );
+        return $customer;
+    }
+
     /**
      * Perform customer insert
      *
@@ -164,7 +176,7 @@ class Customer
         $updateCustomerArray = $customer->__toArray();
 
         foreach ($updateCustomerArray as $key => $value) {
-            if ($existingCustomerArray[$key] != $value) {
+            if (true) {
                 $existingCustomer->setData($key, $value);
             }
         }

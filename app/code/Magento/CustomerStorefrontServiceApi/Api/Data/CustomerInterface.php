@@ -30,6 +30,9 @@ interface CustomerInterface
     const DEFAULT_BILLING = 'default_billing';
     const DEFAULT_SHIPPING = 'default_shipping';
     const KEY_ADDRESSES = 'addresses';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+    const CREATED_IN = 'created_in';
 
     /**
      * Get customer id
@@ -254,4 +257,16 @@ interface CustomerInterface
      * @return $this
      */
     public function setAddresses(array $addresses): CustomerInterface;
+
+    public function setCreatedAt(int $createdAt): CustomerInterface;
+
+    public function getCreatedAt(): ?int;
+
+    public function setUpdatedAt(int $updatedAt): CustomerInterface;
+
+    public function getUpdatedAt(): ?int;
+
+    public function setCreatedIn(string $createdIn): ?CustomerInterface;
+
+    public function getCreatedIn(): ?string;
 }

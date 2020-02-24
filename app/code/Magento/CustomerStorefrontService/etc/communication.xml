@@ -26,4 +26,11 @@
                  type="Magento\CustomerStorefrontService\Queue\Consumer\Address"
                  method="handleAddressDelete"/>
     </topic>
+    <topic name="customer.monolith.service.customer.updateId" request="string">
+        <handler name="monolith-to-service-customer-updateId"
+                 type="Magento\CustomerStorefrontService\Queue\Consumer\Customer"
+                 method="handleCustomerUpdateForId"/>
+    </topic>
+    <topic name="customer.service.monolith.customer.save" request="string">
+    </topic>
 </config>

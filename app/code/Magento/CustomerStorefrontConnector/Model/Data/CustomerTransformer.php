@@ -29,7 +29,10 @@ class CustomerTransformer
         'lastname',
         'suffix',
         'gender',
-        'taxvat'
+        'taxvat',
+        'created_at',
+        'updated_at',
+        'created_in'
     ];
 
     /**

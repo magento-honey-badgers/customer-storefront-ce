@@ -51,7 +51,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function delete(CustomerInterface $customer): bool
+    public function delete(CustomerInterface $customer): boolmedia
     {
         return $this->customerStorage->delete($customer);
     }
@@ -62,5 +62,10 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function deleteById(int $customerId): bool
     {
         return $this->customerStorage->deleteById($customerId);
+    }
+
+    public function updateId(CustomerInterface $customer): CustomerInterface
+    {
+        return $this->customerStorage->updateId($customer);
     }
 }

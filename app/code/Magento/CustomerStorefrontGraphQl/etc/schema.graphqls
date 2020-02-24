@@ -9,3 +9,7 @@ type Customer {
     addresses: [CustomerAddress] @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\CustomerAddresses")
     is_subscribed: Boolean @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\Customer\\IsSubscribed")
 }
+
+type Mutation {
+    createCustomer (input: CustomerInput!): CustomerOutput @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\CreateCustomer") @doc(description:"Create customer account")
+}
