@@ -51,7 +51,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function delete(CustomerInterface $customer): boolmedia
+    public function delete(CustomerInterface $customer): bool
     {
         return $this->customerStorage->delete($customer);
     }

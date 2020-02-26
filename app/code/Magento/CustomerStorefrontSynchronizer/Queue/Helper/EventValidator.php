@@ -16,6 +16,8 @@ class EventValidator
 
     private const DELETE_EVENT = 'delete';
 
+    private const CREATE_EVENT = 'create';
+
     public function validate(array $eventMetadata, int $lastUpdatedAt): bool
     {
         $eventType = $eventMetadata['event'];
@@ -26,6 +28,8 @@ class EventValidator
                 return $eventTimestamp > $lastUpdatedAt;
             case self::SAVE_EVENT:
                 return $lastUpdatedAt == null;
+            case self::CREATE_EVENT:
+                return $eventTimestamp > $lastUpdatedAt;
             case self::DELETE_EVENT:
                 return $eventTimestamp > $lastUpdatedAt;
         }

@@ -62,7 +62,7 @@ class CustomerPublisherPlugin
         if ($customerInput->getCreatedIn() != 'monolith') {
             $this->publisher->publish(
                 'customer.service.monolith.customer.save',
-                $this->prepareMessagePacket($customer)
+                $this->prepareMessagePacket($customer, $customerInput)
             );
         }
         return $customer;
@@ -74,11 +74,11 @@ class CustomerPublisherPlugin
      * @param CustomerInterface $customer
      * @return bool|false|string
      */
-    private function prepareMessagePacket(CustomerInterface $customer)
+    private function prepareMessagePacket(CustomerInterface $customer, CustomerInterface $customerInput)
     {
         $data = [];
         $data['data'] = $customer->__toArray();
-        $data['event'] = 'CREATE';
+        $data['event'] = $customerInput->getId() ? 'update' : 'create';
         $data['entity_type'] = 'customer';
         $data['event_timestamp'] = $this->timezone->date()->getTimestamp();
         return $this->serializer->serialize($data);

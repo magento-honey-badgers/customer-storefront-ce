@@ -12,4 +12,5 @@ type Customer {
 
 type Mutation {
     createCustomer (input: CustomerInput!): CustomerOutput @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\CreateCustomer") @doc(description:"Create customer account")
+    updateCustomer (input: CustomerInput!, id: Int!): CustomerOutput @resolver(class: "\\Magento\\CustomerStorefrontGraphQl\\Model\\Resolver\\UpdateCustomer") @doc(description:"Update customer account")
 }

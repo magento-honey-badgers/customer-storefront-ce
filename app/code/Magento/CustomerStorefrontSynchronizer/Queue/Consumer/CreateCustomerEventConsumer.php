@@ -8,6 +8,7 @@
 
 namespace Magento\CustomerStorefrontSynchronizer\Queue\Consumer;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
@@ -40,10 +41,24 @@ class CreateCustomerEventConsumer
         $customerData = $data['data'];
         $customer = $this->customerFactory->create(['data' => $customerData]);
         $customer->setCreatedIn('Store Front');
+        $validEvent = true;
+        try
+        {
+            $existingCustomerRecord = $this->customerRepository->get($customer->getEmail());
+            $lastModified = $existingCustomerRecord->getUpdatedAt();
+            $lastModifiedTs = $this->timezone->date(new \DateTime($lastModified))->getTimestamp();
+            $validEvent = $this->eventValidator->validate($data, $lastModifiedTs);
+            $this->logger->info('lastmodified ts', [$lastModifiedTs]);
+        } catch (NoSuchEntityException $e) {
+            $this->logger->info('Validation Skipped - saving customer');
+        }
         $this->logger->info('Received CustomerCreate', $customer->__toArray());
-        if ($this->eventValidator->validate($data, null)) {
+        if ($validEvent) {
+            $this->logger->info('Event ts', [$data['event_timestamp']]);
             $this->logger->info('Validation Succeeded - saving customer');
             $this->customerRepository->save($customer);
+        } else {
+            $this->logger->info('Validation Failed - saving customer');
         }
     }
 }
