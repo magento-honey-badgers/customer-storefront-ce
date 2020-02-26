@@ -37,6 +37,6 @@ $customer = $customerFactory->create([
         'gender' => 0
     ]
 ]);
-
+/** @var \Magento\Customer\Api\Data\CustomerInterface $savedCustomer */
 $savedCustomer = $customerRepository->save($customer, $passwordHash);
 $customerRegistry->remove($savedCustomer->getId());
