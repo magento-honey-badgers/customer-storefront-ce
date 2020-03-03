@@ -42,6 +42,7 @@ class CustomerAddressQueueTrigger
     public function endTest(\PHPUnit\Framework\TestCase $test)
     {
         if ($test instanceof GraphQlAbstract) {
+            
             $this->waitForCustomerAndAddressConsumersToStop();
         }
     }
