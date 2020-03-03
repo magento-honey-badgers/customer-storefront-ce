@@ -65,7 +65,7 @@ class CustomerAfterSaveAndAfterDelete extends CustomerStorefrontPublisherPlugin
             'customer.connector.service.customer.delete'
 
         ];
-       // $this->startConsumers($deleteConsumers);
+
         $objectManager = Bootstrap::getObjectManager();
         /** @var ConsumerInvoker $consumerInvoker */
         $consumerInvoker = $objectManager->get(ConsumerInvoker::class);
@@ -74,5 +74,4 @@ class CustomerAfterSaveAndAfterDelete extends CustomerStorefrontPublisherPlugin
         parent::afterDeleteById($customerRepository, $result, $customerId);
         $consumerInvoker->stopConsumers($deleteConsumers);
     }
-
 }

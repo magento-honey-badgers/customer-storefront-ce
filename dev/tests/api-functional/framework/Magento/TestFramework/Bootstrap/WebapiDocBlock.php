@@ -20,8 +20,7 @@ class WebapiDocBlock extends \Magento\TestFramework\Bootstrap\DocBlock
     /**
      * Get list of subscribers.
      *
-     * In addition, register magentoApiDataFixture and magentoConfigFixture
-     * annotation processors
+     * Register both queue triggers to the list of subscribers of annotation processors
      *
      * @param \Magento\TestFramework\Application $application
      * @return array

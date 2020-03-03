@@ -43,12 +43,5 @@ try {
     // customer removed
 }
 
-//$queueRepository = $objectManager->get(QueueRepository::class);
-///** @var QueueInterface $monolithDeleteQueue */
-//$monolithDeleteQueue = $queueRepository->get('amqp', 'customer.monolith.connector.customer.delete');
-///** @var EnvelopeInterface $monolithDeleteMessage */
-//$monolithDeleteMessage = $monolithDeleteQueue->dequeue();
-//$monolithDeleteQueue->acknowledge($monolithDeleteMessage);
-
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

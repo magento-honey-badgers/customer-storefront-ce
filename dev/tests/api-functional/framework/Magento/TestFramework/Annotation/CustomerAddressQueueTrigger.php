@@ -11,14 +11,14 @@ use Magento\StorefrontTestFixer\ConsumerInvoker;
 use Magento\TestFramework\TestCase\GraphQlAbstract;
 
 /**
- * Trigger queue to process storefront consumers
+ * Trigger queue to process consumers
  */
 class CustomerAddressQueueTrigger
 {
     /**
      * Handler for 'startTest' event.
      *
-     * Sync Magento monolith App data with Catalog Storefront Storage.
+     * Sync Magento monolith App data with Customer Storefront Storage.
      *
      * @param \PHPUnit\Framework\TestCase $test
      * @return void
@@ -62,7 +62,7 @@ class CustomerAddressQueueTrigger
     }
 
     /**
-     * Wait for asynchronous handlers to log data to file.
+     * Wait for address consumers to stop.
      *
      * @return void
      * @throws \Magento\Framework\Exception\LocalizedException

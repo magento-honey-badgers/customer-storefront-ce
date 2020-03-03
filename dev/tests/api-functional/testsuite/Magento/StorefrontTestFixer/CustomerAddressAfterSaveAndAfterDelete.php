@@ -45,7 +45,6 @@ class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPu
             'customer.connector.service.address.delete'
         ];
 
-          //  $this->startConsumers($deleteConsumers);
         $objectManager = Bootstrap::getObjectManager();
         /** @var ConsumerInvoker $consumerInvoker */
         $consumerInvoker = $objectManager->get(ConsumerInvoker::class);
@@ -69,7 +68,7 @@ class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPu
         /** @var ConsumerInvoker $consumerInvoker */
         $consumerInvoker = $objectManager->get(ConsumerInvoker::class);
         $consumerInvoker->startConsumers($deleteAddressConsumers);
-       // return parent::afterDeleteById($customerRepository, $result, $customerId);
+
         parent::afterDeleteById($addressRepository, $result, $addressId);
         $consumerInvoker->stopConsumers($deleteAddressConsumers);
     }

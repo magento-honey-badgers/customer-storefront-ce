@@ -18,7 +18,7 @@ class QueueTrigger
     /**
      * Handler for 'startTest' event.
      *
-     * Sync Magento monolith App data with Catalog Storefront Storage.
+     * Sync Magento monolith App data with Customer Storefront Storage.
      *
      * @param \PHPUnit\Framework\TestCase $test
      * @return void
@@ -62,7 +62,7 @@ class QueueTrigger
     }
 
     /**
-     * Wait for asynchronous handlers to log data to file.
+     * Wait for customer save consumers to stop.
      *
      * @return void
      * @throws \Magento\Framework\Exception\LocalizedException

@@ -13,7 +13,7 @@ use Magento\TestFramework\MessageQueue\PreconditionFailedException;
 use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 
 /**
- * Invoke consumers to push data from Magento Monolith to Catalog Storefront service
+ * Invoke consumers to push data from Magento Monolith to Customer Storefront
  */
 class ConsumerInvoker
 {
