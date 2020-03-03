@@ -7,67 +7,36 @@ declare(strict_types=1);
 
 namespace Magento\GraphQl\Customer;
 
+use Exception;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Integration\Api\CustomerTokenServiceInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\MessageQueue\EnvironmentPreconditionException;
-use Magento\TestFramework\MessageQueue\PreconditionFailedException;
-use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 use Magento\TestFramework\ObjectManager;
 use Magento\TestFramework\TestCase\GraphQlAbstract;
+use Magento\Integration\Api\CustomerTokenServiceInterface;
 
 /**
  * Test for customer address retrieval.
  */
 class GetAddressesTest extends GraphQlAbstract
 {
-    /** @var CustomerTokenServiceInterface */
+    /**
+     * @var CustomerTokenServiceInterface
+     */
     private $customerTokenService;
 
-    /** @var PublisherConsumerController */
-    private $publisherConsumerController;
+    /**
+     * @var LockCustomer
+     */
+    private $lockCustomer;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $objectManager = Bootstrap::getObjectManager();
-
-        $this->publisherConsumerController = $objectManager->create(
-            PublisherConsumerController::class,
-            [
-                'consumers' => [
-                        'customer.monolith.connector.customer.save',
-                        'customer.monolith.connector.address.save',
-                        'customer.connector.service.customer.save',
-                        'customer.connector.service.address.save',
-                        'customer.monolith.connector.customer.delete',
-                        'customer.connector.service.customer.delete',
-                        'customer.connector.service.address.delete',
-                        'customer.monolith.connector.address.delete'
-                    ],
-                'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",
-                'maxMessages' => 500,
-                'appInitParams' => \Magento\TestFramework\Helper\Bootstrap::getInstance()->getAppInitParams()
-            ]
-        );
-
-        try {
-            $this->publisherConsumerController->initialize();
-        } catch (EnvironmentPreconditionException $e) {
-            $this->markTestSkipped($e->getMessage());
-        } catch (PreconditionFailedException $e) {
-            $this->fail($e->getMessage());
-        }
-
-        $this->customerTokenService = $objectManager->get(CustomerTokenServiceInterface::class);
-    }
-
-    protected function tearDown()
-    {
-        $this->publisherConsumerController->stopConsumers();
+        $this->customerTokenService = Bootstrap::getObjectManager()->get(CustomerTokenServiceInterface::class);
+        $this->lockCustomer = Bootstrap::getObjectManager()->get(LockCustomer::class);
     }
     /**
      * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
@@ -92,10 +61,41 @@ class GetAddressesTest extends GraphQlAbstract
             is_array([$response['customer']['addresses']]),
             " Addresses field must be of an array type."
         );
-        $this->assertNotEmpty($response['customer']['addresses']);
-        $this->assertEquals('US', $response['customer']['addresses'][0]['country_id']);
-        $this->assertEquals('5127779999', $response['customer']['addresses'][0]['telephone']);
+        //    self::assertEquals(null, $response['customer']['id']);
         $this->assertCustomerAddressesFields($customer, $response);
+    }
+
+    /**
+     * @magentoApiDataFixture Magento/Customer/_files/customer.php
+     * @magentoApiDataFixture Magento/Customer/_files/customer_address.php
+     * @expectedException Exception
+     * @expectedExceptionMessage GraphQL response contains errors: The account is locked.
+     */
+    public function testGetCustomerAddressIfAccountIsLocked()
+    {
+        $query = $this->getQuery();
+
+        $userName = 'customer@example.com';
+        $password = 'password';
+        $this->lockCustomer->execute(1);
+
+        $customerToken = $this->customerTokenService->createCustomerAccessToken($userName, $password);
+        $headerMap = ['Authorization' => 'Bearer ' . $customerToken];
+
+        $this->graphQlQuery($query, [], '', $headerMap);
+    }
+
+    /**
+     * @magentoApiDataFixture Magento/Customer/_files/customer.php
+     * @magentoApiDataFixture Magento/Customer/_files/customer_address.php
+     * @expectedException Exception
+     * @expectedExceptionMessage GraphQL response contains errors: The current customer isn't authorized.
+     */
+    public function testGetCustomerAddressIfUserIsNotAuthorized()
+    {
+        $query = $this->getQuery();
+
+        $this->graphQlQuery($query);
     }
 
     /**
@@ -112,6 +112,8 @@ class GetAddressesTest extends GraphQlAbstract
             $this->assertNotEmpty($addressValue);
             $assertionMap = [
                 ['response_field' => 'id', 'expected_value' => $addresses[$addressKey]->getId()],
+                //    ['response_field' => 'customer_id', 'expected_value' => 0],
+                //     ['response_field' => 'region_id', 'expected_value' => $addresses[$addressKey]->getRegionId()],
                 ['response_field' => 'country_id', 'expected_value' => $addresses[$addressKey]->getCountryId()],
                 ['response_field' => 'telephone', 'expected_value' => $addresses[$addressKey]->getTelephone()],
                 ['response_field' => 'postcode', 'expected_value' => $addresses[$addressKey]->getPostcode()],
@@ -128,7 +130,8 @@ class GetAddressesTest extends GraphQlAbstract
      */
     private function getQuery(): string
     {
-        return <<<QUERY
+        $query
+            = <<<QUERY
 {
   customer {
     id
@@ -146,5 +149,6 @@ class GetAddressesTest extends GraphQlAbstract
    }
 }
 QUERY;
+        return $query;
     }
 }
