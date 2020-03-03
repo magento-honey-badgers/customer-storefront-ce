@@ -5,16 +5,15 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontConnector;
+namespace Magento\TestFramework\MessageQueue;
 
-use Magento\Framework\MessageQueue\QueueInterface;
 use Magento\Framework\MessageQueue\QueueRepository;
 use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Simple actions for working with queues
  */
-class QueueManager
+class QueueMessageHelper
 {
     /**
      * @var QueueRepository
@@ -51,7 +50,7 @@ class QueueManager
      */
     public function popMessage(string $queueName): string
     {
-        $queue = $this->getQueue($queueName);
+        $queue = $this->queueRepository->get($this->connection, $queueName);
         $message = null;
         $loops = 10;
         while (!$message && $loops) {
@@ -73,10 +72,10 @@ class QueueManager
      *
      * @param array $queueNames
      */
-    public function cleanQueues(array $queueNames)
+    public function acknowledgeAllMessages(array $queueNames)
     {
         foreach ($queueNames as $queueName) {
-            $queue = $this->getQueue($queueName);
+            $queue = $this->queueRepository->get($this->connection, $queueName);
             for ($i = 0; $i < 100; $i++) {
                 $message = $queue->dequeue();
                 if (empty($message)) {
@@ -85,16 +84,5 @@ class QueueManager
                 $queue->acknowledge($message);
             }
         }
-    }
-
-    /**
-     * Get a queue by name
-     *
-     * @param string $queueName
-     * @return QueueInterface
-     */
-    public function getQueue(string $queueName): QueueInterface
-    {
-        return $this->queueRepository->get($this->connection, $queueName);
     }
 }

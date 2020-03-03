@@ -11,10 +11,10 @@ use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\CustomerStorefrontConnector\Model\AddressRepositoryWrapper;
 use Magento\CustomerStorefrontConnector\Queue\Consumer\Address as AddressConsumer;
-use Magento\CustomerStorefrontConnector\QueueManager;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\MessageQueue\QueueMessageHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -41,8 +41,8 @@ class AddressTest extends TestCase
     /** @var AddressRepositoryWrapper|MockObject  */
     private $addressRepositoryWrapperMock;
 
-    /** @var QueueManager */
-    private $queueManager;
+    /** @var QueueMessageHelper */
+    private $messageHelper;
 
     private static $queues = [
         'monolithCustomerSave' => 'customer.monolith.connector.customer.save',
@@ -61,7 +61,7 @@ class AddressTest extends TestCase
         $this->customerRepository = $this->objectManager->get(CustomerRepositoryInterface::class);
         $this->addressRepository = $this->objectManager->get(AddressRepositoryInterface::class);
         $this->serializer = $this->objectManager->get(SerializerInterface::class);
-        $this->queueManager = $this->objectManager->get(QueueManager::class);
+        $this->messageHelper = $this->objectManager->get(QueueMessageHelper::class);
         //AddressRepositoryWrapper must be mocked because REST calls are not possible in integration test env
         $this->addressRepositoryWrapperMock = $this->createMock(AddressRepositoryWrapper::class);
 
@@ -76,7 +76,7 @@ class AddressTest extends TestCase
      */
     protected function tearDown()
     {
-        $this->queueManager->cleanQueues(self::$queues);
+        $this->messageHelper->acknowledgeAllMessages(self::$queues);
     }
 
     /**
@@ -84,15 +84,15 @@ class AddressTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-        $queueManager = Bootstrap::getObjectManager()->get(QueueManager::class);
-        $queueManager->cleanQueues(self::$queues);
+        $messageHelper = Bootstrap::getObjectManager()->get(QueueMessageHelper::class);
+        $messageHelper->acknowledgeAllMessages(self::$queues);
     }
 
     /**
      * Test forward customer address change events
      *
      * @param array $addressData
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
      * @dataProvider addressDataProvider
      */
     public function testForwardCustomerAddressChanges(array $addressData)
@@ -106,9 +106,9 @@ class AddressTest extends TestCase
             ->with($addressId)
             ->willReturn($addressData);
 
-        $monolithAddressSaveMessage = $this->queueManager->popMessage(self::$queues['monolithAddressSave']);
+        $monolithAddressSaveMessage = $this->messageHelper->popMessage(self::$queues['monolithAddressSave']);
         $this->addressConsumer->forwardAddressChanges($monolithAddressSaveMessage);
-        $serviceAddressSaveMessage = $this->queueManager->popMessage(self::$queues['serviceAddressSave']);
+        $serviceAddressSaveMessage = $this->messageHelper->popMessage(self::$queues['serviceAddressSave']);
 
         $monolithAddressSaveData = $this->serializer->unserialize($monolithAddressSaveMessage);
         $serviceAddressSaveData = $this->serializer->unserialize($serviceAddressSaveMessage);
@@ -130,7 +130,7 @@ class AddressTest extends TestCase
     /**
      * Test forward address delete message along queues
      *
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
      */
     public function testForwardCustomerAddressDelete()
     {
@@ -138,9 +138,9 @@ class AddressTest extends TestCase
         //Do delete address
         $this->addressRepository->deleteById($customer->getDefaultShipping());
 
-        $monolithAddressDeleteMessage = $this->queueManager->popMessage(self::$queues['monolithAddressDelete']);
+        $monolithAddressDeleteMessage = $this->messageHelper->popMessage(self::$queues['monolithAddressDelete']);
         $this->addressConsumer->forwardAddressDelete($monolithAddressDeleteMessage);
-        $serviceAddressDeleteMessage = $this->queueManager->popMessage(self::$queues['serviceAddressDelete']);
+        $serviceAddressDeleteMessage = $this->messageHelper->popMessage(self::$queues['serviceAddressDelete']);
 
         $monolithAddressDeleteData = $this->serializer->unserialize($monolithAddressDeleteMessage);
         $serviceAddressDeleteData = $this->serializer->unserialize($serviceAddressDeleteMessage);

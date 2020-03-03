@@ -5,20 +5,20 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontConnector\Queue;
+namespace Magento\CustomerStorefrontConnector\Queue\Consumer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\CustomerStorefrontConnector\Model\CustomerRepositoryWrapper;
 use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConsumer;
-use Magento\CustomerStorefrontConnector\QueueManager;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\MessageQueue\QueueMessageHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test combined functioning of synchronizer and connector
+ * Test customer events are processed through queue correctly
  */
 class CustomerTest extends TestCase
 {
@@ -37,8 +37,8 @@ class CustomerTest extends TestCase
     /** @var CustomerRepositoryWrapper|MockObject */
     private $customerRepositoryWrapperMock;
 
-    /** @var QueueManager */
-    private $queueManager;
+    /** @var QueueMessageHelper */
+    private $messageHelper;
 
     private static $queues = [
         'monolithCustomerSave' => 'customer.monolith.connector.customer.save',
@@ -51,13 +51,12 @@ class CustomerTest extends TestCase
         'serviceAddressDelete' => 'customer.connector.service.address.delete'
     ];
 
-
     protected function setup()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->customerRepository = $this->objectManager->get(CustomerRepositoryInterface::class);
         $this->serializer = $this->objectManager->get(SerializerInterface::class);
-        $this->queueManager = $this->objectManager->get(QueueManager::class);
+        $this->messageHelper = $this->objectManager->get(QueueMessageHelper::class);
 
         //CustomerRepositoryWrapper must be mocked because REST calls are not possible in integration test env
         $this->customerRepositoryWrapperMock = $this->createPartialMock(
@@ -75,7 +74,7 @@ class CustomerTest extends TestCase
      */
     protected function tearDown()
     {
-        $this->queueManager->cleanQueues(self::$queues);
+        $this->messageHelper->acknowledgeAllMessages(self::$queues);
     }
 
     /**
@@ -83,8 +82,8 @@ class CustomerTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-        $queueManager = Bootstrap::getObjectManager()->get(QueueManager::class);
-        $queueManager->cleanQueues(self::$queues);
+        $messageHelper = Bootstrap::getObjectManager()->get(QueueMessageHelper::class);
+        $messageHelper->acknowledgeAllMessages(self::$queues);
     }
 
     /**
@@ -98,9 +97,9 @@ class CustomerTest extends TestCase
         $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
         $this->customerRepository->delete($customer);
 
-        $monolithDeleteMessage = $this->queueManager->popMessage(self::$queues['monolithCustomerDelete']);
+        $monolithDeleteMessage = $this->messageHelper->popMessage(self::$queues['monolithCustomerDelete']);
         $this->customerConnectorConsumer->forwardCustomerDelete($monolithDeleteMessage);
-        $serviceDeleteMessage = $this->queueManager->popMessage(self::$queues['serviceCustomerDelete']);
+        $serviceDeleteMessage = $this->messageHelper->popMessage(self::$queues['serviceCustomerDelete']);
 
         $monolithDeleteData = $this->serializer->unserialize($monolithDeleteMessage);
         $serviceDeleteData = $this->serializer->unserialize($serviceDeleteMessage);
@@ -118,20 +117,20 @@ class CustomerTest extends TestCase
      * Forward customer save event to Connector consumer
      *
      * @param array $customerData
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer.php
+     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer.php
      * @dataProvider customerDataProvider
      */
     public function testForwardCustomerSaveMessage(array $customerData)
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
 
-        $monolithSaveMessage = $this->queueManager->popMessage(self::$queues['monolithCustomerSave']);
+        $monolithSaveMessage = $this->messageHelper->popMessage(self::$queues['monolithCustomerSave']);
         $this->customerRepositoryWrapperMock->expects($this->once())
             ->method('getById')
             ->with($customer->getId())
             ->willReturn($customerData);
         $this->customerConnectorConsumer->forwardCustomerChanges($monolithSaveMessage);
-        $serviceSaveMessage = $this->queueManager->popMessage(self::$queues['serviceCustomerSave']);
+        $serviceSaveMessage = $this->messageHelper->popMessage(self::$queues['serviceCustomerSave']);
 
         $monolithSaveMessageData = $this->serializer->unserialize($monolithSaveMessage);
         $serviceSaveMessageData = $this->serializer->unserialize($serviceSaveMessage);
