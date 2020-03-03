@@ -8,11 +8,10 @@ declare(strict_types=1);
 namespace Magento\GraphQl\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Model\CustomerAuthUpdate;
+use Magento\Customer\Model\CustomerRegistry;
 use Magento\Integration\Api\CustomerTokenServiceInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\MessageQueue\EnvironmentPreconditionException;
-use Magento\TestFramework\MessageQueue\PreconditionFailedException;
-use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 use Magento\TestFramework\TestCase\GraphQlAbstract;
 
 class GetCustomerTest extends GraphQlAbstract
@@ -22,8 +21,15 @@ class GetCustomerTest extends GraphQlAbstract
      */
     private $customerTokenService;
 
-    /** @var PublisherConsumerController */
-    private $publisherConsumerController;
+    /**
+     * @var CustomerRegistry
+     */
+    private $customerRegistry;
+
+    /**
+     * @var CustomerAuthUpdate
+     */
+    private $customerAuthUpdate;
 
     /**
      * @var CustomerRepositoryInterface
@@ -32,29 +38,11 @@ class GetCustomerTest extends GraphQlAbstract
 
     protected function setUp(): void
     {
-        $objectManager = Bootstrap::getObjectManager();
-        $this->publisherConsumerController = $objectManager->create(
-            PublisherConsumerController::class,
-            [
-                'consumers' => [
-                        'customer.monolith.connector.customer.save',
-                        'customer.connector.service.customer.save'
-                ],
-                'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",
-                'maxMessages' => 500,
-                'appInitParams' => \Magento\TestFramework\Helper\Bootstrap::getInstance()->getAppInitParams()
-            ]
-        );
-
-        try {
-            $this->publisherConsumerController->initialize();
-        } catch (EnvironmentPreconditionException $e) {
-            $this->markTestSkipped($e->getMessage());
-        } catch (PreconditionFailedException $e) {
-            $this->fail($e->getMessage());
-        }
+        parent::setUp();
 
         $this->customerTokenService = Bootstrap::getObjectManager()->get(CustomerTokenServiceInterface::class);
+        $this->customerRegistry = Bootstrap::getObjectManager()->get(CustomerRegistry::class);
+        $this->customerAuthUpdate = Bootstrap::getObjectManager()->get(CustomerAuthUpdate::class);
         $this->customerRepository = Bootstrap::getObjectManager()->get(CustomerRepositoryInterface::class);
     }
 
@@ -76,6 +64,7 @@ query {
     }
 }
 QUERY;
+        sleep(10);
         $response = $this->graphQlQuery(
             $query,
             [],
@@ -83,14 +72,90 @@ QUERY;
             $this->getCustomerAuthHeaders($currentEmail, $currentPassword)
         );
 
+        //   $this->assertEquals(null, $response['customer']['id']);
         $this->assertEquals('John', $response['customer']['firstname']);
         $this->assertEquals('Smith', $response['customer']['lastname']);
         $this->assertEquals($currentEmail, $response['customer']['email']);
     }
 
-    protected function tearDown()
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Customer not authenticated
+     */
+    public function testGetCustomerIfUserIsNotAuthorized()
     {
-        $this->publisherConsumerController->stopConsumers();
+        $query = <<<QUERY
+query {
+    customer {
+        firstname
+        lastname
+        email
+    }
+}
+QUERY;
+        $this->graphQlQuery($query);
+    }
+
+    /**
+     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage The account is locked.
+     */
+    public function testGetCustomerIfAccountIsLocked()
+    {
+        $customer = $this->customerRepository->get('customer@example.com', 1);
+        $customerId = $customer->getId();
+        $this->lockCustomer((int)$customerId);
+
+        $currentEmail = 'customer@example.com';
+        $currentPassword = 'password';
+
+        $query = <<<QUERY
+query {
+    customer {
+        firstname
+        lastname
+        email
+    }
+}
+QUERY;
+        sleep(5);
+        $this->graphQlQuery(
+            $query,
+            [],
+            '',
+            $this->getCustomerAuthHeaders($currentEmail, $currentPassword)
+        );
+    }
+
+    /**
+     * @magentoApiDataFixture Magento/Customer/_files/customer_confirmation_config_enable.php
+     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer.php
+     * @expectedExceptionMessage This account isn't confirmed. Verify and try again.
+     */
+    public function testAccountIsNotConfirmed()
+    {
+        $customerEmail = 'customer@example.com';
+        $currentPassword = 'password';
+        $headersMap = $this->getCustomerAuthHeaders($customerEmail, $currentPassword);
+        $customer = $this->customerRepository->get($customerEmail, 1)->setConfirmation(
+            \Magento\Customer\Api\AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED
+        );
+//        $customer = $this->customerRepository->getById(1)->setConfirmation(
+//            \Magento\Customer\Api\AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED
+//        );
+        $this->customerRepository->save($customer);
+        $query = <<<QUERY
+query {
+    customer {
+        firstname
+        lastname
+        email
+    }
+}
+QUERY;
+        sleep(5);
+        $this->graphQlQuery($query, [], '', $headersMap);
     }
 
     /**
@@ -102,5 +167,16 @@ QUERY;
     {
         $customerToken = $this->customerTokenService->createCustomerAccessToken($email, $password);
         return ['Authorization' => 'Bearer ' . $customerToken];
+    }
+
+    /**
+     * @param int $customerId
+     * @return void
+     */
+    private function lockCustomer(int $customerId): void
+    {
+        $customerSecure = $this->customerRegistry->retrieveSecureData($customerId);
+        $customerSecure->setLockExpires('2030-12-31 00:00:00');
+        $this->customerAuthUpdate->saveAuth($customerId);
     }
 }
