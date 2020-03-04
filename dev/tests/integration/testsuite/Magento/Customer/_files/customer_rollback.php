@@ -34,14 +34,6 @@ try {
 } catch (NoSuchEntityException $e) {
     // customer already removed
 }
-// remove from storefront customer table
-try {
-    /** @var StorefrontCustomerInterface $storefrontCustomer */
-    $storefrontCustomer = $customerStorefrontRepository->getById($customerId);
-    $customerStorefrontRepository->delete($storefrontCustomer);
-} catch (NoSuchEntityException $e) {
-    // customer removed
-}
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
