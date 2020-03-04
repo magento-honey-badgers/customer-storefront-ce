@@ -10,31 +10,15 @@ namespace Magento\StorefrontTestFixer;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\ResourceModel\CustomerRepository;
 use Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin\CustomerStorefrontPublisherPlugin;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\MessageQueue\ConsumerFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\MessageQueue\EnvironmentPreconditionException;
-use Magento\TestFramework\MessageQueue\PreconditionFailedException;
-use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 
+/**
+ * Plugin class to to delete customers and invoke consumers
+ *
+ * After customers are deleted, consumers are started to clean up the queues on both monolith and storefront side
+ */
 class CustomerAfterSaveAndAfterDelete extends CustomerStorefrontPublisherPlugin
 {
-    /**
-     * @inheritDoc
-     */
-    public function afterSave(
-        CustomerRepository $customerRepository,
-        CustomerInterface $customer,
-        CustomerInterface $customerInput
-    ) : CustomerInterface {
-        $saveConsumers = [
-            'customer.monolith.connector.customer.save',
-            'customer.connector.service.customer.save',
-        ];
-        $customer = parent::afterSave($customerRepository, $customer, $customerInput);
-        return $customer;
-    }
-
     public function afterDelete(
         CustomerRepository $customerRepository,
         $result,

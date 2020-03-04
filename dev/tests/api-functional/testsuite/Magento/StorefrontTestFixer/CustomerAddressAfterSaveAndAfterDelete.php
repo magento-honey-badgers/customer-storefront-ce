@@ -10,31 +10,15 @@ namespace Magento\StorefrontTestFixer;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin\CustomerAddressStorefrontPublisherPlugin;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\MessageQueue\ConsumerFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\MessageQueue\EnvironmentPreconditionException;
-use Magento\TestFramework\MessageQueue\PreconditionFailedException;
-use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 
+/**
+ * Plugin class to to delete customer address and invoke consumers
+ *
+ * After customer address is deleted, consumers are started to clean up the queues on both monolith and storefront side
+ */
 class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPublisherPlugin
 {
-    /**
-     * @inheritDoc
-     */
-    public function afterSave(
-        AddressRepositoryInterface $addressRepository,
-        AddressInterface $address,
-        AddressInterface $addressInput
-    ) : AddressInterface {
-        $saveAddressConsumers = [
-            'customer.monolith.connector.address.save',
-            'customer.connector.service.address.save',
-        ];
-        $address = parent::afterSave($addressRepository, $address, $addressInput);
-        return $address;
-    }
-
     public function afterDelete(
         AddressRepositoryInterface $addressRepository,
         $result,

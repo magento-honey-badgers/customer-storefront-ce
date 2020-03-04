@@ -29,10 +29,9 @@ class QueueTrigger
     public function startTest(\PHPUnit\Framework\TestCase $test)
     {
         if ($test instanceof GraphQlAbstract) {
-            if(get_class($test) === $this->testWhitelist[0])
-            $this->waitForConsumersToStart();
-            elseif(get_class($test) === $this->testWhitelist[1])
-                $this->waitForCustomerAddressConsumersToStart();
+            if(in_array(get_class($test), $this->testWhitelist)) {
+                $this->waitForConsumersToStart();
+            }
             else return;
         }
     }
@@ -48,10 +47,9 @@ class QueueTrigger
     public function endTest(\PHPUnit\Framework\TestCase $test)
     {
         if ($test instanceof GraphQlAbstract) {
-            if(get_class($test) === $this->testWhitelist[0])
-            $this->waitForConsumersToStop();
-            elseif(get_class($test) === $this->testWhitelist[1])
-                $this->waitForCustomerAddressConsumersToStop();
+            if(in_array(get_class($test), $this->testWhitelist)) {
+                $this->waitForConsumersToStop();
+            }
             else return;
         }
     }
@@ -62,7 +60,11 @@ class QueueTrigger
             'customer.monolith.connector.customer.save',
             'customer.connector.service.customer.save',
             'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete'
+            'customer.connector.service.customer.delete',
+            'customer.monolith.connector.address.save',
+            'customer.connector.service.address.save',
+            'customer.monolith.connector.address.delete',
+            'customer.connector.service.address.delete'
         ];
 
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -103,7 +105,11 @@ class QueueTrigger
             'customer.monolith.connector.customer.save',
             'customer.connector.service.customer.save',
             'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete'
+            'customer.connector.service.customer.delete',
+            'customer.monolith.connector.address.save',
+            'customer.connector.service.address.save',
+            'customer.monolith.connector.address.delete',
+            'customer.connector.service.address.delete'
         ];
 
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
