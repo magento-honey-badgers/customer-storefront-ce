@@ -39,7 +39,8 @@ class GetAddressesTest extends GraphQlAbstract
         $this->lockCustomer = Bootstrap::getObjectManager()->get(LockCustomer::class);
     }
     /**
-     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer.php
+     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer_two_addresses.php
      */
     public function testGetCustomerWithAddresses()
     {

@@ -36,7 +36,6 @@ class WebapiDocBlock extends \Magento\TestFramework\Bootstrap\DocBlock
         $subscribers[] = new \Magento\TestFramework\Annotation\ApiDataFixture($this->_fixturesBaseDir);
         $subscribers[] = new ApiConfigFixture();
         $subscribers[] = new QueueTrigger();
-        $subscribers[] = new CustomerAddressQueueTrigger();
 
         return $subscribers;
     }
