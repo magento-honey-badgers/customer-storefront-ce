@@ -73,26 +73,6 @@ class QueueTrigger
         $consumerInvoker->startConsumers($consumers);
     }
 
-    private function waitForCustomerAddressConsumersToStart(): void
-    {
-        $consumers = [
-            'customer.monolith.connector.customer.save',
-            'customer.connector.service.customer.save',
-            'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete',
-            'customer.monolith.connector.address.save',
-            'customer.connector.service.address.save',
-            'customer.monolith.connector.address.delete',
-            'customer.connector.service.address.delete'
-        ];
-
-        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        /** @var ConsumerInvoker $consumerInvoker */
-        $consumerInvoker = $objectManager->get(ConsumerInvoker::class);
-        $consumerInvoker->startConsumers($consumers);
-    }
-
-
     /**
      * Wait for customer save consumers to stop.
      *
@@ -100,31 +80,6 @@ class QueueTrigger
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function waitForConsumersToStop(): void
-    {
-        $consumers = [
-            'customer.monolith.connector.customer.save',
-            'customer.connector.service.customer.save',
-            'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete',
-            'customer.monolith.connector.address.save',
-            'customer.connector.service.address.save',
-            'customer.monolith.connector.address.delete',
-            'customer.connector.service.address.delete'
-        ];
-
-        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        /** @var ConsumerInvoker $consumerInvoker */
-        $consumerInvoker = $objectManager->get(ConsumerInvoker::class);
-        $consumerInvoker->stopConsumers($consumers);
-    }
-
-    /**
-     * Wait for address consumers to stop.
-     *
-     * @return void
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function waitForCustomerAddressConsumersToStop(): void
     {
         $consumers = [
             'customer.monolith.connector.customer.save',
