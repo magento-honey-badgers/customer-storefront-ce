@@ -72,6 +72,15 @@ class AddressTest extends TestCase
     }
 
     /**
+     * Clean up queues before test starts
+     */
+    public static function setUpBeforeClass()
+    {
+        $messageHelper = Bootstrap::getObjectManager()->get(QueueMessageHelper::class);
+        $messageHelper->acknowledgeAllMessages(self::$queues);
+    }
+
+    /**
      * Clean up queues between tests
      */
     protected function tearDown()
