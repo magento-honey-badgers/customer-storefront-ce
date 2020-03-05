@@ -24,7 +24,7 @@ class Integration
     /**
      * The name of the integration
      */
-    private const NAME = 'CustomerMessageBroker';
+    private const NAME = 'customerMessageBroker';
 
     /**
      * Config array path in env.php

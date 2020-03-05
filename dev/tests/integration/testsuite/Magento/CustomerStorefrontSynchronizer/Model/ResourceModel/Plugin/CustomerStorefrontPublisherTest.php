@@ -66,9 +66,9 @@ class CustomerStorefrontPublisherTest extends TestCase
         $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
         $this->customerRepository->delete($customer);
         /** @var QueueInterface $monolithDeleteQueue */
-        $monolithDeleteQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.delete');
+        $monolithDeleteQueue = $this->queueRepository->get('amqp', 'customer.monolith.messageBroker.customer.delete');
         /** @var QueueInterface $monolithSaveQueue */
-        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save');
+        $monolithSaveQueue = $this->queueRepository->get('amqp', 'customer.monolith.messageBroker.customer.save');
         /** @var EnvelopeInterface $message */
         $monolithSaveMessage = $monolithSaveQueue->dequeue();
 
@@ -97,7 +97,7 @@ class CustomerStorefrontPublisherTest extends TestCase
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
         /** @var QueueInterface $queue */
-        $queue = $this->queueRepository->get('amqp', 'customer.monolith.connector.customer.save');
+        $queue = $this->queueRepository->get('amqp', 'customer.monolith.messageBroker.customer.save');
         /** @var EnvelopeInterface $message */
         $message = $queue->dequeue();
         $messageBody = $message->getBody();

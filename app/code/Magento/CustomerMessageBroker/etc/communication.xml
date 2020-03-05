@@ -6,22 +6,22 @@
   */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
-    <topic name="customer.monolith.connector.customer.save" request="string">
+    <topic name="customer.monolith.messageBroker.customer.save" request="string">
         <handler name="monolith-to-consumer-customer-save"
                  type="Magento\CustomerMessageBroker\Queue\Consumer\Customer"
                  method="forwardCustomerChanges"/>
     </topic>
-    <topic name="customer.monolith.connector.customer.delete" request="string">
+    <topic name="customer.monolith.messageBroker.customer.delete" request="string">
         <handler name="monolith-to-consumer-customer-delete"
                  type="Magento\CustomerMessageBroker\Queue\Consumer\Customer"
                  method="forwardCustomerDelete"/>
     </topic>
-    <topic name="customer.monolith.connector.address.save" request="string">
+    <topic name="customer.monolith.messageBroker.address.save" request="string">
         <handler name="monolith-to-consumer-address-save"
                  type="Magento\CustomerMessageBroker\Queue\Consumer\Address"
                  method="forwardAddressChanges"/>
     </topic>
-    <topic name="customer.monolith.connector.address.delete" request="string">
+    <topic name="customer.monolith.messageBroker.address.delete" request="string">
         <handler name="monolith-to-consumer-address-delete"
                  type="Magento\CustomerMessageBroker\Queue\Consumer\Address"
                  method="forwardAddressDelete"/>

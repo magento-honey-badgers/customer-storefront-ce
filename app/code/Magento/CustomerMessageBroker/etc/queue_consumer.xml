@@ -6,8 +6,9 @@
   */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
-    <consumer name="customer.monolith.connector.customer.save" queue="customer.monolith.connector.customer.save" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
-    <consumer name="customer.monolith.connector.customer.delete" queue="customer.monolith.connector.customer.delete" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
-    <consumer name="customer.monolith.connector.address.save" queue="customer.monolith.connector.address.save" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
-    <consumer name="customer.monolith.connector.address.delete" queue="customer.monolith.connector.address.delete" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.messageBroker.customer.save" queue="customer.monolith.messageBroker.customer.save" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.messageBroker.customer.delete" queue="customer.monolith.messageBroker.customer.delete" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.messageBroker.address.save" queue="customer.monolith.messageBroker.address.save" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
+    <consumer name="customer.monolith.messageBroker.address.delete" queue="customer.monolith.messageBroker.address.delete" connection="amqp" consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
 </config>
+

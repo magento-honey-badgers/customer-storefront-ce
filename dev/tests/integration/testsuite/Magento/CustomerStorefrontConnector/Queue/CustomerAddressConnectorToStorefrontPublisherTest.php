@@ -91,9 +91,9 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
         $customerAddress = $this->addressRepository->getById($customer->getDefaultBilling());
         $addressId = $customerAddress->getId();
         /** @var QueueInterface $monolithAddressQueue */
-        $monolithAddressQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.address.save');
+        $monolithAddressQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.address.save');
         /** @var QueueInterface $monolithCustomerSaveQueue */
-        $monolithCustomerSaveQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.save');
+        $monolithCustomerSaveQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.save');
         /** @var QueueInterface $serviceAddressQueue */
         $serviceAddressQueue = $this->queueRepostiory->get('amqp', 'customer.connector.service.address.save');
 

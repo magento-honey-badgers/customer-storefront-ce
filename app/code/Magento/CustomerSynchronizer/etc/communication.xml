@@ -6,8 +6,8 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
-    <topic name="customer.monolith.connector.customer.save" request="string" />
-    <topic name="customer.monolith.connector.customer.delete" request="string" />
-    <topic name="customer.monolith.connector.address.save" request="string" />
-    <topic name="customer.monolith.connector.address.delete" request="string" />
+    <topic name="customer.monolith.messageBroker.customer.save" request="string" />
+    <topic name="customer.monolith.messageBroker.customer.delete" request="string" />
+    <topic name="customer.monolith.messageBroker.address.save" request="string" />
+    <topic name="customer.monolith.messageBroker.address.delete" request="string" />
 </config>

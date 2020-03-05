@@ -86,13 +86,13 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $this->customerRepository->delete($customer);
 
         /** @var QueueInterface $monolithQueue */
-        $monolithQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.delete');
+        $monolithQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.delete');
 
         /** @var QueueInterface $serviceQueue */
         $serviceQueue = $this->queueRepostiory->get('amqp', 'customer.connector.service.customer.delete');
 
         /** @var  QueueInterface $monolithSaveQueue */
-        $monolithSaveQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.save');
+        $monolithSaveQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.save');
 
         /** @var EnvelopeInterface $monolithMessage */
         $monolithSaveMessage = $monolithSaveQueue->dequeue();
@@ -135,7 +135,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $customerId = $customer->getId();
 
         /** @var QueueInterface $monolithQueue */
-        $monolithQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.connector.customer.save');
+        $monolithQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.save');
         /** @var QueueInterface $serviceQueue */
         $serviceQueue = $this->queueRepostiory->get('amqp', 'customer.connector.service.customer.save');
         /** @var EnvelopeInterface $monolithMessage */

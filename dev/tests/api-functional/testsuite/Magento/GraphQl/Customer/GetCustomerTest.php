@@ -37,7 +37,7 @@ class GetCustomerTest extends GraphQlAbstract
             PublisherConsumerController::class,
             [
                 'consumers' => [
-                        'customer.monolith.connector.customer.save',
+                        'customer.monolith.messageBroker.customer.save',
                         'customer.connector.service.customer.save'
                 ],
                 'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",

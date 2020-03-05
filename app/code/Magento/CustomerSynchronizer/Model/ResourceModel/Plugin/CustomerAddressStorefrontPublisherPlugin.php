@@ -31,9 +31,9 @@ class CustomerAddressStorefrontPublisherPlugin
 
     private const DELETE_EVENT = 'delete';
 
-    private const ADDRESS_SAVE_TOPIC = 'customer.monolith.connector.address.save';
+    private const ADDRESS_SAVE_TOPIC = 'customer.monolith.messageBroker.address.save';
 
-    private const ADDRESS_DELETE_TOPIC = 'customer.monolith.connector.address.delete';
+    private const ADDRESS_DELETE_TOPIC = 'customer.monolith.messageBroker.address.delete';
 
     /**
      * @param MessageFormatter $messageFormatter

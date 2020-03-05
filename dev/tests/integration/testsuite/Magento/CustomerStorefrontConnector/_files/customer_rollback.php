@@ -45,7 +45,7 @@ try {
 
 $queueRepository = $objectManager->get(QueueRepository::class);
 /** @var QueueInterface $monolithDeleteQueue */
-$monolithDeleteQueue = $queueRepository->get('amqp', 'customer.monolith.connector.customer.delete');
+$monolithDeleteQueue = $queueRepository->get('amqp', 'customer.monolith.messageBroker.customer.delete');
 /** @var EnvelopeInterface $monolithDeleteMessage */
 $monolithDeleteMessage = $monolithDeleteQueue->dequeue();
 $monolithDeleteQueue->acknowledge($monolithDeleteMessage);

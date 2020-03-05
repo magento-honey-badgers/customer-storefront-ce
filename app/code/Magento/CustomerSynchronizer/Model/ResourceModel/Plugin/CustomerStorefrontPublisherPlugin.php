@@ -30,9 +30,9 @@ class CustomerStorefrontPublisherPlugin
 
     private const DELETE_EVENT = 'delete';
 
-    private const CUSTOMER_SAVE_TOPIC = 'customer.monolith.connector.customer.save';
+    private const CUSTOMER_SAVE_TOPIC = 'customer.monolith.messageBroker.customer.save';
 
-    private const CUSTOMER_DELETE_TOPIC = 'customer.monolith.connector.customer.delete';
+    private const CUSTOMER_DELETE_TOPIC = 'customer.monolith.messageBroker.customer.delete';
 
     /**
      * @param MessageFormatter $messageFormatter

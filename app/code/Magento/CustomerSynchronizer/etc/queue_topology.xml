@@ -7,9 +7,9 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
     <exchange name="magento" type="topic" connection="amqp">
-        <binding id="customer.monolith.connector.customer.save" topic="customer.monolith.connector.customer.save" destinationType="queue" destination="customer.monolith.connector.customer.save"/>
-        <binding id="customer.monolith.connector.customer.delete" topic="customer.monolith.connector.customer.delete" destinationType="queue" destination="customer.monolith.connector.customer.delete"/>
-        <binding id="customer.monolith.connector.address.save" topic="customer.monolith.connector.address.save" destinationType="queue" destination="customer.monolith.connector.address.save"/>
-        <binding id="customer.monolith.connector.address.delete" topic="customer.monolith.connector.address.delete" destinationType="queue" destination="customer.monolith.connector.address.delete"/>
+        <binding id="customer.monolith.messageBroker.customer.save" topic="customer.monolith.messageBroker.customer.save" destinationType="queue" destination="customer.monolith.messageBroker.customer.save"/>
+        <binding id="customer.monolith.messageBroker.customer.delete" topic="customer.monolith.messageBroker.customer.delete" destinationType="queue" destination="customer.monolith.messageBroker.customer.delete"/>
+        <binding id="customer.monolith.messageBroker.address.save" topic="customer.monolith.messageBroker.address.save" destinationType="queue" destination="customer.monolith.messageBroker.address.save"/>
+        <binding id="customer.monolith.messageBroker.address.delete" topic="customer.monolith.messageBroker.address.delete" destinationType="queue" destination="customer.monolith.messageBroker.address.delete"/>
     </exchange>
 </config>

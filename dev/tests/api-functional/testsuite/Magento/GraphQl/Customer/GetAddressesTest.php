@@ -39,14 +39,14 @@ class GetAddressesTest extends GraphQlAbstract
             PublisherConsumerController::class,
             [
                 'consumers' => [
-                        'customer.monolith.connector.customer.save',
-                        'customer.monolith.connector.address.save',
+                        'customer.monolith.messageBroker.customer.save',
+                        'customer.monolith.messageBroker.address.save',
                         'customer.connector.service.customer.save',
                         'customer.connector.service.address.save',
-                        'customer.monolith.connector.customer.delete',
+                        'customer.monolith.messageBroker.customer.delete',
                         'customer.connector.service.customer.delete',
                         'customer.connector.service.address.delete',
-                        'customer.monolith.connector.address.delete'
+                        'customer.monolith.messageBroker.address.delete'
                     ],
                 'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",
                 'maxMessages' => 500,
