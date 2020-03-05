@@ -70,7 +70,7 @@ class GetAddressesTest extends GraphQlAbstract
         $this->publisherConsumerController->stopConsumers();
     }
     /**
-     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * @magentoApiDataFixture Magento/CustomerMessageBroker/_files/customer_with_address.php
      */
     public function testGetCustomerWithAddresses()
     {

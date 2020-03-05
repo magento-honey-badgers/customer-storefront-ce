@@ -6,12 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontConnector\Queue;
+namespace Magento\CustomerMessageBroker\Queue;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
-use Magento\CustomerStorefrontConnector\Model\CustomerRepositoryWrapper;
-use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
+use Magento\CustomerMessageBroker\Model\CustomerRepositoryWrapper;
+use Magento\CustomerMessageBroker\Queue\Consumer\Customer as CustomerMessageBrokerConsumer;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\MessageQueue\EnvelopeInterface;
 use Magento\Framework\MessageQueue\QueueInterface;
@@ -48,8 +48,8 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
     /** @var EncryptorInterface */
     private $encryptor;
 
-    /** @var CustomerConnectorConsumer */
-    private $customerConnectorConsumer;
+    /** @var CustomerMessageBrokerConsumer */
+    private $customerMessageBrokerConsumer;
 
     /** @var CustomerRepositoryWrapper|MockObject  */
     private $customerRepositoryWrapperMock;
@@ -66,8 +66,8 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
             CustomerRepositoryWrapper::class,
             ['getById']
         );
-        $this->customerConnectorConsumer = $this->objectManager->create(
-            CustomerConnectorConsumer::class,
+        $this->customerMessageBrokerConsumer = $this->objectManager->create(
+            CustomerMessageBrokerConsumer::class,
             ['customerRepository' => $this->customerRepositoryWrapperMock]
         );
     }
@@ -78,7 +78,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
      * Test published customer delete event from synchronizer to messageBroker
      *
      * @magentoAppArea adminhtml
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
+     * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer_with_no_rolling_back.php
      */
     public function testForwardCustomerDeleteMessageToConnectorConsumer()
     {
@@ -101,7 +101,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $monolithMessage = $monolithQueue->dequeue();
         $this->assertNotNull($monolithMessage);
         $unserializedMonolithMessage = $this->serializer->unserialize($monolithMessage->getBody());
-        $this->customerConnectorConsumer->forwardCustomerDelete($unserializedMonolithMessage);
+        $this->customerMessageBrokerConsumer->forwardCustomerDelete($unserializedMonolithMessage);
         $serviceMessage = $serviceQueue->dequeue();
         $this->assertNotNull($serviceMessage);
         $customerServiceSaveMessageBody = $serviceMessage->getBody();
@@ -125,7 +125,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
      *
      * Test published customer save event from synchronizer to messageBroker
      *
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer.php
+     * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer.php
      * @magentoAppArea adminhtml
      *
      */
@@ -146,7 +146,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
             ->method('getById')
             ->with($customerId)
             ->willReturn($customerData);
-        $this->customerConnectorConsumer->forwardCustomerChanges($unserializedMonolithMessage);
+        $this->customerMessageBrokerConsumer->forwardCustomerChanges($unserializedMonolithMessage);
 
         $customerSaveMessage = $serviceQueue->dequeue();
         $messageBody = $customerSaveMessage->getBody();

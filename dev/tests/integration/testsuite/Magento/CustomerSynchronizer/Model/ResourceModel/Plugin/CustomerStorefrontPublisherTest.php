@@ -5,11 +5,11 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin;
+namespace Magento\CustomerSynchronizer\Model\ResourceModel\Plugin;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
-use Magento\CustomerStorefrontConnector\Queue\Consumer\Customer as CustomerConnectorConsumer;
+use Magento\CustomerMessageBroker\Queue\Consumer\Customer as CustomerMessageBrokerConsumer;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\MessageQueue\EnvelopeInterface;
 use Magento\Framework\MessageQueue\QueueInterface;
@@ -41,8 +41,8 @@ class CustomerStorefrontPublisherTest extends TestCase
     /** @var EncryptorInterface */
     private $encryptor;
 
-    /** @var CustomerConnectorConsumer  */
-    private $customerConnectorConsumer;
+    /** @var CustomerMessageBrokerConsumer  */
+    private $customerMessageBrokerConsumer;
 
     protected function setup()
     {
@@ -52,14 +52,14 @@ class CustomerStorefrontPublisherTest extends TestCase
         $this->queueRepository = $objectManager->create(QueueRepository::class);
         $this->customerFactory = $objectManager->get(CustomerInterfaceFactory::class);
         $this->encryptor = $objectManager->get(EncryptorInterface::class);
-        $this->customerConnectorConsumer = $objectManager->get(CustomerConnectorConsumer::class);
+        $this->customerMessageBrokerConsumer = $objectManager->get(CustomerMessageBrokerConsumer::class);
     }
 
     /**
      * Test customer delete event
      *
      * @magentoAppArea adminhtml
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
+     * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer_with_no_rolling_back.php
      */
     public function testPublishCustomerDeleteMessage()
     {
@@ -91,7 +91,7 @@ class CustomerStorefrontPublisherTest extends TestCase
     /**
      * Test customer save event
      *
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer.php
+     * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer.php
      */
     public function testPublishCustomerSaveMessage()
     {

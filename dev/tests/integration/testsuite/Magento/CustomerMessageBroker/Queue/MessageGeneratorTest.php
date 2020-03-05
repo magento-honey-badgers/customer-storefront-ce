@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontConnector\Queue;
+namespace Magento\CustomerMessageBroker\Queue;
 
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;

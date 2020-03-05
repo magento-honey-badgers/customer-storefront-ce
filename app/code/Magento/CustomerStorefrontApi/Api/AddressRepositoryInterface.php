@@ -48,8 +48,8 @@ interface AddressRepositoryInterface
      * Retrieve customers addresses matching the specified criteria.
      *
      * @param int $customerId
-     * @return \Magento\CustomerStorefrontApi\Api\Data\AddressInterface[]
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return AddressInterface[]
+     * @throws LocalizedException
      */
     public function getList(int $customerId): array;
 
@@ -58,7 +58,7 @@ interface AddressRepositoryInterface
      *
      * @param AddressInterface $address
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function delete(AddressInterface $address): bool;
 }

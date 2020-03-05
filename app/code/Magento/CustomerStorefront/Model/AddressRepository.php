@@ -10,6 +10,7 @@ namespace Magento\CustomerStorefront\Model;
 use Magento\CustomerStorefrontApi\Api\Data\AddressInterface;
 use Magento\CustomerStorefrontApi\Api\AddressRepositoryInterface;
 use Magento\CustomerStorefront\Model\Storage\Address as AddressStorage;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Repository for customer address.
@@ -93,7 +94,7 @@ class AddressRepository implements AddressRepositoryInterface
      * Retrieve customers addresses matching the specified criteria.
      *
      * @param int $customerId
-     * @return \Magento\CustomerStorefrontApi\Api\Data\AddressInterface[]
+     * @return AddressInterface[]
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getList(int $customerId): array

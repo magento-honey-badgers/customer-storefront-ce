@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontSynchronizer\Model\ResourceModel\Plugin;
+namespace Magento\CustomerSynchronizer\Model\ResourceModel\Plugin;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -56,7 +56,7 @@ class CustomerAddressStorefrontPublisherTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer_with_address.php
      */
     public function testPublishCustomerAddressSaveMessage()
     {

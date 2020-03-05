@@ -59,7 +59,7 @@ class GetCustomerTest extends GraphQlAbstract
     }
 
     /**
-     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer.php
+     * @magentoApiDataFixture Magento/CustomerMessageBroker/_files/customer.php
      */
     public function testGetCustomer()
     {

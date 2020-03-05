@@ -5,14 +5,14 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontConnector\Queue;
+namespace Magento\CustomerMessageBroker\Queue;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
-use Magento\CustomerStorefrontConnector\Model\AddressRepositoryWrapper;
-use Magento\CustomerStorefrontConnector\Queue\Consumer\Address as CustomerAddressConnectorConsumer;
+use Magento\CustomerMessageBroker\Model\AddressRepositoryWrapper;
+use Magento\CustomerMessageBroker\Queue\Consumer\Address as CustomerAddressMessageBrokerConsumer;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\MessageQueue\EnvelopeInterface;
 use Magento\Framework\MessageQueue\QueueInterface;
@@ -53,8 +53,8 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
     /** @var EncryptorInterface */
     private $encryptor;
 
-    /** @var CustomerAddressConnectorConsumer */
-    private $customerAddressConnectorConsumer;
+    /** @var CustomerAddressMessageBrokerConsumer */
+    private $customerAddressMessageBrokerConsumer;
 
     /** @var AddressRepositoryWrapper|MockObject  */
     private $customerAddressRepositoryWrapperMock;
@@ -72,8 +72,8 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
             AddressRepositoryWrapper::class,
             ['getById']
         );
-        $this->customerAddressConnectorConsumer = $this->objectManager->create(
-            CustomerAddressConnectorConsumer::class,
+        $this->customerAddressMessageBrokerConsumer = $this->objectManager->create(
+            CustomerAddressMessageBrokerConsumer::class,
             ['addressRepository' => $this->customerAddressRepositoryWrapperMock]
         );
     }
@@ -81,7 +81,7 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
     /**
      * Test forward customer address change events Connector
      *
-     * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer_with_address.php
      * @magentoAppArea adminhtml
      */
     public function testForwardCustomerAddressChangesToConnectorConsumer() : void
@@ -107,7 +107,7 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
             ->method('getById')
             ->with($addressId)
             ->willReturn($customerAddressData);
-        $this->customerAddressConnectorConsumer->forwardAddressChanges($unserializedMonolithMessage);
+        $this->customerAddressMessageBrokerConsumer->forwardAddressChanges($unserializedMonolithMessage);
 
         $customerSaveMessage = $serviceAddressQueue->dequeue();
         $messageBody = $customerSaveMessage->getBody();

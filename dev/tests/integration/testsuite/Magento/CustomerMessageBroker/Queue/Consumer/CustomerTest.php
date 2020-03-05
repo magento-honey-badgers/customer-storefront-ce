@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontConnector\Queue\Consumer;
+namespace Magento\CustomerMessageBroker\Queue\Consumer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\MessageQueue\PublisherInterface;
@@ -54,7 +54,7 @@ class CustomerTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerMessageBroker/_files/customer_with_address.php
      */
     public function testforwardCustomerChanges()
     {
@@ -82,7 +82,7 @@ class CustomerTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerMessageBroker/_files/customer_with_address.php
      */
     public function testforwardCustomerDelete()
     {

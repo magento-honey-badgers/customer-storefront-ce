@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Magento\CustomerStorefrontConnector\Queue\Consumer;
+namespace Magento\CustomerMessageBroker\Queue\Consumer;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
@@ -56,7 +56,7 @@ class AddressTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerMessageBroker/_files/customer_with_address.php
      */
     public function testForwardAddressChanges()
     {
@@ -84,7 +84,7 @@ class AddressTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/CustomerStorefrontConnector/_files/customer_with_address.php
+     * @magentoDataFixture Magento/CustomerMessageBroker/_files/customer_with_address.php
      */
     public function testForwardAddressDelete()
     {
