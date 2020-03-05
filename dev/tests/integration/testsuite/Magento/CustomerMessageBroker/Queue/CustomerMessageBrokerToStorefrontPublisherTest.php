@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
  * @magentoDbIsolation disabled
  * @magentoAppArea adminhtml
  */
-class CustomerConnectorToStorefrontPublisherTest extends TestCase
+class CustomerMessageBrokerToStorefrontPublisherTest extends TestCase
 {
     /** @var ObjectManagerInterface */
     private $objectManager;

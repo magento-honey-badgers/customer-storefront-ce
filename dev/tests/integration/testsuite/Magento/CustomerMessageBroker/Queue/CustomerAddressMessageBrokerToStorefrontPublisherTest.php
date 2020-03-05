@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
  * @magentoDbIsolation disabled
  * @magentoAppArea adminhtml
  */
-class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
+class CustomerAddressMessageBrokerToStorefrontPublisherTest extends TestCase
 {
     /** @var ObjectManagerInterface */
     private $objectManager;
