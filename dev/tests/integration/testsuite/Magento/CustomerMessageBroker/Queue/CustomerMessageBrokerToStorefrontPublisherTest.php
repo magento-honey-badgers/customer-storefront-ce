@@ -80,7 +80,7 @@ class CustomerMessageBrokerToStorefrontPublisherTest extends TestCase
      * @magentoAppArea adminhtml
      * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer_with_no_rolling_back.php
      */
-    public function testForwardCustomerDeleteMessageToConnectorConsumer()
+    public function testForwardCustomerDeleteMessageToMessageBrokerConsumer()
     {
         $customer = $this->customerRepository->get('customer.norollingback@example.com', 1);
         $this->customerRepository->delete($customer);
@@ -121,7 +121,7 @@ class CustomerMessageBrokerToStorefrontPublisherTest extends TestCase
     }
 
     /**
-     * Forward customer save event to Connector consumer
+     * Forward customer save event to MessageBroker consumer
      *
      * Test published customer save event from synchronizer to messageBroker
      *
@@ -129,7 +129,7 @@ class CustomerMessageBrokerToStorefrontPublisherTest extends TestCase
      * @magentoAppArea adminhtml
      *
      */
-    public function testForwardCustomerSaveMessageToConnectorConsumer() : void
+    public function testForwardCustomerSaveMessageToMessageBrokerConsumer() : void
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
         $customerId = $customer->getId();

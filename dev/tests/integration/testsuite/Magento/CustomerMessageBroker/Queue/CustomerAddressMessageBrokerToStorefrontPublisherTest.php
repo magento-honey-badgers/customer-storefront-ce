@@ -79,12 +79,12 @@ class CustomerAddressMessageBrokerToStorefrontPublisherTest extends TestCase
     }
 
     /**
-     * Test forward customer address change events Connector
+     * Test forward customer address change events MessageBroker
      *
      * @magentoDataFixture Magento/CustomerSynchronizer/_files/customer_with_address.php
      * @magentoAppArea adminhtml
      */
-    public function testForwardCustomerAddressChangesToConnectorConsumer() : void
+    public function testForwardCustomerAddressChangesToMessageBrokerConsumer() : void
     {
         $customer = $this->customerRepository->get('customer@example.com', 1);
         /** @var AddressInterface $customerAddress */
