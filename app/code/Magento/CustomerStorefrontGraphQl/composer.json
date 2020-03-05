@@ -4,7 +4,7 @@
     "require": {
         "php": "~7.2.0||~7.3.0||~7.4.0",
         "magento/framework": "*",
-        "magento/module-customer-storefront-service-api": "*"
+        "magento/module-customer-storefront-api": "*"
     },
     "type": "magento2-module",
     "license": [
