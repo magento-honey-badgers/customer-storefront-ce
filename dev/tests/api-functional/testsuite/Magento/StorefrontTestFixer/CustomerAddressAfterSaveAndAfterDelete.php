@@ -19,6 +19,17 @@ use Magento\TestFramework\Helper\Bootstrap;
  */
 class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPublisherPlugin
 {
+    /**
+     * @inheritDoc
+     *
+     * force run the customer address delete consumers after the fixture rollback
+     *
+     * @param AddressRepositoryInterface $addressRepository
+     * @param bool $result
+     * @param AddressInterface $address
+     * @return mixed|void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function afterDelete(
         AddressRepositoryInterface $addressRepository,
         $result,
@@ -38,6 +49,17 @@ class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPu
         $consumerInvoker->stopConsumers($deleteAddressConsumers);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * force run the customer address delete consumers after the fixture rollback
+     *
+     * @param AddressRepositoryInterface $addressRepository
+     * @param bool $result
+     * @param int $addressId
+     * @return mixed|void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function afterDeleteById(
         AddressRepositoryInterface $addressRepository,
         $result,
@@ -46,7 +68,6 @@ class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPu
         $deleteAddressConsumers = [
             'customer.monolith.connector.address.delete',
             'customer.connector.service.address.delete'
-
         ];
         $objectManager = Bootstrap::getObjectManager();
         /** @var ConsumerInvoker $consumerInvoker */

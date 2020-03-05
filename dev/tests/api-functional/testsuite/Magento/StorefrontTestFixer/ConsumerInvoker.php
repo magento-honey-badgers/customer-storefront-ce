@@ -18,6 +18,8 @@ use Magento\TestFramework\MessageQueue\PublisherConsumerController;
 class ConsumerInvoker
 {
     /**
+     *  Start consumer processes
+     *
      * @param array $consumers
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -43,6 +45,12 @@ class ConsumerInvoker
         }
     }
 
+    /**
+     * Stop the consumers
+     *
+     * @param array $consumers
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function stopConsumers(array $consumers)
     {
         $objectManager = Bootstrap::getObjectManager();

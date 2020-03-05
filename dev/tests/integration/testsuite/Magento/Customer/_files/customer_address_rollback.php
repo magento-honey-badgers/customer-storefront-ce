@@ -34,10 +34,6 @@ $addresses = $addressRepository->getList($searchCriteria);
 foreach ($addresses->getItems() as $address) {
     $addressRepository->delete($address);
 }
-$customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
-/** @var CustomerInterface $customer */
-$customer = $customerRepository->get('customer@example.com', 1);
-$customerId = $customer->getId();
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

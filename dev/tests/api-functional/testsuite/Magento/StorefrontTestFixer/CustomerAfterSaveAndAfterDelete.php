@@ -19,6 +19,17 @@ use Magento\TestFramework\Helper\Bootstrap;
  */
 class CustomerAfterSaveAndAfterDelete extends CustomerStorefrontPublisherPlugin
 {
+    /**
+     * @inheritDoc
+     *
+     * Run the consumers after the customers are deleted from fixture rollbacks
+     *
+     * @param CustomerRepository $customerRepository
+     * @param bool $result
+     * @param CustomerInterface $customer
+     * @return mixed|void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function afterDelete(
         CustomerRepository $customerRepository,
         $result,
@@ -39,6 +50,17 @@ class CustomerAfterSaveAndAfterDelete extends CustomerStorefrontPublisherPlugin
         $consumerInvoker->stopConsumers($deleteConsumers);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * Run the consumers after customers are deleted from fixture rollbacks
+     *
+     * @param CustomerRepository $customerRepository
+     * @param bool $result
+     * @param int $customerId
+     * @return mixed|void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function afterDeleteById(
         CustomerRepository $customerRepository,
         $result,

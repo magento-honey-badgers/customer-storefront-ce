@@ -54,6 +54,12 @@ class QueueTrigger
         }
     }
 
+    /**
+     * Wait for all consumers to start
+     *
+     * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     private function waitForConsumersToStart(): void
     {
         $consumers = [
@@ -74,7 +80,7 @@ class QueueTrigger
     }
 
     /**
-     * Wait for customer save consumers to stop.
+     * Wait for customer-save-consumers to stop.
      *
      * @return void
      * @throws \Magento\Framework\Exception\LocalizedException
