@@ -41,11 +41,11 @@ class GetAddressesTest extends GraphQlAbstract
                 'consumers' => [
                         'customer.monolith.messageBroker.customer.save',
                         'customer.monolith.messageBroker.address.save',
-                        'customer.connector.service.customer.save',
-                        'customer.connector.service.address.save',
+                        'customer.messageBroker.service.customer.save',
+                        'customer.messageBroker.service.address.save',
                         'customer.monolith.messageBroker.customer.delete',
-                        'customer.connector.service.customer.delete',
-                        'customer.connector.service.address.delete',
+                        'customer.messageBroker.service.customer.delete',
+                        'customer.messageBroker.service.address.delete',
                         'customer.monolith.messageBroker.address.delete'
                     ],
                 'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",

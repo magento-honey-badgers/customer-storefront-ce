@@ -19,9 +19,9 @@ use Psr\Log\LoggerInterface;
  */
 class Address
 {
-    const SAVE_TOPIC = 'customer.connector.service.address.save';
+    const SAVE_TOPIC = 'customer.messageBroker.service.address.save';
 
-    const DELETE_TOPIC = 'customer.connector.service.address.delete';
+    const DELETE_TOPIC = 'customer.messageBroker.service.address.delete';
 
     /**
      * @var AddressRepositoryWrapper

@@ -23,7 +23,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test combined functioning of synchronizer and connector
+ * Test combined functioning of synchronizer and messageBroker
  *
  * @magentoDbIsolation disabled
  * @magentoAppArea adminhtml
@@ -75,7 +75,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
     /**
      * Forward customer delete event
      *
-     * Test published customer delete event from synchronizer to connector
+     * Test published customer delete event from synchronizer to messageBroker
      *
      * @magentoAppArea adminhtml
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer_with_no_rolling_back.php
@@ -89,7 +89,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         $monolithQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.delete');
 
         /** @var QueueInterface $serviceQueue */
-        $serviceQueue = $this->queueRepostiory->get('amqp', 'customer.connector.service.customer.delete');
+        $serviceQueue = $this->queueRepostiory->get('amqp', 'customer.messageBroker.service.customer.delete');
 
         /** @var  QueueInterface $monolithSaveQueue */
         $monolithSaveQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.save');
@@ -123,7 +123,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
     /**
      * Forward customer save event to Connector consumer
      *
-     * Test published customer save event from synchronizer to connector
+     * Test published customer save event from synchronizer to messageBroker
      *
      * @magentoDataFixture Magento/CustomerStorefrontSynchronizer/_files/customer.php
      * @magentoAppArea adminhtml
@@ -137,7 +137,7 @@ class CustomerConnectorToStorefrontPublisherTest extends TestCase
         /** @var QueueInterface $monolithQueue */
         $monolithQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.save');
         /** @var QueueInterface $serviceQueue */
-        $serviceQueue = $this->queueRepostiory->get('amqp', 'customer.connector.service.customer.save');
+        $serviceQueue = $this->queueRepostiory->get('amqp', 'customer.messageBroker.service.customer.save');
         /** @var EnvelopeInterface $monolithMessage */
         $monolithMessage = $monolithQueue->dequeue();
         $unserializedMonolithMessage = $this->serializer->unserialize($monolithMessage->getBody());

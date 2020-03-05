@@ -18,9 +18,9 @@ use Psr\Log\LoggerInterface;
  */
 class Customer
 {
-    const SAVE_TOPIC = 'customer.connector.service.customer.save';
+    const SAVE_TOPIC = 'customer.messageBroker.service.customer.save';
 
-    const DELETE_TOPIC = 'customer.connector.service.customer.delete';
+    const DELETE_TOPIC = 'customer.messageBroker.service.customer.delete';
 
     /**
      * @var CustomerRepositoryWrapper

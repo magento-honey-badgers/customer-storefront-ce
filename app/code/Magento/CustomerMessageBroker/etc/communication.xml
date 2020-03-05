@@ -26,8 +26,8 @@
                  type="Magento\CustomerMessageBroker\Queue\Consumer\Address"
                  method="forwardAddressDelete"/>
     </topic>
-    <topic name="customer.connector.service.customer.save" request="string"/>
-    <topic name="customer.connector.service.customer.delete" request="string"/>
-    <topic name="customer.connector.service.address.save" request="string"/>
-    <topic name="customer.connector.service.address.delete" request="string"/>
+    <topic name="customer.messageBroker.service.customer.save" request="string"/>
+    <topic name="customer.messageBroker.service.customer.delete" request="string"/>
+    <topic name="customer.messageBroker.service.address.save" request="string"/>
+    <topic name="customer.messageBroker.service.address.delete" request="string"/>
 </config>

@@ -24,7 +24,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test combined functioning of synchronizer and connector
+ * Test combined functioning of synchronizer and messageBroker
  *
  * @magentoDbIsolation disabled
  * @magentoAppArea adminhtml
@@ -95,7 +95,7 @@ class CustomerAddressConnectorToStorefrontPublisherTest extends TestCase
         /** @var QueueInterface $monolithCustomerSaveQueue */
         $monolithCustomerSaveQueue = $this->queueRepostiory->get('amqp', 'customer.monolith.messageBroker.customer.save');
         /** @var QueueInterface $serviceAddressQueue */
-        $serviceAddressQueue = $this->queueRepostiory->get('amqp', 'customer.connector.service.address.save');
+        $serviceAddressQueue = $this->queueRepostiory->get('amqp', 'customer.messageBroker.service.address.save');
 
         /** @var EnvelopeInterface $monolithAddressSaveMessage */
         $monolithAddressSaveMessage = $monolithAddressQueue->dequeue();

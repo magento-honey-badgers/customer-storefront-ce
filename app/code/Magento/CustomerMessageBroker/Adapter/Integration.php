@@ -17,7 +17,7 @@ use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\App\DeploymentConfig;
 
 /**
- * Manage API integration used for Connector
+ * Manage API integration used for messageBroker
  */
 class Integration
 {

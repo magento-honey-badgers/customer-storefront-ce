@@ -38,7 +38,7 @@ class GetCustomerTest extends GraphQlAbstract
             [
                 'consumers' => [
                         'customer.monolith.messageBroker.customer.save',
-                        'customer.connector.service.customer.save'
+                        'customer.messageBroker.service.customer.save'
                 ],
                 'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",
                 'maxMessages' => 500,
