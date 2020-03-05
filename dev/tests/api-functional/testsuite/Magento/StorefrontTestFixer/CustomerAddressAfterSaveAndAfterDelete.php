@@ -36,8 +36,8 @@ class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPu
         AddressInterface $address
     ) {
         $deleteAddressConsumers = [
-            'customer.monolith.connector.address.delete',
-            'customer.connector.service.address.delete'
+            'customer.monolith.messageBroker.address.delete',
+            'customer.messageBroker.service.address.delete'
         ];
 
         $objectManager = Bootstrap::getObjectManager();
@@ -66,8 +66,8 @@ class CustomerAddressAfterSaveAndAfterDelete extends CustomerAddressStorefrontPu
         $addressId
     ) {
         $deleteAddressConsumers = [
-            'customer.monolith.connector.address.delete',
-            'customer.connector.service.address.delete'
+            'customer.monolith.messageBroker.address.delete',
+            'customer.messageBroker.service.address.delete'
         ];
         $objectManager = Bootstrap::getObjectManager();
         /** @var ConsumerInvoker $consumerInvoker */

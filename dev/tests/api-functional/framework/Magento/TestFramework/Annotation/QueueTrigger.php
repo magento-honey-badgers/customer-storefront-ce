@@ -63,14 +63,14 @@ class QueueTrigger
     private function waitForConsumersToStart(): void
     {
         $consumers = [
-            'customer.monolith.connector.customer.save',
-            'customer.connector.service.customer.save',
-            'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete',
-            'customer.monolith.connector.address.save',
-            'customer.connector.service.address.save',
-            'customer.monolith.connector.address.delete',
-            'customer.connector.service.address.delete'
+            'customer.monolith.messageBroker.customer.save',
+            'customer.messageBroker.service.customer.save',
+            'customer.monolith.messageBroker.customer.delete',
+            'customer.messageBroker.service.customer.delete',
+            'customer.monolith.messageBroker.address.save',
+            'customer.messageBroker.service.address.save',
+            'customer.monolith.messageBroker.address.delete',
+            'customer.messageBroker.service.address.delete'
         ];
 
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -88,14 +88,14 @@ class QueueTrigger
     private function waitForConsumersToStop(): void
     {
         $consumers = [
-            'customer.monolith.connector.customer.save',
-            'customer.connector.service.customer.save',
-            'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete',
-            'customer.monolith.connector.address.save',
-            'customer.connector.service.address.save',
-            'customer.monolith.connector.address.delete',
-            'customer.connector.service.address.delete'
+            'customer.monolith.messageBroker.customer.save',
+            'customer.messageBroker.service.customer.save',
+            'customer.monolith.messageBroker.customer.delete',
+            'customer.messageBroker.service.customer.delete',
+            'customer.monolith.messageBroker.address.save',
+            'customer.messageBroker.service.address.save',
+            'customer.monolith.messageBroker.address.delete',
+            'customer.messageBroker.service.address.delete'
         ];
 
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();

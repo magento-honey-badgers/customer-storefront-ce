@@ -36,8 +36,8 @@ class CustomerAfterSaveAndAfterDelete extends CustomerStorefrontPublisherPlugin
         CustomerInterface $customer
     ) {
         $deleteConsumers = [
-            'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete'
+            'customer.monolith.messageBroker.customer.delete',
+            'customer.messageBroker.service.customer.delete'
 
         ];
 
@@ -67,8 +67,8 @@ class CustomerAfterSaveAndAfterDelete extends CustomerStorefrontPublisherPlugin
         $customerId
     ) {
         $deleteConsumers = [
-            'customer.monolith.connector.customer.delete',
-            'customer.connector.service.customer.delete'
+            'customer.monolith.messageBroker.customer.delete',
+            'customer.messageBroker.service.customer.delete'
 
         ];
 
