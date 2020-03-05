@@ -164,7 +164,7 @@ class Customer
         $updateCustomerArray = $customer->__toArray();
 
         foreach ($updateCustomerArray as $key => $value) {
-            if ($existingCustomerArray[$key] != $value) {
+            if (empty($existingCustomerArray[$key]) || $existingCustomerArray[$key] != $value) {
                 $existingCustomer->setData($key, $value);
             }
         }
