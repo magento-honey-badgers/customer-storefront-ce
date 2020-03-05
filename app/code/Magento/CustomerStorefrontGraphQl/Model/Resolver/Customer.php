@@ -70,6 +70,7 @@ class Customer implements ResolverInterface
         $customerArray = $customer->__toArray();
         $customerArray['customer_id'] = $customer->getId();
         $customerArray['date_of_birth'] = $customer->getDateOfBirth();
+        $customerArray['id'] = null;
         return $customerArray;
     }
 }

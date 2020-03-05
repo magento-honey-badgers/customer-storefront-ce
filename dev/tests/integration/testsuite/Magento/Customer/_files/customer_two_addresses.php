@@ -1,48 +1,47 @@
 <?php
 /**
+ * Customer address fixture with entity_id = 2, this fixture also creates address with entity_id = 1
+ *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
-use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\AddressInterfaceFactory;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\TestFramework\Helper\Bootstrap;
+use Magento\Customer\Model\CustomerRegistry;
 
-//require __DIR__ . '/customer.php';
+require 'customer_address.php';
 
-$objectManager = Bootstrap::getObjectManager();
-
-/** @var CustomerRepositoryInterface $customerRepository */
-$customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
-/** @var CustomerInterface $customer */
-$customer = $customerRepository->get('customer@example.com', 1);
-/** @var AddressRepositoryInterface $addressRepository */
-$addressRepository = $objectManager->get(AddressRepositoryInterface::class);
-/** @var AddressInterfaceFactory $addressFactory */
-$addressFactory = $objectManager->get(AddressInterfaceFactory::class);
-
-$customerAddress = $addressFactory->create([
-    'data' => [
+/** @var \Magento\Customer\Model\Address $customerAddress */
+$customerAddress = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create(\Magento\Customer\Model\Address::class);
+/** @var CustomerRegistry $customerRegistry */
+$customerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->get(CustomerRegistry::class);
+$customerAddress->isObjectNew(true);
+$customerAddress->setData(
+    [
+        'entity_id' => 2,
         'attribute_set_id' => 2,
-        'telephone' => '5127779999',
-        'postcode' => 77777,
+        'telephone' => 3234676,
+        'postcode' => 47676,
         'country_id' => 'US',
-        'city' => 'CityM',
-        'company' => 'CompanyName',
-        'street' => 'Green str, 67',
+        'city' => 'CityX',
+        'street' => ['Black str, 48'],
         'lastname' => 'Smith',
         'firstname' => 'John',
+        'parent_id' => 1,
         'region_id' => 1,
-        'customer_id' => $customer->getId()
     ]
-]);
+)->setCustomerId(
+    1
+);
 
-$savedAddress = $addressRepository->save($customerAddress);
+$customerAddress->save();
+/** @var \Magento\Customer\Api\AddressRepositoryInterface $addressRepository */
+$addressRepository = $objectManager->get(\Magento\Customer\Api\AddressRepositoryInterface::class);
+$customerAddress = $addressRepository->getById(2);
 
-$customer->setDefaultBilling($savedAddress->getId());
-$customer->setDefaultShipping($savedAddress->getId());
-$customer->setAddresses([$savedAddress]);
-
-$customerRepository->save($customer);
+$customerAddress = $addressRepository->save($customerAddress);
+$customerRegistry->remove($customerAddress->getCustomerId());
+/** @var \Magento\Customer\Model\AddressRegistry $addressRegistry */
+$addressRegistry = $objectManager->get(\Magento\Customer\Model\AddressRegistry::class);
+$addressRegistry->remove($customerAddress->getId());

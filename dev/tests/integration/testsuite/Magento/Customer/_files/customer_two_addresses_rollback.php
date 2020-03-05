@@ -22,35 +22,27 @@ $registry->register('isSecureArea', true);
 
 /** @var AddressRepositoryInterface $addressRepository */
 $addressRepository = $objectManager->get(AddressRepositoryInterface::class);
-/** @var AddressStorefrontRepositoryInterface $addressStorefrontRepository */
-$addressStorefrontRepository = $objectManager->get(AddressStorefrontRepositoryInterface::class);
-/** @var SearchCriteriaBuilder $searchCriteriaBuilder */
-$searchCriteriaBuilder = $objectManager->get(SearchCriteriaBuilder::class);
-$searchCriteria = $searchCriteriaBuilder->addFilter('postcode', '77777')->create();
 
-/** @var \Magento\Customer\Api\Data\AddressSearchResultsInterface $addresses */
-$addresses = $addressRepository->getList($searchCriteria);
-/** @var \Magento\Customer\Api\Data\AddressInterface $address */
-foreach ($addresses->getItems() as $address) {
-    $addressRepository->delete($address);
+// /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
+//$searchCriteriaBuilder = $objectManager->get(SearchCriteriaBuilder::class);
+//$searchCriteria = $searchCriteriaBuilder->addFilter('postcode', '77777')->create();
+
+// /** @var \Magento\Customer\Api\Data\AddressSearchResultsInterface $addresses */
+//$addresses = $addressRepository->getList($searchCriteria);
+//  /** @var \Magento\Customer\Api\Data\AddressInterface $address */
+//foreach ($addresses->getItems() as $address) {
+//    $addressRepository->delete($address);
+//}
+
+foreach ([1, 2] as $addressId) {
+    try {
+        $addressRepository->deleteById($addressId);
+    } catch (NoSuchEntityException $e) {
+        /**
+         * Tests which are wrapped with MySQL transaction clear all data by transaction rollback.
+         */
+    }
 }
-$customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
-/** @var CustomerInterface $customer */
-$customer = $customerRepository->get('customer@example.com', 1);
-$customerId = $customer->getId();
-
-//remove from storefront_customer_address table
-try{
-    /** @var AddressInterface $storefrontAddresses */
-    $storefrontAddress = $addressStorefrontRepository->getById((int)$customer->getDefaultBilling());
-    //$storefrontAddresse->getId();
-    $addressStorefrontRepository->delete($storefrontAddress);
-
-} catch (NoSuchEntityException $e) {
-    //address already removed from storefront storage
-}
-
-//require __DIR__ . '/customer_rollback.php';
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

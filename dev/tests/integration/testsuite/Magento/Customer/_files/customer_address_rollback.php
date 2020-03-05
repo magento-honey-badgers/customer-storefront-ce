@@ -39,18 +39,5 @@ $customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
 $customer = $customerRepository->get('customer@example.com', 1);
 $customerId = $customer->getId();
 
-//remove from storefront_customer_address table
-try{
-    /** @var AddressInterface $storefrontAddresses */
-    $storefrontAddress = $addressStorefrontRepository->getById((int)$customer->getDefaultBilling());
-    //$storefrontAddresse->getId();
-    $addressStorefrontRepository->delete($storefrontAddress);
-
-} catch (NoSuchEntityException $e) {
-    //address already removed from storefront storage
-}
-
-//require __DIR__ . '/customer_rollback.php';
-
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
