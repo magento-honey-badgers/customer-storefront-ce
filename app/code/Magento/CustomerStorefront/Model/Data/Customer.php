@@ -23,7 +23,8 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      */
     public function getDefaultBilling(): ?int
     {
-        return $this->_get(self::DEFAULT_BILLING);
+        $defaultBilling = $this->_get(self::DEFAULT_BILLING);
+        return empty($defaultBilling) ? null : (int) $defaultBilling;
     }
 
     /**
@@ -33,7 +34,8 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
      */
     public function getDefaultShipping(): ?int
     {
-        return $this->_get(self::DEFAULT_SHIPPING);
+        $defaultShipping = $this->_get(self::DEFAULT_SHIPPING);
+        return empty($defaultShipping) ? null : (int) $defaultShipping;
     }
 
     /**
