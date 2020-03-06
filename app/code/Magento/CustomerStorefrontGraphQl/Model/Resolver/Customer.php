@@ -8,18 +8,18 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontGraphQl\Model\Resolver;
 
-use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\CustomerStorefrontApi\Api\CustomerRepositoryInterface;
+use Magento\CustomerStorefrontApi\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
+use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Query\Resolver\Value;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 
 /**
  * Customers field resolver
@@ -56,8 +56,7 @@ class Customer implements ResolverInterface
         ResolveInfo $info,
         array $value = null,
         array $args = null
-    )
-    {
+    ) {
         /** @var \Magento\Framework\GraphQl\Query\Resolver\ContextExtensionInterface $extensionAttributes */
         $extensionAttributes = $context->getExtensionAttributes();
         $currentUserId = $context->getUserId();
