@@ -30,6 +30,8 @@ interface CustomerInterface
     const DEFAULT_BILLING = 'default_billing';
     const DEFAULT_SHIPPING = 'default_shipping';
     const KEY_ADDRESSES = 'addresses';
+    const CUSTOM_ATTRIBUTES = 'custom_attributes';
+    const EXTENSION_ATTRIBUTES = 'extension_attributes';
 
     /**
      * Get customer id
@@ -254,4 +256,34 @@ interface CustomerInterface
      * @return $this
      */
     public function setAddresses(array $addresses): CustomerInterface;
+
+    /**
+     * Get custom attributes.
+     *
+     * @return array|null
+     */
+    public function getCustomAttributes(): ?array;
+
+    /**
+     * Set custom attributes.
+     *
+     * @param array $customAttributes
+     * @return $this
+     */
+    public function setCustomAttributes(array $customAttributes): CustomerInterface;
+
+    /**
+     * Get extension attributes.
+     *
+     * @return array|null
+     */
+    public function getExtensionAttributes(): ?array;
+
+    /**
+     * Set extension attributes.
+     *
+     * @param array $extensionAttributes
+     * @return $this
+     */
+    public function setExtensionAttributes(array $extensionAttributes): CustomerInterface;
 }
