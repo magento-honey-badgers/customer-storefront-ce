@@ -10,6 +10,7 @@ namespace Magento\CustomerStorefrontGraphQl\Model\Resolver\Customer;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Resolve Customer.is_subscribed field
@@ -26,6 +27,11 @@ class IsSubscribed implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        return $value['extension_attributes']['is_subscribed'] ?? false;
+        if (!isset($value['model'])) {
+            throw new LocalizedException(__('"model" value should be specified'));
+        }
+        $customer = $value['model'];
+        $customerExtension = $customer->getExtensionAttributes();
+        return $customerExtension['is_subscribed'];
     }
 }

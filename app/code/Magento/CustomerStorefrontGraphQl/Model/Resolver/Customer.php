@@ -47,13 +47,13 @@ class Customer implements ResolverInterface
             $currentUserId = $context->getUserId();
             if ($currentUserId) {
                 $customer = $this->customerRepository->getById($currentUserId);
+                return $this->formatOutput($customer);
             } else {
                 throw new GraphQlNoSuchEntityException(__('Customer not authenticated'));
             }
         } catch (NoSuchEntityException $e) {
             throw new GraphQlNoSuchEntityException(__($e->getMessage()));
         }
-        return $this->formatOutput($customer);
     }
 
     /**
@@ -70,6 +70,7 @@ class Customer implements ResolverInterface
         $customerArray = $customer->__toArray();
         $customerArray['customer_id'] = $customer->getId();
         $customerArray['date_of_birth'] = $customer->getDateOfBirth();
+        $customerArray['model']=$customer;
         return $customerArray;
     }
 }
