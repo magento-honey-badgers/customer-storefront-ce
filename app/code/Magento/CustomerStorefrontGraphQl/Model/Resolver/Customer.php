@@ -39,7 +39,7 @@ class Customer implements ResolverInterface
     }
 
     /**
-     * Fetche data from customer and output it to graphql according to schema.
+     * Fetch the data from the customer and pass it to graphql according to schema.
      *
      * @param \Magento\Framework\GraphQl\Config\Element\Field $field
      * @param ContextInterface $context
