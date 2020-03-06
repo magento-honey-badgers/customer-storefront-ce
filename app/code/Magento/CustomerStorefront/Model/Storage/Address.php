@@ -156,16 +156,18 @@ class Address
     private function doDelete(int $addressId): bool
     {
         try {
-            $address = $this->fetchByAddressId($addressId);
-            $customer = $this->customerStorage->fetchById($address->getCustomerId());
-            if (($customer->getDefaultBilling() == $address->getId())) {
-                $customer->setDefaultBilling(0);
-            }
-            if (($customer->getDefaultShipping() == $address->getId())) {
-                $customer->setDefaultShipping(0);
-            }
             $this->getConnection()->beginTransaction();
-            $this->customerStorage->persist($customer);
+            $address = $this->fetchByAddressId($addressId);
+            if ($address->getCustomerId()) {
+                $customer = $this->customerStorage->fetchById($address->getCustomerId());
+                if (($customer->getDefaultBilling() == $address->getId())) {
+                    $customer->setDefaultBilling(0);
+                }
+                if (($customer->getDefaultShipping() == $address->getId())) {
+                    $customer->setDefaultShipping(0);
+                }
+                $this->customerStorage->persist($customer);
+            }
             $this->getConnection()->delete(
                 self::TABLE,
                 ['customer_address_id = ?' => $addressId]
@@ -238,4 +240,3 @@ class Address
         return $this->resourceConnection->getConnection();
     }
 }
-
