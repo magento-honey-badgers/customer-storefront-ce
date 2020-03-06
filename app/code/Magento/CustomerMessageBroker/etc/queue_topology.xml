@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+  * Copyright © Magento, Inc. All rights reserved.
+  * See COPYING.txt for license details.
+  */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="magento" type="topic" connection="amqp">
+        <!-- Bindings for messages originating from monolith -->
+        <binding id="customer.monolith.messageBroker.customer.save" topic="customer.monolith.messageBroker.customer.save" destinationType="queue" destination="customer.monolith.messageBroker.customer.save"/>
+        <binding id="customer.monolith.messageBroker.customer.delete" topic="customer.monolith.messageBroker.customer.delete" destinationType="queue" destination="customer.monolith.messageBroker.customer.delete"/>
+        <binding id="customer.monolith.messageBroker.address.save" topic="customer.monolith.messageBroker.address.save" destinationType="queue" destination="customer.monolith.messageBroker.address.save"/>
+        <binding id="customer.monolith.messageBroker.address.delete" topic="customer.monolith.messageBroker.address.delete" destinationType="queue" destination="customer.monolith.messageBroker.address.delete"/>
+
+        <!-- Bindings for messages published by messageBroker, intended for storefront service -->
+        <binding id="customer.messageBroker.service.customer.save" topic="customer.messageBroker.service.customer.save" destinationType="queue" destination="customer.messageBroker.service.customer.save"/>
+        <binding id="customer.messageBroker.service.customer.delete" topic="customer.messageBroker.service.customer.delete" destinationType="queue" destination="customer.messageBroker.service.customer.delete"/>
+        <binding id="customer.messageBroker.service.address.save" topic="customer.messageBroker.service.address.save" destinationType="queue" destination="customer.messageBroker.service.address.save"/>
+        <binding id="customer.messageBroker.service.address.delete" topic="customer.messageBroker.service.address.delete" destinationType="queue" destination="customer.messageBroker.service.address.delete"/>
+    </exchange>
+</config>
