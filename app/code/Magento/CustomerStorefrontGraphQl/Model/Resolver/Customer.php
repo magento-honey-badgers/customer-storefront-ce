@@ -15,9 +15,10 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
+use Magento\Framework\GraphQl\Query\Resolver\Value;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\GraphQl\Model\Query\ContextInterface;
+use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 
 /**
  * Customers field resolver
@@ -38,7 +39,15 @@ class Customer implements ResolverInterface
     }
 
     /**
-     * @inheritdoc
+     * Fetche data from customer and output it to graphql according to schema.
+     *
+     * @param \Magento\Framework\GraphQl\Config\Element\Field $field
+     * @param ContextInterface $context
+     * @param ResolveInfo $info
+     * @param array|null $value
+     * @param array|null $args
+     * @throws \Exception
+     * @return mixed|Value
      */
     public function resolve(
         Field $field,
@@ -50,7 +59,6 @@ class Customer implements ResolverInterface
         /** @var \Magento\Framework\GraphQl\Query\Resolver\ContextExtensionInterface $extensionAttributes */
         $extensionAttributes =  $context->getExtensionAttributes();
         $currentUserId = $context->getUserId();
-        /** @var ContextInterface $context */
         if (false === $extensionAttributes->getIsCustomer() || !$currentUserId) {
             throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
         }
@@ -63,7 +71,6 @@ class Customer implements ResolverInterface
             );
         } catch (LocalizedException $e) {
             throw new GraphQlInputException(__($e->getMessage()));
-            // @codeCoverageIgnoreEnd
         }
         return $this->formatOutput($customer);
     }
