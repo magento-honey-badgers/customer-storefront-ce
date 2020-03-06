@@ -332,4 +332,46 @@ class Customer extends AbstractSimpleObject implements CustomerInterface
     {
         return $this->setData(self::DATE_OF_BIRTH, $dateOfBirth);
     }
+
+    /**
+     * Get custom attributes.
+     *
+     * @return array|null
+     */
+    public function getCustomAttributes(): ?array
+    {
+        return $this->_get(self::CUSTOM_ATTRIBUTES);
+    }
+
+    /**
+     * Set custom attributes.
+     *
+     * @param array $customAttributes
+     * @return $this
+     */
+    public function setCustomAttributes(array $customAttributes): CustomerInterface
+    {
+        return $this->setData(self::CUSTOM_ATTRIBUTES, $customAttributes);
+    }
+
+    /**
+     * Get extension attributes.
+     *
+     * @return array|null
+     */
+    public function getExtensionAttributes(): ?array
+    {
+        return $this->_get(self::EXTENSION_ATTRIBUTES);
+    }
+
+    /**
+     * Set extension attributes.
+     *
+     * @param array $extensionAttributes
+     * @return $this
+     */
+    public function setExtensionAttributes(array $extensionAttributes): CustomerInterface
+    {
+        return $this->setData(self::EXTENSION_ATTRIBUTES, $extensionAttributes);
+    }
 }

@@ -309,4 +309,46 @@ class Address extends AbstractSimpleObject implements AddressInterface
     {
         return $this->setData(self::DEFAULT_BILLING, $isDefaultBilling);
     }
+
+    /**
+     * Get custom attributes.
+     *
+     * @return array|null
+     */
+    public function getCustomAttributes(): ?array
+    {
+        return $this->_get(self::CUSTOM_ATTRIBUTES);
+    }
+
+    /**
+     * Set custom attributes.
+     *
+     * @param array $customAttributes
+     * @return $this
+     */
+    public function setCustomAttributes(array $customAttributes): AddressInterface
+    {
+        return $this->setData(self::CUSTOM_ATTRIBUTES, $customAttributes);
+    }
+
+    /**
+     * Get extension attributes.
+     *
+     * @return array|null
+     */
+    public function getExtensionAttributes(): ?array
+    {
+        return $this->_get(self::EXTENSION_ATTRIBUTES);
+    }
+
+    /**
+     * Set extension attributes.
+     *
+     * @param array $extensionAttributes
+     * @return $this
+     */
+    public function setExtensionAttributes(array $extensionAttributes): AddressInterface
+    {
+        return $this->setData(self::EXTENSION_ATTRIBUTES, $extensionAttributes);
+    }
 }
