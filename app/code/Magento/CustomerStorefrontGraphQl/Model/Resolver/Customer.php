@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontGraphQl\Model\Resolver;
 
-use Magento\CustomerStorefrontServiceApi\Api\CustomerRepositoryInterface;
-use Magento\CustomerStorefrontServiceApi\Api\Data\CustomerInterface;
+use Magento\CustomerStorefrontApi\Api\CustomerRepositoryInterface;
+use Magento\CustomerStorefrontApi\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;

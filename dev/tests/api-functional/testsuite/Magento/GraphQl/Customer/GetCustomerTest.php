@@ -37,8 +37,8 @@ class GetCustomerTest extends GraphQlAbstract
             PublisherConsumerController::class,
             [
                 'consumers' => [
-                        'customer.monolith.connector.customer.save',
-                        'customer.connector.service.customer.save'
+                        'customer.monolith.messageBroker.customer.save',
+                        'customer.messageBroker.service.customer.save'
                 ],
                 'logFilePath' => TESTS_TEMP_DIR . "/CustomerStorefrontMessageQueueTestLog.txt",
                 'maxMessages' => 500,
@@ -59,7 +59,7 @@ class GetCustomerTest extends GraphQlAbstract
     }
 
     /**
-     * @magentoApiDataFixture Magento/CustomerStorefrontConnector/_files/customer.php
+     * @magentoApiDataFixture Magento/CustomerMessageBroker/_files/customer.php
      */
     public function testGetCustomer()
     {

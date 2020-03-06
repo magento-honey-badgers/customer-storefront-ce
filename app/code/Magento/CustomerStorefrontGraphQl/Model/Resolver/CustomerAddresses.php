@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace Magento\CustomerStorefrontGraphQl\Model\Resolver;
 
-use Magento\CustomerStorefrontServiceApi\Api\AddressRepositoryInterface;
-use Magento\CustomerStorefrontServiceApi\Api\Data\AddressInterface;
+use Magento\CustomerStorefrontApi\Api\AddressRepositoryInterface;
+use Magento\CustomerStorefrontApi\Api\Data\AddressInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;

@@ -1,5 +1,5 @@
 {
-    "name": "magento/module-customer-storefront-graph-ql",
+    "name": "magento/module-customer-storefront",
     "description": "N/A",
     "require": {
         "php": "~7.2.0||~7.3.0||~7.4.0",
@@ -16,7 +16,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "Magento\\CustomerStorefrontGraphQl\\": ""
+            "Magento\\CustomerStorefront\\": ""
         }
     }
 }
